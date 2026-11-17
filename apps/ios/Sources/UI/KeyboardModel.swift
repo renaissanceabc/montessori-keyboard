@@ -59,8 +59,12 @@ public final class KeyboardModel {
     @ObservationIgnored public var host: KeyboardHost
     public private(set) var layer: KeyLayer = .letters
     public private(set) var shifted = false
-    /// The letter whose phonograms are showing, if the tray is open.
+    /// The letter whose phonograms are showing, if the popup is open (capitalized when shift was on).
     public private(set) var trayLetter: Character?
+    /// The tile the popup grew from, so it can sit above it.
+    public private(set) var trayKey: Character?
+    /// The team under the finger while it slides across the popup.
+    public private(set) var highlightedTeam: Int?
     /// In the letters strip, the tile picked to be changed by the next letter typed.
     public private(set) var selectedLetter: Int?
     /// The word before the cursor, refreshed after every key and whenever the host's text changes.
@@ -112,46 +116,68 @@ public final class KeyboardModel {
         }
         say(typed)
         shifted = false
-        trayLetter = nil
+        closeTray()
         refresh()
     }
 
-    /// Holding a tile opens its phonograms, when that's on and the letter has any.
+    /// Holding a tile opens its phonograms above it, when that's on and the letter has any.
     public func hold(letter: Character) {
         guard settings.phonograms, layer == .letters else { return }
         let key = Character(label(for: letter))
         guard !Phonograms.teams(for: key).isEmpty else { return }
         trayLetter = key
+        trayKey = letter
+        highlightedTeam = nil
         say(String(key))
+    }
+
+    /// The finger slid onto a team in the popup (or off them all).
+    public func highlight(team index: Int?) {
+        guard trayLetter != nil, index != highlightedTeam else { return }
+        highlightedTeam = index.flatMap { trayTeams.indices.contains($0) ? $0 : nil }
+    }
+
+    /// The finger lifted after a hold: type the team under it, or leave the popup open to tap.
+    public func releaseHold() {
+        guard let index = highlightedTeam, trayTeams.indices.contains(index) else {
+            highlightedTeam = nil
+            return
+        }
+        tap(team: trayTeams[index])
     }
 
     public func tap(team: String) {
         host.click()
         host.insert(team)
         say(team)
-        trayLetter = nil
+        closeTray()
         shifted = false
         refresh()
     }
 
     public func closeTray() {
         trayLetter = nil
+        trayKey = nil
+        highlightedTeam = nil
     }
 
     public func tapShift() {
         host.click()
+        closeTray()
         guard settings.capitalsWithShift else { return }
         shifted.toggle()
     }
 
     public func tapDelete() {
         host.click()
+        closeTray()
         host.deleteBackward()
         refresh()
     }
 
     public func tapSpace() {
         host.click()
+        closeTray()
         host.insert(" ")
         selectedLetter = nil
         refresh()
@@ -159,6 +185,7 @@ public final class KeyboardModel {
 
     public func tapReturn() {
         host.click()
+        closeTray()
         host.insert("\n")
         selectedLetter = nil
         refresh()
@@ -167,7 +194,7 @@ public final class KeyboardModel {
     public func toggleLayer() {
         host.click()
         layer = layer == .letters ? .numbers : .letters
-        trayLetter = nil
+        closeTray()
         shifted = false
     }
 

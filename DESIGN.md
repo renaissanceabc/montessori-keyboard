@@ -28,7 +28,7 @@ Allo everywhere: Bold for tiles and headings, Regular for children's writing, an
 
 ## Strip
 
-44pt above the tiles. Rhymes (default), Word mat (tap a letter, then a tile, to change it) or Quiet. It never autocorrects. The phonogram tray takes it over while a tile is held.
+44pt above the tiles. Rhymes (default), Word mat (tap a letter, then a tile, to change it) or Quiet. It never autocorrects. Holding a tile opens its phonograms in a popup above it, over the strip for the top row.
 
 ## Icon
 

@@ -37,26 +37,38 @@ struct KeyRow: Layout {
 }
 
 /// Press handling shared by every key: tap on release (like Apple's keyboard), an optional hold, and an optional
-/// repeat for delete. `label` gets whether the key is down so it can sink.
+/// repeat for delete. `label` gets whether the key is down so it can sink. After a hold, the finger's moves and its
+/// release go to `onHoldMove` and `onHoldEnd`, in the keyboard's coordinate space, so it can slide onto a popup.
 struct KeyButton<Label: View>: View {
     var accessibilityLabel: String
     var repeats = false
     var onTap: () -> Void
     var onHold: (() -> Void)?
+    var onHoldMove: ((CGPoint) -> Void)?
+    var onHoldEnd: ((CGPoint) -> Void)?
     @ViewBuilder var label: (_ pressed: Bool) -> Label
 
-    @State private var pressed = false
+    /// Resets by itself if the system cancels the touch, so a key never stays stuck down.
+    @GestureState private var down = false
+    @State private var active = false
     @State private var held = false
     @State private var timer: Task<Void, Never>?
 
     var body: some View {
-        label(pressed)
+        label(down)
             .contentShape(Rectangle())
             .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in if !pressed { begin() } }
-                    .onEnded { _ in end() }
+                DragGesture(minimumDistance: 0, coordinateSpace: .named(KeyboardSpace.name))
+                    .updating($down) { _, down, _ in down = true }
+                    .onChanged { value in
+                        if !active { begin() } else if held { onHoldMove?(value.location) }
+                    }
+                    .onEnded { value in end(at: value.location) }
             )
+            .onChange(of: down) { _, isDown in
+                // Cancelled without an end: drop the press without typing.
+                if !isDown, active { cancel() }
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isKeyboardKey)
@@ -64,7 +76,7 @@ struct KeyButton<Label: View>: View {
     }
 
     private func begin() {
-        pressed = true
+        active = true
         held = false
         if repeats {
             onTap()
@@ -86,12 +98,30 @@ struct KeyButton<Label: View>: View {
         }
     }
 
-    private func end() {
+    private func end(at location: CGPoint) {
+        guard active else { return }
         timer?.cancel()
         timer = nil
-        if !repeats && !held { onTap() }
-        pressed = false
+        active = false
+        if held {
+            if !repeats { onHoldEnd?(location) }
+        } else if !repeats {
+            onTap()
+        }
+        held = false
     }
+
+    private func cancel() {
+        timer?.cancel()
+        timer = nil
+        active = false
+        held = false
+    }
+}
+
+/// The named coordinate space the whole keyboard (strip included) is laid out in.
+enum KeyboardSpace {
+    static let name = "keyboard"
 }
 
 /// A maple (or walnut) tile: a gradient face on a darker edge that disappears when it's pressed.
@@ -134,9 +164,11 @@ struct LetterKey: View {
     var fontSize: CGFloat
     var onTap: () -> Void
     var onHold: (() -> Void)?
+    var onHoldMove: ((CGPoint) -> Void)?
+    var onHoldEnd: ((CGPoint) -> Void)?
 
     var body: some View {
-        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold) { pressed in
+        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold, onHoldMove: onHoldMove, onHoldEnd: onHoldEnd) { pressed in
             TileFace(pressed: pressed) {
                 Text(label)
                     .font(TileFont.tile(size: fontSize, cursive: cursive))

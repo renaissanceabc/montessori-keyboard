@@ -13,6 +13,11 @@ public struct KeyboardView: View {
     public static let stripHeight: CGFloat = 44
 
     @Environment(\.palette) private var palette
+    /// Each letter tile's frame in the keyboard's space, so the phonogram popup can sit above the one held.
+    @State private var keyFrames: [Character: CGRect] = [:]
+    @State private var size: CGSize = .zero
+    /// Where the finger was when it first moved after a hold, so a still finger never picks a team.
+    @State private var holdOrigin: CGPoint?
 
     public init(model: KeyboardModel, showsGlobe: Bool = false) {
         self.model = model
@@ -39,17 +44,38 @@ public struct KeyboardView: View {
             }
             .padding(.horizontal, 3)
             .padding(.vertical, Self.rowSpacing)
-            .overlay(alignment: .top) {
-                // With the strip off, the phonogram tray sits over the top row instead.
-                if model.settings.strip == .off, model.trayLetter != nil {
-                    PhonogramTray(model: model)
-                        .frame(height: Self.stripHeight + Self.rowSpacing)
-                        .transition(.opacity)
-                }
-            }
         }
         .background(palette.tray)
-        .animation(.easeOut(duration: 0.15), value: model.trayLetter)
+        .overlay {
+            if let layout = popupLayout {
+                PhonogramPopup(model: model, layout: layout)
+                    .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
+            }
+        }
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { size = $0 }
+        .coordinateSpace(.named(KeyboardSpace.name))
+        .animation(.easeOut(duration: 0.12), value: model.trayLetter)
+    }
+
+    private var popupLayout: PopupLayout? {
+        guard let key = model.trayKey, let frame = keyFrames[key], !model.trayTeams.isEmpty else { return nil }
+        return PopupLayout(key: frame, teams: model.trayTeams, in: CGRect(origin: .zero, size: size))
+    }
+
+    private func holdMoved(to point: CGPoint) {
+        guard let layout = popupLayout else { return }
+        guard let origin = holdOrigin else {
+            holdOrigin = point
+            return
+        }
+        guard hypot(point.x - origin.x, point.y - origin.y) > 8 || model.highlightedTeam != nil else { return }
+        model.highlight(team: layout.team(at: point))
+    }
+
+    private func holdEnded(at point: CGPoint) {
+        holdMoved(to: point)
+        holdOrigin = nil
+        model.releaseHold()
     }
 
     // MARK: Letters
@@ -81,8 +107,11 @@ public struct KeyboardView: View {
             cursive: model.settings.cursive,
             fontSize: 26,
             onTap: { model.tap(letter: letter) },
-            onHold: model.settings.phonograms ? { model.hold(letter: letter) } : nil
+            onHold: model.settings.phonograms ? { model.hold(letter: letter) } : nil,
+            onHoldMove: { holdMoved(to: $0) },
+            onHoldEnd: { holdEnded(at: $0) }
         )
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(KeyboardSpace.name)) } action: { keyFrames[letter] = $0 }
     }
 
     private var shiftKey: some View {
