@@ -160,8 +160,8 @@ struct SegmentRow<Value: Hashable>: View {
     var body: some View {
         SettingsRow(title: title) {
             Picker(title, selection: $selection) {
-                ForEach(options, id: \.0) { option in
-                    Text(option.1).tag(option.0)
+                ForEach(options.indices, id: \.self) { index in
+                    Text(options[index].1).tag(options[index].0)
                 }
             }
             .pickerStyle(.segmented)
