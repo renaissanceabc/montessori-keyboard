@@ -21,7 +21,7 @@ struct SettingsView: View {
                     PadView()
                 } label: {
                     Image(systemName: "pencil.line")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.body.weight(.semibold))
                         .foregroundStyle(palette.ink)
                         .frame(width: 44, height: 44)
                         .background(palette.card.opacity(0.8), in: Circle())

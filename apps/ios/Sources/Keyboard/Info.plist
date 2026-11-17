@@ -22,10 +22,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Allo-Regular.otf</string>
-		<string>Allo-Medium.otf</string>
-		<string>Allo-SemiBold.otf</string>
-		<string>Allo-Bold.otf</string>
+		<string>AlloLearner-Regular.otf</string>
+		<string>AlloLearner-Medium.otf</string>
+		<string>AlloLearner-SemiBold.otf</string>
+		<string>AlloLearner-Bold.otf</string>
 		<string>PlaywriteUSTrad.ttf</string>
 	</array>
 	<key>NSExtension</key>

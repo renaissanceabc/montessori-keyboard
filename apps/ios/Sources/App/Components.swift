@@ -185,7 +185,7 @@ struct LinkRow<Destination: View>: View {
                 HStack(spacing: 6) {
                     if let value { Text(value).foregroundStyle(palette.muted) }
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.footnote.weight(.semibold))
                         .foregroundStyle(palette.muted.opacity(0.7))
                 }
             }

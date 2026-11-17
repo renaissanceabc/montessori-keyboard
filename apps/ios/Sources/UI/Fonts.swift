@@ -5,23 +5,22 @@ import UIKit
 /// Allo for print letters, headings and every other line of text, Playwrite US Trad for cursive. Both are SIL Open
 /// Font License fonts, bundled in the app and the keyboard and listed under UIAppFonts.
 ///
-/// Allo is always drawn with its learner forms on: a single-storey a (ss01), a tailed l (cv03) and a serifed I
-/// (cv04), so a child sees the same a on a tile, in the strip and in the app, and never mixes up I and l.
+/// The Allo files are Allo Learner: Allo with its learner forms baked in by `scripts/learner-fonts.py`, a
+/// single-storey a (ss01), a tailed l (cv03) and a serifed I (cv04), so a child sees the same a on a tile, in the
+/// strip and in the app, and never mixes up I and l. Baking them in means no OpenType features at draw time, so
+/// text uses `Font.custom(_:size:relativeTo:)` and follows Dynamic Type live, like the system font.
 public enum TileFont {
-    public static let regular = "Allo-Regular"
-    public static let medium = "Allo-Medium"
-    public static let semibold = "Allo-SemiBold"
-    public static let bold = "Allo-Bold"
+    public static let regular = "AlloLearner-Regular"
+    public static let medium = "AlloLearner-Medium"
+    public static let semibold = "AlloLearner-SemiBold"
+    public static let bold = "AlloLearner-Bold"
     public static let cursive = "PlaywriteUSTrad-Regular"
 
-    /// The bundled font files. Allo is OpenType (.otf), Playwrite TrueType (.ttf).
+    /// The bundled font files. Allo Learner is OpenType (.otf), Playwrite TrueType (.ttf).
     static let files: [(name: String, ext: String)] = [
-        ("Allo-Regular", "otf"), ("Allo-Medium", "otf"), ("Allo-SemiBold", "otf"), ("Allo-Bold", "otf"),
-        ("PlaywriteUSTrad", "ttf"),
+        ("AlloLearner-Regular", "otf"), ("AlloLearner-Medium", "otf"), ("AlloLearner-SemiBold", "otf"),
+        ("AlloLearner-Bold", "otf"), ("PlaywriteUSTrad", "ttf"),
     ]
-
-    /// Allo's stylistic set and character variants for learners, as OpenType feature tags.
-    static let learnerFeatures = ["ss01", "cv03", "cv04"]
 
     /// Registers the bundled fonts if UIAppFonts didn't (previews, tests). Safe to call more than once.
     public static func registerIfNeeded(in bundle: Bundle = .main) {
@@ -32,24 +31,25 @@ public enum TileFont {
         }
     }
 
-    /// A tile letter: bold print, or cursive a little smaller so it fits the same tile.
+    /// A tile letter: bold print, or cursive a little smaller so it fits the same tile. Tiles keep their size, like
+    /// the keys on Apple's keyboard, because the keyboard's height is fixed.
     public static func tile(size: CGFloat, cursive: Bool) -> Font {
-        cursive ? .custom(Self.cursive, fixedSize: size * 0.78) : Font(allo(bold, size: size))
+        cursive ? .custom(Self.cursive, fixedSize: size * 0.78) : .custom(bold, fixedSize: size)
     }
 
     /// Headings in the app. Scales with Dynamic Type.
     public static func heading(_ size: CGFloat, relativeTo style: Font.TextStyle = .title) -> Font {
-        scaled(bold, size: size, style: style)
+        .custom(bold, size: size, relativeTo: style)
     }
 
-    /// Children's writing in the Pad and Try it boxes.
+    /// Children's writing in the Pad and Try it boxes. Scales with Dynamic Type.
     public static func writing(_ size: CGFloat) -> Font {
-        scaled(regular, size: size, style: .title)
+        .custom(regular, size: size, relativeTo: .title)
     }
 
     /// Everything else: labels, rows, captions. Scales with Dynamic Type like the system font it replaces.
     public static func text(_ size: CGFloat, weight: Font.Weight = .regular, relativeTo style: Font.TextStyle = .body) -> Font {
-        scaled(name(for: weight), size: size, style: style)
+        .custom(name(for: weight), size: size, relativeTo: style)
     }
 
     static func name(for weight: Font.Weight) -> String {
@@ -61,39 +61,10 @@ public enum TileFont {
         }
     }
 
-    /// Allo at a fixed size with the learner forms on. Falls back to the system font if Allo isn't registered.
-    static func allo(_ name: String, size: CGFloat) -> UIFont {
-        let settings: [[UIFontDescriptor.FeatureKey: Any]] = learnerFeatures.map { tag in
-            [openTypeTag: tag, openTypeValue: 1]
-        }
-        let descriptor = UIFontDescriptor(name: name, size: size).addingAttributes([.featureSettings: settings])
-        guard UIFont(name: name, size: size) != nil else { return .systemFont(ofSize: size) }
-        return UIFont(descriptor: descriptor, size: size)
-    }
-
-    private static let openTypeTag = UIFontDescriptor.FeatureKey(rawValue: kCTFontOpenTypeFeatureTag as String)
-    private static let openTypeValue = UIFontDescriptor.FeatureKey(rawValue: kCTFontOpenTypeFeatureValue as String)
-
-    /// A custom UIFont can't carry `relativeTo:`, so the Dynamic Type size is applied when the view draws.
-    static func scaled(_ name: String, size: CGFloat, style: Font.TextStyle) -> Font {
-        Font(UIFontMetrics(forTextStyle: style.uiTextStyle).scaledFont(for: allo(name, size: size)))
-    }
-}
-
-extension Font.TextStyle {
-    var uiTextStyle: UIFont.TextStyle {
-        switch self {
-        case .largeTitle: .largeTitle
-        case .title: .title1
-        case .title2: .title2
-        case .title3: .title3
-        case .headline: .headline
-        case .subheadline: .subheadline
-        case .callout: .callout
-        case .footnote: .footnote
-        case .caption: .caption1
-        case .caption2: .caption2
-        default: .body
-        }
+    /// Allo Learner for UIKit (the navigation bar), scaled for Dynamic Type. Falls back to the system font if it
+    /// isn't registered.
+    public static func uiFont(_ name: String, size: CGFloat, relativeTo style: UIFont.TextStyle) -> UIFont {
+        let font = UIFont(name: name, size: size) ?? .systemFont(ofSize: size)
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: font)
     }
 }

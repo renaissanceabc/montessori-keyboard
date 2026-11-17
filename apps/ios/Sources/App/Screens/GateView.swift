@@ -15,7 +15,7 @@ struct GateView: View {
         VStack(spacing: 24) {
             VStack(spacing: 10) {
                 Image(systemName: "lock")
-                    .font(.system(size: 34, weight: .regular))
+                    .font(.largeTitle)
                     .foregroundStyle(palette.hint)
                     .accessibilityHidden(true)
                 ScreenHeading(title: "Grown-ups only", subtitle: "Type the number written below.", centered: true)
@@ -56,7 +56,7 @@ struct GateView: View {
                     if !typed.isEmpty { typed.removeLast() }
                 } label: {
                     Image(systemName: "delete.left")
-                        .font(.system(size: 22))
+                        .font(.title2)
                         .foregroundStyle(palette.ink2)
                         .frame(maxWidth: .infinity, minHeight: 62)
                 }

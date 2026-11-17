@@ -31,7 +31,7 @@ struct TryItView: View {
             }
             if model.keyboardEnabled {
                 HStack(spacing: 10) {
-                    Image(systemName: "checkmark").font(.system(size: 16, weight: .bold))
+                    Image(systemName: "checkmark").font(.callout.weight(.bold))
                     Text("It's on. Hand it over whenever you like.")
                 }
                 .font(TileFont.text(14))
