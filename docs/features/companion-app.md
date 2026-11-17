@@ -2,7 +2,7 @@
 
 `apps/ios/Sources/App`. A grown-up sets it up once; after that it's grown-ups only.
 
-1. **Welcome**, then **Turn it on** (Open Settings goes to the app's page in iPhone Settings; the status line shows when the keyboard is on), then **Try it** (a real text box, to switch to the keyboard). Done goes straight to Settings.
+1. **Welcome**, then **Turn it on** (Open Settings goes to the app's page in iPhone Settings; the status line shows when the keyboard is on), then **Make it yours** (three questions: ABC or QWERTY order, print or cursive, and lowercase only or shift for capitals; each answer saves at once and Settings can change it later), then **Try it** (a real text box, to switch to the keyboard). Done goes straight to Settings.
 2. **Grown-ups gate** on every later launch, and again whenever the app goes to the background: type a three-digit number spelled out in words (no zeros), or use Face ID, Touch ID or the passcode.
 3. **Settings:** the live keyboard pinned at the top (without the strip) so every change shows and sounds right away. Order, letter shapes, capitals with shift, phonograms, Strip, Numbers, letter sounds, key clicks, the setup guide, and About. The pen button opens the **Pad**, a blank page with the full keyboard.
 
