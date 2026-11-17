@@ -35,6 +35,7 @@ struct PadView: View {
             LiveKeyboard(settings: model.settings, text: text)
         }
         .pageBackground(palette.page)
+        .navigationTitle("Pad")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
