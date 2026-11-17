@@ -13,7 +13,7 @@ struct TryItView: View {
         VStack(alignment: .leading, spacing: 18) {
             ScreenHeading(title: "Try it", subtitle: "Tap the box. If you see Apple's keyboard, tap the globe under it until the wooden tiles appear.")
             VStack(alignment: .leading, spacing: 6) {
-                Text("Type your child's name").font(.system(size: 13)).foregroundStyle(palette.muted)
+                Text("Type your child's name").font(TileFont.text(13)).foregroundStyle(palette.muted)
                 TextField("", text: $name)
                     .font(TileFont.writing(28))
                     .foregroundStyle(palette.ink)
@@ -34,7 +34,7 @@ struct TryItView: View {
                     Image(systemName: "checkmark").font(.system(size: 16, weight: .bold))
                     Text("It's on. Hand it over whenever you like.")
                 }
-                .font(.system(size: 14))
+                .font(TileFont.text(14))
                 .foregroundStyle(palette.successInk)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)

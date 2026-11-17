@@ -35,7 +35,7 @@ export const FOOTER_PAGES: NavPage[] = [
     href: "/credits",
     title: "Credits",
     description:
-      "The fonts Montessori Keyboard uses, Andika and Playwrite US Trad, and the Montessori materials it is modelled on.",
+      "The fonts Montessori Keyboard uses, Allo and Playwrite US Trad, and the Montessori materials it is modelled on.",
   },
 ];
 

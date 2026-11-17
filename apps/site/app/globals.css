@@ -33,7 +33,7 @@
 
   --focus: 2px solid var(--vowel);
   --radius: 14px;
-  --font: var(--font-andika), "Andika", system-ui, sans-serif;
+  --font: var(--font-allo), "Allo", system-ui, sans-serif;
   --font-cursive-stack: var(--font-cursive), "Playwrite US Trad", cursive;
   --page-max: 1120px;
   --gutter: 20px;
@@ -67,6 +67,8 @@ html {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font);
+  /* Allo's learner forms, as on the tiles: single-storey a, tailed l, serifed I. */
+  font-feature-settings: "ss01", "cv03", "cv04";
   font-size: 17px;
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
