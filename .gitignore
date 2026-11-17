@@ -1,0 +1,29 @@
+# Dependencies and build output
+node_modules
+.turbo
+.next
+out
+dist
+*.log
+.DS_Store
+
+# Env files hold real values; only the committed templates stay tracked.
+.env
+.env.*
+!.env.example
+!.env.schema
+!.env.test
+
+# Xcode and Tuist: the project is generated from apps/ios/Project.swift.
+apps/ios/*.xcodeproj
+apps/ios/*.xcworkspace
+apps/ios/Derived
+apps/ios/.build
+apps/ios/build
+xcuserdata
+*.xcuserstate
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea

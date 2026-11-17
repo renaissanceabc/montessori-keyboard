@@ -1,0 +1,10 @@
+devkit: v1
+skills:
+  - swift
+  - emil
+  - nextjs
+review: claude
+release: true
+dependabot:
+  ecosystem: bun
+  target_branch: develop

@@ -1,0 +1,6 @@
+[install]
+# Block npm versions younger than 3 days (supply-chain takeover window).
+minimumReleaseAge = 259200
+
+[install.security]
+scanner = "@socketsecurity/bun-security-scanner"
