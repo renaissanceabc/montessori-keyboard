@@ -1,4 +1,4 @@
-name: Check
+name: CI
 
 # The site: typecheck, unit tests and the static build.
 on:
