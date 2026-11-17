@@ -25,4 +25,5 @@ An iOS keyboard for young learners modelled on the Montessori moveable alphabet 
 ## Checks
 
 - Site: `bun run typecheck`, `bun run test`, `bun run build`.
-- iOS needs macOS: `bun run ios:test`. In a cloud session, push and read the `iOS` workflow instead.
+- iOS needs macOS: `bun run ios:test`. In a cloud session, open a pull request and read its `iOS` workflow run instead (it runs on pull requests that touch `apps/ios`).
+- TestFlight builds come from the manual `TestFlight` workflow (fastlane and match). Setup is in [apps/ios/README.md](apps/ios/README.md#testflight).
