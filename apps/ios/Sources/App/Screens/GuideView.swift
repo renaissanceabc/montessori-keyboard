@@ -9,7 +9,6 @@ struct GuideView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                ScreenHeading(title: "Setup guide")
                 KeyboardStatus()
                 section("Turn it on") { SetupSteps() }
                 section("Switching keyboards") {
@@ -29,7 +28,8 @@ struct GuideView: View {
                 .background(palette.page)
         }
         .pageBackground(palette.page)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Setup guide")
+        .navigationBarTitleDisplayMode(.large)
         .onAppear { model.refreshStatus() }
     }
 

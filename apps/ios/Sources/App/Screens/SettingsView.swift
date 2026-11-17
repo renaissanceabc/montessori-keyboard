@@ -23,28 +23,6 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var model = model
         VStack(spacing: 0) {
-            HStack {
-                Text("Settings")
-                    .font(TileFont.heading(30))
-                    .foregroundStyle(palette.ink)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                NavigationLink {
-                    PadView()
-                } label: {
-                    Image(systemName: "pencil.line")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(palette.ink)
-                        .frame(width: 44, height: 44)
-                        .background(palette.card.opacity(0.8), in: Circle())
-                        .shadow(color: palette.shadow.opacity(0.5), radius: 6, y: 3)
-                }
-                .accessibilityLabel("Open a blank pad")
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
-
             // The settings scroll under the preview, which stays pinned and only scales (a transform, never a
             // layout change), so scrolling stays smooth.
             ZStack(alignment: .top) {
@@ -95,13 +73,27 @@ struct SettingsView: View {
                     .padding(14)
                     .background(palette.tray, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .padding(.horizontal, 12)
+                    .padding(.top, 4)
                     .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { previewHeight = $0 }
                     .scaleEffect(previewScale, anchor: .top)
                     .accessibilitySortPriority(1)
             }
         }
         .pageBackground(palette.page)
-        .toolbar(.hidden, for: .navigationBar)
+        // The native bar stays up on every page in this stack, so push and pop (and swipe back) are Apple's own.
+        // The large title sits inline, so it never collapses over the pinned keyboard.
+        .navigationTitle("Settings")
+        .toolbarTitleDisplayMode(.inlineLarge)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    PadView()
+                } label: {
+                    Image(systemName: "pencil.line")
+                }
+                .accessibilityLabel("Open a blank pad")
+            }
+        }
         .onAppear { model.refreshStatus() }
     }
 
@@ -170,14 +162,17 @@ struct OptionsPage<Content: View>: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ScreenHeading(title: title, subtitle: subtitle)
+                Text(subtitle)
+                    .font(TileFont.text(15))
+                    .foregroundStyle(palette.ink2)
                 content
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 28)
         }
         .pageBackground(palette.page)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

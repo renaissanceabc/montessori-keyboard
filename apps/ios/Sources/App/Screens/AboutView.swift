@@ -47,6 +47,7 @@ struct AboutView: View {
             .padding(.bottom, 28)
         }
         .pageBackground(palette.page)
+        .navigationTitle("About")
         .navigationBarTitleDisplayMode(.inline)
     }
 

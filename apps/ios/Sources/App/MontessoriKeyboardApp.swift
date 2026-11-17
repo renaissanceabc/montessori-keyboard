@@ -1,5 +1,6 @@
 import MontessoriUI
 import SwiftUI
+import UIKit
 
 @main
 struct MontessoriKeyboardApp: App {
@@ -8,6 +9,19 @@ struct MontessoriKeyboardApp: App {
 
     init() {
         TileFont.registerIfNeeded()
+        Self.styleNavigationBars()
+    }
+
+    /// Native navigation bars with their titles in Allo, so every page title matches the rest of the app.
+    private static func styleNavigationBars() {
+        let bar = UINavigationBar.appearance()
+        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle)]
+        bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline)]
+    }
+
+    private static func allo(_ name: String, size: CGFloat, style: UIFont.TextStyle) -> UIFont {
+        let font = UIFont(name: name, size: size) ?? .systemFont(ofSize: size, weight: .bold)
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: font)
     }
 
     var body: some Scene {
