@@ -1,0 +1,124 @@
+default_platform(:ios)
+
+# Must match `bundleIdPrefix` in apps/ios/Project.swift.
+APP_ID = "com.renaissance.montessorikeyboard"
+KEYBOARD_ID = "#{APP_ID}.keyboard"
+APP_GROUP = "group.#{APP_ID}"
+TEAM_ID = "6P8L9SND3U"
+WORKSPACE = "MontessoriKeyboard.xcworkspace"
+XCODEPROJ = "MontessoriKeyboard.xcodeproj"
+IPA = "build/MontessoriKeyboard.ipa"
+
+# Each signed target and the bundle id its App Store profile is for.
+SIGNED_TARGETS = {
+  "MontessoriKeyboard" => APP_ID,
+  "Keyboard" => KEYBOARD_ID,
+}.freeze
+
+platform :ios do
+  before_all do
+    # gym's error handler trips on non-UTF-8 bytes in xcodebuild output under a US-ASCII locale.
+    ENV["LANG"] ||= "en_US.UTF-8"
+    ENV["LC_ALL"] ||= "en_US.UTF-8"
+    setup_ci if is_ci
+  end
+
+  desc "One-time, on a Mac with your Apple ID: register the app ids and the App Group,"
+  desc "create the App Store Connect app, then make the App Store profiles in the match repo."
+  desc "Usage: APPLE_ID=you@example.com bundle exec fastlane setup"
+  lane :setup do
+    produce(
+      app_identifier: APP_ID,
+      app_name: "Montessori Keyboard",
+      language: "en-US",
+      sku: "montessorikeyboard",
+      enable_services: { app_group: "on" },
+    )
+    produce(app_identifier: KEYBOARD_ID, skip_itc: true, enable_services: { app_group: "on" })
+    create_app_group
+    match(type: "appstore", readonly: false)
+  end
+
+  private_lane :create_app_group do
+    # Registers the group, then adds it to both ids. Each step is a no-op when it already exists.
+    sh("bundle exec fastlane produce group -g #{APP_GROUP} -n 'Montessori Keyboard' -u #{ENV.fetch('APPLE_ID')} || true")
+    [APP_ID, KEYBOARD_ID].each do |id|
+      sh("bundle exec fastlane produce associate_group -a #{id} #{APP_GROUP} -u #{ENV.fetch('APPLE_ID')}")
+    end
+  end
+
+  desc "Generate the Xcode project with Tuist."
+  lane :generate do
+    sh("cd .. && tuist generate --no-open")
+  end
+
+  desc "Archive and sign an App Store build. Writes #{IPA}. No upload."
+  lane :archive do
+    generate
+
+    # readonly in CI: it only downloads, so it never needs an interactive Apple ID login.
+    match(type: "appstore", app_identifier: SIGNED_TARGETS.values, readonly: is_ci)
+
+    # Project.swift signs automatically for local runs. An App Store build uses match's profiles.
+    SIGNED_TARGETS.each do |target, id|
+      update_code_signing_settings(
+        path: XCODEPROJ,
+        targets: [target],
+        use_automatic_signing: false,
+        team_id: TEAM_ID,
+        code_sign_identity: "Apple Distribution",
+        profile_name: "match AppStore #{id}",
+      )
+    end
+
+    # MARKETING_VERSION comes from Project.swift. The build number is a timestamp, so every
+    # upload is unique without a commit; both Info.plists read CURRENT_PROJECT_VERSION.
+    build_number = Time.now.utc.strftime("%Y%m%d%H%M")
+
+    build_app(
+      workspace: WORKSPACE,
+      scheme: "MontessoriKeyboard",
+      configuration: "Release",
+      output_directory: "build",
+      output_name: File.basename(IPA),
+      xcargs: "CURRENT_PROJECT_VERSION=#{build_number}",
+      export_options: {
+        method: "app-store",
+        signingStyle: "manual",
+        teamID: TEAM_ID,
+        provisioningProfiles: SIGNED_TARGETS.values.to_h { |id| [id, "match AppStore #{id}"] },
+      },
+    )
+
+    UI.success("Archived build #{build_number}.")
+  end
+
+  desc "Upload an IPA to TestFlight. Usage: bundle exec fastlane upload ipa:#{IPA}"
+  lane :upload do |options|
+    ipa = File.expand_path(options[:ipa] || IPA, File.expand_path("..", __dir__))
+
+    upload_to_testflight(
+      ipa: ipa,
+      api_key: asc_api_key,
+      # Internal testers get it once Apple finishes processing. Waiting here would bill macOS
+      # minutes for 5 to 15 idle ones, so the run ends at upload (and sets no "What to Test" note,
+      # which needs the processed build).
+      skip_waiting_for_build_processing: true,
+    )
+  end
+
+  desc "Archive, then upload. What the TestFlight workflow runs."
+  lane :release do
+    archive
+    upload
+  end
+
+  private_lane :asc_api_key do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"),
+      issuer_id: ENV.fetch("APP_STORE_CONNECT_API_ISSUER_ID"),
+      key_content: ENV.fetch("APP_STORE_CONNECT_API_KEY_BASE64"),
+      is_key_content_base64: true,
+    )
+  end
+end
