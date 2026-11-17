@@ -63,7 +63,7 @@ struct SettingsView: View {
                         Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
                         Text(model.statusLine)
                     }
-                    .font(.system(size: 13))
+                    .font(TileFont.text(13))
                     .foregroundStyle(palette.muted)
                     .frame(maxWidth: .infinity)
                 }
@@ -99,7 +99,7 @@ struct StripOptionsView: View {
             OptionCard(title: StripMode.letters.title, detail: "Tap a letter to change it.", selected: model.settings.strip == .letters, action: { pick(.letters) }) {
                 MiniStrip {
                     ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0) }
-                    Text("tap a tile to change it").font(.system(size: 12.5)).foregroundStyle(palette.muted).padding(.leading, 6)
+                    Text("tap a tile to change it").font(TileFont.text(12.5)).foregroundStyle(palette.muted).padding(.leading, 6)
                 }
             }
             OptionCard(title: StripMode.off.title, detail: "Nothing. Just the tiles.", selected: model.settings.strip == .off, action: { pick(.off) }) {

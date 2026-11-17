@@ -20,7 +20,7 @@ struct GateView: View {
                     .accessibilityHidden(true)
                 ScreenHeading(title: "Grown-ups only", subtitle: "Type the number written below.", centered: true)
                 Text(NumberWords.spell(challenge))
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(TileFont.text(22, weight: .semibold))
                     .foregroundStyle(palette.ink)
                     .multilineTextAlignment(.center)
                     .padding(.top, 6)

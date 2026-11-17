@@ -40,7 +40,7 @@ struct WelcomeView: View {
             }
             Spacer(minLength: 0)
             VStack(spacing: 10) {
-                Text("Takes about 1 min").font(.system(size: 13.5)).foregroundStyle(palette.muted)
+                Text("Takes about 1 min").font(TileFont.text(13.5)).foregroundStyle(palette.muted)
                 PrimaryButton("Set up keyboard", action: next)
             }
         }
@@ -61,14 +61,14 @@ struct WelcomeView: View {
     private func point(icon: AnyView, title: String, detail: String) -> some View {
         HStack(alignment: .top, spacing: 14) {
             icon
-                .font(.system(size: 16, weight: .semibold))
+                .font(TileFont.text(16, weight: .semibold))
                 .foregroundStyle(palette.hint)
                 .frame(width: 32, height: 32)
                 .background(palette.tray.opacity(0.6), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(palette.ink)
-                Text(detail).font(.system(size: 14)).foregroundStyle(palette.muted)
+                Text(title).font(TileFont.text(15, weight: .semibold)).foregroundStyle(palette.ink)
+                Text(detail).font(TileFont.text(14)).foregroundStyle(palette.muted)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

@@ -33,4 +33,4 @@ The keyboard collects nothing and sends nothing. Allow Full Access is optional; 
 
 ## License
 
-MIT. The bundled fonts, Andika and Playwrite US Trad, are under the SIL Open Font License (`apps/ios/Sources/Shared/Fonts`).
+MIT. The bundled fonts, Allo and Playwrite US Trad, are under the SIL Open Font License (`apps/ios/Sources/Shared/Fonts`).

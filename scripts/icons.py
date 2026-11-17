@@ -10,7 +10,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
-FONT = ROOT / "apps/ios/Sources/Shared/Fonts/Andika-Bold.ttf"
+FONT = ROOT / "apps/ios/Sources/Shared/Fonts/Allo-Bold.otf"
+# Allo's learner forms, as the tiles draw them: single-storey a, tailed l, serifed I. Needs Pillow with raqm.
+FEATURES = ["ss01", "cv03", "cv04"]
 
 TRAY_TOP = (0xF1, 0xE4, 0xCC)
 TRAY_BOTTOM = (0xE2, 0xCF, 0xAE)
@@ -55,12 +57,12 @@ def tile(letter, w, h, color):
 
     font = ImageFont.truetype(str(FONT), int(h * 0.72))
     draw = ImageDraw.Draw(canvas)
-    box = draw.textbbox((0, 0), letter, font=font, anchor="ls")
+    box = draw.textbbox((0, 0), letter, font=font, anchor="ls", features=FEATURES)
     x = pad + (w - (box[2] - box[0])) / 2 - box[0]
     # Center the x-height, not the ink box, so a b c sit on one baseline.
     xh = font.getbbox("x", anchor="ls")
     y = pad + h / 2 - (xh[1] + xh[3]) / 2 - h * 0.03
-    draw.text((x, y), letter, font=font, fill=color, anchor="ls")
+    draw.text((x, y), letter, font=font, fill=color, anchor="ls", features=FEATURES)
     return canvas
 
 

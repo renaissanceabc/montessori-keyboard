@@ -24,7 +24,7 @@ Bead stair: 1 red `#D2232A`, 2 green `#2E9B45`, 3 pink `#EE86AE`, 4 yellow `#F2C
 
 ## Type
 
-Andika Bold for tiles and headings, Andika Regular for children's writing, Playwrite US Trad for cursive tiles (drawn at 0.78 of the print size so it fits). System font for app body copy.
+Allo everywhere: Bold for tiles and headings, Regular for children's writing, and Regular, Medium and SemiBold for app body copy (`TileFont.text`). Its learner forms are always on: single-storey a (ss01), tailed l (cv03) and serifed I (cv04). Playwrite US Trad for cursive tiles (drawn at 0.78 of the print size so it fits).
 
 ## Strip
 

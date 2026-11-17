@@ -1,24 +1,16 @@
 import localFont from "next/font/local";
 
 /**
- * Andika, SIL's typeface for beginning readers, as the keyboard's print tiles use it:
- * a single-storey a and g, and letters that don't mirror each other. Served with the
- * site from @fontsource's latin files, so no other host is asked for anything.
+ * Allo, Josh Puckett's friendly sans, as the keyboard's tiles and the app use it. One variable
+ * file (every weight, roundness fixed at Friendly like the app's static fonts) from the allo-font
+ * package, served with the site, so no other host is asked for anything. The learner forms
+ * (single-storey a, tailed l, serifed I) are turned on in globals.css.
  */
-export const andika = localFont({
-  src: [
-    {
-      path: "../node_modules/@fontsource/andika/files/andika-latin-400-normal.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../node_modules/@fontsource/andika/files/andika-latin-700-normal.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-andika",
+export const allo = localFont({
+  src: "../node_modules/allo-font/fonts/webfonts/AlloVariableFriendly.woff2",
+  weight: "100 900",
+  style: "normal",
+  variable: "--font-allo",
   adjustFontFallback: "Arial",
 });
 

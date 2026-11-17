@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { ExternalLink } from "@/components/external-link";
 import { SiteHeader } from "@/components/site-header";
-import { andika, playwrite } from "@/lib/fonts";
+import { allo, playwrite } from "@/lib/fonts";
 import { HOME_TITLE } from "@/lib/meta";
 
 import { site } from "../site.config";
@@ -33,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${andika.variable} ${playwrite.variable}`}>
+    <html lang="en" className={`${allo.variable} ${playwrite.variable}`}>
       <body>
         <a className="skip" href="#content">
           Skip to content

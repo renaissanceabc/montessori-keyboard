@@ -13,7 +13,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Read [README.md](README.md) first: what's where, and the design rules.
 
 - **Static only.** `output: "export"`: nothing that needs a server (no route handlers that run per request, no `next/font/google`, no image optimization).
-- **Nothing from another host.** Fonts come from `@fontsource` through `next/font/local`; no analytics, no third-party scripts. `vercel.json`'s Content-Security-Policy allows only the site itself.
+- **Nothing from another host.** Fonts come from npm packages (`allo-font`, `@fontsource`) through `next/font/local`; no analytics, no third-party scripts. `vercel.json`'s Content-Security-Policy allows only the site itself.
 - **Claims match the app.** What the keyboard does, and that it collects nothing and has no network access. Change the copy when the app changes.
 - **Copy** is short, plain and warm, sentence case, with no em dashes.
 - **A new page** goes in `lib/nav.ts` (the header, the sitemap and its metadata read it); `test/sitemap.test.ts` fails if a page is missing from it.

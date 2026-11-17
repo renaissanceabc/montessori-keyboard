@@ -22,7 +22,7 @@ struct PrimaryButton: View {
                 if let systemImage { Image(systemName: systemImage) }
                 Text(title)
             }
-            .font(.system(size: 17, weight: .semibold))
+            .font(TileFont.text(17, weight: .semibold))
             .frame(maxWidth: .infinity, minHeight: 52)
             .foregroundStyle(palette.page)
             .background(palette.ink, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -31,7 +31,7 @@ struct PrimaryButton: View {
     }
 }
 
-/// A screen's big Andika title and the line under it.
+/// A screen's big Allo title and the line under it.
 struct ScreenHeading: View {
     var title: String
     var subtitle: String?
@@ -46,7 +46,7 @@ struct ScreenHeading: View {
                 .accessibilityAddTraits(.isHeader)
             if let subtitle {
                 Text(subtitle)
-                    .font(.system(size: 15))
+                    .font(TileFont.text(15))
                     .foregroundStyle(palette.ink2)
                     .lineSpacing(2)
             }
@@ -98,7 +98,7 @@ struct SettingsGroup<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
-                .font(.system(size: 12.5, weight: .semibold))
+                .font(TileFont.text(12.5, weight: .semibold))
                 .tracking(0.4)
                 .foregroundStyle(palette.muted)
                 .padding(.horizontal, 16)
@@ -114,7 +114,7 @@ struct SettingsGroup<Content: View>: View {
             .background(palette.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             if let footer {
                 Text(footer)
-                    .font(.system(size: 13))
+                    .font(TileFont.text(13))
                     .foregroundStyle(palette.muted)
                     .padding(.horizontal, 16)
             }
@@ -134,7 +134,7 @@ struct SettingsRow<Trailing: View>: View {
             Spacer(minLength: 12)
             trailing
         }
-        .font(.system(size: 16))
+        .font(TileFont.text(16))
         .padding(.horizontal, 16)
         .frame(minHeight: 50)
     }
@@ -208,7 +208,7 @@ struct OptionCard<Preview: View>: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text(title).font(.system(size: 16, weight: .semibold))
+                    Text(title).font(TileFont.text(16, weight: .semibold))
                     Spacer()
                     Circle()
                         .strokeBorder(selected ? palette.vowel : palette.tileEdge, lineWidth: selected ? 7 : 2)
@@ -216,7 +216,7 @@ struct OptionCard<Preview: View>: View {
                 }
                 preview
                 Text(detail)
-                    .font(.system(size: 13.5))
+                    .font(TileFont.text(13.5))
                     .foregroundStyle(palette.ink2)
                     .multilineTextAlignment(.leading)
             }

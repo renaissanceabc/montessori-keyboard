@@ -22,8 +22,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Andika-Regular.ttf</string>
-		<string>Andika-Bold.ttf</string>
+		<string>Allo-Regular.otf</string>
+		<string>Allo-Medium.otf</string>
+		<string>Allo-SemiBold.otf</string>
+		<string>Allo-Bold.otf</string>
 		<string>PlaywriteUSTrad.ttf</string>
 	</array>
 	<key>NSExtension</key>

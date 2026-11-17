@@ -36,7 +36,7 @@ struct GuideView: View {
     private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title).font(TileFont.heading(20, relativeTo: .title3)).foregroundStyle(palette.ink)
-            content().font(.system(size: 15)).foregroundStyle(palette.ink2)
+            content().font(TileFont.text(15)).foregroundStyle(palette.ink2)
         }
     }
 }
