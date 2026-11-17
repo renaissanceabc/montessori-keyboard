@@ -13,17 +13,18 @@ export default function Credits() {
 
       <h2 id="fonts">Fonts</h2>
 
-      <section className="credit" aria-labelledby="andika">
-        <h3 id="andika">Andika</h3>
+      <section className="credit" aria-labelledby="allo">
+        <h3 id="allo">Allo</h3>
         <p className="sample" aria-hidden="true">
           a b c d e f g
         </p>
         <p>
-          By SIL International, made for people learning to read: its a and g have one storey, and
-          letters like b, d, p and q are easy to tell apart. The print tiles and this site use it.
+          A friendly sans by Josh Puckett. We turn on its single-storey a, its tailed l and its
+          serifed I, so the letters look the way children learn to write them. The print tiles, the
+          app and this site use it.
         </p>
         <p>
-          <ExternalLink href="https://software.sil.org/andika/">software.sil.org/andika</ExternalLink>{" "}
+          <ExternalLink href="https://allo.joshpuckett.me">allo.joshpuckett.me</ExternalLink>{" "}
           · SIL Open Font License 1.1
         </p>
       </section>
@@ -46,7 +47,7 @@ export default function Credits() {
       </section>
 
       <p>
-        Both fonts are served from this site through{" "}
+        Both fonts are served from this site: Allo from its own package, Playwrite through{" "}
         <ExternalLink href="https://fontsource.org">Fontsource</ExternalLink>.
       </p>
 

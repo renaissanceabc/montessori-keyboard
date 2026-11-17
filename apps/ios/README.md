@@ -31,4 +31,4 @@ The lanes are in `fastlane/Fastfile`, and `bundle install` here installs fastlan
 | `APP_STORE_CONNECT_API_ISSUER_ID` | Its issuer id |
 | `APP_STORE_CONNECT_API_KEY_BASE64` | Base64 of the `.p8` key file |
 
-The match repo is Renaissance's shared one, `renaissanceabc/apple-certificates` (once `flourish-certificates`), because Apple allows a team only a few distribution certificates and every app uses the same one. Set `MATCH_GIT_URL` to use another.
+The match repo is Renaissance's shared one, `renaissanceabc/apple-certificates`, because Apple allows a team only a few distribution certificates and every app uses the same one. Set `MATCH_GIT_URL` to use another.

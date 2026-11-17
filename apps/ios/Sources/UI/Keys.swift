@@ -163,7 +163,7 @@ struct FunctionKey<Icon: View>: View {
         KeyButton(accessibilityLabel: accessibilityLabel, repeats: repeats, onTap: onTap) { pressed in
             TileFace(pressed: pressed || highlighted, function: !highlighted) {
                 icon
-                    .font(.system(size: 15, weight: .medium))
+                    .font(TileFont.text(15, weight: .medium))
                     .foregroundStyle(palette.keyInk)
                     .opacity(dimmed ? 0.45 : 1)
             }

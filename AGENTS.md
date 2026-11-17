@@ -15,7 +15,7 @@ An iOS keyboard for young learners modelled on the Montessori moveable alphabet 
 
 - **The keyboard is simple.** It types; it doesn't grade, quiz or limit letters (the "learned letters only" mode was cut). Learning help is optional and quiet: bead colors on 123, phonograms on long press, the rhymes strip.
 - **Nothing leaves the device.** No network requests, analytics or accounts in the app or the keyboard. A new request in the site goes in `apps/site/vercel.json`'s CSP and the privacy page.
-- **Andika everywhere** (Allo was tried and rejected). Cursive is Playwrite US Trad. Maple is light mode, walnut is dark; colors live only in `Palette` (`Theme.swift`) and in the site's CSS tokens, and the bead colors in `Beads.swift` match `apps/site/lib/keyboard.ts`.
+- **Allo everywhere**, with its learner forms on (single-storey a, tailed l, serifed I). Andika was the first pick and was replaced. Cursive is Playwrite US Trad. Maple is light mode, walnut is dark; colors live only in `Palette` (`Theme.swift`) and in the site's CSS tokens, and the bead colors in `Beads.swift` match `apps/site/lib/keyboard.ts`.
 - **Keyboard art is drawn from parts** (tile face, edge, shadow), never a single image.
 - **Bundle ids** come from `com.renaissance.montessorikeyboard` in `Project.swift`; the App Group is `group.com.renaissance.montessorikeyboard`.
 - Swift 6 language mode, strict concurrency. Views and models are `@MainActor`; `MontessoriCore` stays nonisolated.

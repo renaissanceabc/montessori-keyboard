@@ -96,7 +96,7 @@ struct StripView: View {
             }
         } else {
             Text("Rhymes show up here")
-                .font(.system(size: 13))
+                .font(TileFont.text(13))
                 .foregroundStyle(palette.hint)
                 .padding(.horizontal, 12)
         }
@@ -112,14 +112,14 @@ struct StripView: View {
                 }
                 if model.selectedLetter != nil {
                     Text("Tap a tile")
-                        .font(.system(size: 13))
+                        .font(TileFont.text(13))
                         .foregroundStyle(palette.hint)
                 }
             }
             .padding(.horizontal, 10)
         } else {
             Text("Tap a letter to change it")
-                .font(.system(size: 13))
+                .font(TileFont.text(13))
                 .foregroundStyle(palette.hint)
                 .padding(.horizontal, 12)
         }

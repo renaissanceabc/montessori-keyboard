@@ -29,10 +29,10 @@ struct SetupSteps: View {
         HStack(alignment: .top, spacing: 14) {
             NumberBadge(n: n)
             VStack(alignment: .leading, spacing: 8) {
-                Text(title).font(.system(size: 16, weight: .semibold)).foregroundStyle(palette.ink)
+                Text(title).font(TileFont.text(16, weight: .semibold)).foregroundStyle(palette.ink)
                 mock()
                 if let detail {
-                    Text(detail).font(.system(size: 14)).foregroundStyle(palette.muted)
+                    Text(detail).font(TileFont.text(14)).foregroundStyle(palette.muted)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,7 +85,7 @@ struct MockRow: View {
 
     var body: some View {
         HStack {
-            Text(title).font(.system(size: 14)).foregroundStyle(palette.ink)
+            Text(title).font(TileFont.text(14)).foregroundStyle(palette.ink)
             Spacer()
             if chevron { Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(palette.muted) }
             if let on {
@@ -111,7 +111,7 @@ struct KeyboardStatus: View {
             Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
             Text(model.keyboardEnabled ? "The keyboard is on" : "Waiting for the keyboard")
         }
-        .font(.system(size: 14))
+        .font(TileFont.text(14))
         .foregroundStyle(palette.muted)
     }
 }

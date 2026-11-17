@@ -11,7 +11,7 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@fontsource/andika": "^5.2.0",
+    "allo-font": "^1.0.0",
     "@fontsource/playwrite-us-trad": "^5.2.0",
     "next": "catalog:",
     "react": "catalog:",

@@ -20,8 +20,10 @@ let baseSettings: SettingsDictionary = [
     "TARGETED_DEVICE_FAMILY": "1,2",
 ]
 
-let fonts: [ResourceFileElement] = ["Sources/Shared/Fonts/*.ttf"]
-let fontList: Plist.Value = .array(["Andika-Regular.ttf", "Andika-Bold.ttf", "PlaywriteUSTrad.ttf"])
+let fonts: [ResourceFileElement] = ["Sources/Shared/Fonts/*.otf", "Sources/Shared/Fonts/*.ttf"]
+let fontList: Plist.Value = .array([
+    "Allo-Regular.otf", "Allo-Medium.otf", "Allo-SemiBold.otf", "Allo-Bold.otf", "PlaywriteUSTrad.ttf",
+])
 
 let appInfoPlist: InfoPlist = .extendingDefault(with: [
     "CFBundleDisplayName": "Montessori Keyboard",
