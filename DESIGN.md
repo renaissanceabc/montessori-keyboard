@@ -24,7 +24,7 @@ Bead stair: 1 red `#D2232A`, 2 green `#2E9B45`, 3 pink `#EE86AE`, 4 yellow `#F2C
 
 ## Type
 
-Allo everywhere: Bold for tiles and headings, Regular for children's writing, and Regular, Medium and SemiBold for app body copy (`TileFont.text`). Its learner forms are always on: single-storey a (ss01), tailed l (cv03) and serifed I (cv04). Playwrite US Trad for cursive tiles (drawn at 0.78 of the print size so it fits).
+Allo everywhere: Bold for tiles and headings, Regular for children's writing, and Regular, Medium and SemiBold for app body copy (`TileFont.text`). Its learner forms are always on: single-storey a (ss01), tailed l (cv03) and serifed I (cv04). The iOS app bundles them baked in as Allo Learner (`scripts/learner-fonts.py`), so app text uses `Font.custom(_:size:relativeTo:)` and follows Dynamic Type, up to the third accessibility size. Keyboard tiles keep a fixed size, like Apple's keys. Playwrite US Trad for cursive tiles (drawn at 0.78 of the print size so it fits).
 
 ## Strip
 

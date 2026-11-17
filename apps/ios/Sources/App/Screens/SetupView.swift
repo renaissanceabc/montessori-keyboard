@@ -87,7 +87,7 @@ struct MockRow: View {
         HStack {
             Text(title).font(TileFont.text(14)).foregroundStyle(palette.ink)
             Spacer()
-            if chevron { Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(palette.muted) }
+            if chevron { Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(palette.muted) }
             if let on {
                 Capsule().fill(on ? palette.success : palette.tileEdge.opacity(0.5))
                     .frame(width: 42, height: 25)

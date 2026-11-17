@@ -56,7 +56,7 @@ struct AboutView: View {
             SettingsRow(title: title) {
                 HStack(spacing: 6) {
                     Text(value).foregroundStyle(palette.muted)
-                    Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(palette.muted)
+                    Image(systemName: "arrow.up.right").font(.caption.weight(.semibold)).foregroundStyle(palette.muted)
                 }
             }
             .contentShape(Rectangle())
