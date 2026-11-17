@@ -23,28 +23,12 @@ platform :ios do
     setup_ci if is_ci
   end
 
-  desc "One-time, on a Mac with your Apple ID: register the app ids and the App Group,"
-  desc "create the App Store Connect app, then make the App Store profiles in the match repo."
-  desc "Usage: APPLE_ID=you@example.com bundle exec fastlane setup"
+  desc "One-time, on a Mac, after the app ids, App Group and App Store Connect app exist"
+  desc "(apps/ios/README.md, TestFlight): make the App Store profiles in the match repo."
+  desc "Signs in with the App Store Connect API key, never an Apple ID, so 2FA and federated"
+  desc "accounts don't matter. Usage: bundle exec fastlane setup"
   lane :setup do
-    produce(
-      app_identifier: APP_ID,
-      app_name: "Montessori Keyboard",
-      language: "en-US",
-      sku: "montessorikeyboard",
-      enable_services: { app_group: "on" },
-    )
-    produce(app_identifier: KEYBOARD_ID, skip_itc: true, enable_services: { app_group: "on" })
-    create_app_group
-    match(type: "appstore", readonly: false)
-  end
-
-  private_lane :create_app_group do
-    # Registers the group, then adds it to both ids. Each step is a no-op when it already exists.
-    sh("bundle exec fastlane produce group -g #{APP_GROUP} -n 'Montessori Keyboard' -u #{ENV.fetch('APPLE_ID')} || true")
-    [APP_ID, KEYBOARD_ID].each do |id|
-      sh("bundle exec fastlane produce associate_group -a #{id} #{APP_GROUP} -u #{ENV.fetch('APPLE_ID')}")
-    end
+    match(type: "appstore", app_identifier: SIGNED_TARGETS.values, readonly: false, api_key: asc_api_key)
   end
 
   desc "Generate the Xcode project with Tuist."
@@ -56,8 +40,8 @@ platform :ios do
   lane :archive do
     generate
 
-    # readonly in CI: it only downloads, so it never needs an interactive Apple ID login.
-    match(type: "appstore", app_identifier: SIGNED_TARGETS.values, readonly: is_ci)
+    # Only downloads what `setup` made, so it needs no login.
+    match(type: "appstore", app_identifier: SIGNED_TARGETS.values, readonly: true)
 
     # Project.swift signs automatically for local runs. An App Store build uses match's profiles.
     SIGNED_TARGETS.each do |target, id|
@@ -113,12 +97,14 @@ platform :ios do
     upload
   end
 
+  # CI passes the key as base64 (a secret). On a Mac, APP_STORE_CONNECT_API_KEY_PATH can point
+  # at the .p8 file instead.
   private_lane :asc_api_key do
-    app_store_connect_api_key(
-      key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"),
-      issuer_id: ENV.fetch("APP_STORE_CONNECT_API_ISSUER_ID"),
-      key_content: ENV.fetch("APP_STORE_CONNECT_API_KEY_BASE64"),
-      is_key_content_base64: true,
-    )
+    key = { key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"), issuer_id: ENV.fetch("APP_STORE_CONNECT_API_ISSUER_ID") }
+    if ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+      app_store_connect_api_key(**key, key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"]))
+    else
+      app_store_connect_api_key(**key, key_content: ENV.fetch("APP_STORE_CONNECT_API_KEY_BASE64"), is_key_content_base64: true)
+    end
   end
 end

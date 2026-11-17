@@ -42,7 +42,7 @@ jobs:
       # Installs the locked fastlane and caches the gems.
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
+          ruby-version: "3.3" # mise.toml pins the same Ruby for Macs
           bundler-cache: true
           working-directory: apps/ios
 

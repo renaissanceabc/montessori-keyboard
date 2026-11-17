@@ -16,12 +16,21 @@ Both the app and the keyboard need the App Group `group.com.renaissance.montesso
 
 The `TestFlight` workflow archives the app and the keyboard, signs them with [match](https://docs.fastlane.tools/actions/match/), and uploads the build. It's manual: run it from the Actions tab, or `gh workflow run testflight.yml --ref develop`. Internal testers get the build once Apple finishes processing it, usually 5 to 15 minutes later. Each build number is the UTC time of the run (`202611171430`); the version is `marketingVersion` in `Project.swift`.
 
-The lanes are in `fastlane/Fastfile`, and `bundle install` here installs fastlane. Locally, `bundle exec fastlane release` does the same as the workflow, signed with your own keychain.
+The lanes are in `fastlane/Fastfile`. `mise install` at the repo root installs the Ruby they run on (the same as CI's), and `bundle install` here installs fastlane into `vendor/bundle` (`.bundle/config`), never a system Ruby folder. Locally, `bundle exec fastlane release` does the same as the workflow, signed with your own keychain.
 
 ### One-time setup
 
-1. On a Mac signed in to the Renaissance developer account, run `APPLE_ID=<your Apple ID> bundle exec fastlane setup` in `apps/ios`. It registers `com.renaissance.montessorikeyboard` and `.keyboard` with the App Group `group.com.renaissance.montessorikeyboard`, creates the App Store Connect app, and adds App Store profiles for both ids to the match repo.
-2. The five secrets below are **renaissanceabc organization secrets**, shared by every Renaissance app, because the match repo and the App Store Connect key are shared. A new app only needs to be added to each secret's repository access (Organization settings, Secrets and variables, Actions). The workflow reads them as `secrets.*`, the same as repository secrets:
+1. In the [developer portal](https://developer.apple.com/account/resources/identifiers/list), register the App Group `group.com.renaissance.montessorikeyboard`, then the App IDs `com.renaissance.montessorikeyboard` and `com.renaissance.montessorikeyboard.keyboard`, each with App Groups on and that group selected. fastlane can't do this step: Apple's API can't assign an App Group, and signing in with an Apple ID fails for federated and passkey accounts.
+2. In [App Store Connect](https://appstoreconnect.apple.com/apps), add a new iOS app: name Montessori Keyboard, bundle id `com.renaissance.montessorikeyboard`, SKU `montessorikeyboard`.
+3. On a Mac, in `apps/ios`, make the App Store profiles in the match repo. It signs in with the API key, and asks for the match passphrase:
+
+   ```sh
+   export APP_STORE_CONNECT_API_KEY_ID=… APP_STORE_CONNECT_API_ISSUER_ID=…
+   export APP_STORE_CONNECT_API_KEY_PATH=~/path/to/AuthKey_….p8
+   bundle exec fastlane setup
+   ```
+
+4. The five secrets below are **renaissanceabc organization secrets**, shared by every Renaissance app, because the match repo and the App Store Connect key are shared. A new app only needs to be added to each secret's repository access (Organization settings, Secrets and variables, Actions). The workflow reads them as `secrets.*`, the same as repository secrets:
 
 | Secret | What it is |
 | --- | --- |
