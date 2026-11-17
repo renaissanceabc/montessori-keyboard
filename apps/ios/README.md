@@ -22,15 +22,9 @@ The lanes are in `fastlane/Fastfile`. `mise install` at the repo root installs t
 
 1. In the [developer portal](https://developer.apple.com/account/resources/identifiers/list), register the App Group `group.com.renaissance.montessorikeyboard`, then the App IDs `com.renaissance.montessorikeyboard` and `com.renaissance.montessorikeyboard.keyboard`, each with App Groups on and that group selected. fastlane can't do this step: Apple's API can't assign an App Group, and signing in with an Apple ID fails for federated and passkey accounts.
 2. In [App Store Connect](https://appstoreconnect.apple.com/apps), add a new iOS app: name Montessori Keyboard, bundle id `com.renaissance.montessorikeyboard`, SKU `montessorikeyboard`.
-3. On a Mac, in `apps/ios`, make the App Store profiles in the match repo. It signs in with the API key, and asks for the match passphrase:
+3. On a Mac, from the repo root, run `mise run ios:setup` (after `infisical login`). It installs fastlane and makes the App Store profiles in the match repo. It signs in with the App Store Connect API key, never an Apple ID, and reads the secrets below from Infisical's `_Global` project (`/apple`, prod). Without Infisical, export the three `APP_STORE_CONNECT_*` variables and `MATCH_PASSWORD` yourself, then run `bundle exec fastlane setup` in `apps/ios`. `APP_STORE_CONNECT_API_KEY_PATH` can point at the `.p8` file in place of the base64.
 
-   ```sh
-   export APP_STORE_CONNECT_API_KEY_ID=… APP_STORE_CONNECT_API_ISSUER_ID=…
-   export APP_STORE_CONNECT_API_KEY_PATH=~/path/to/AuthKey_….p8
-   bundle exec fastlane setup
-   ```
-
-4. The five secrets below are **renaissanceabc organization secrets**, shared by every Renaissance app, because the match repo and the App Store Connect key are shared. A new app only needs to be added to each secret's repository access (Organization settings, Secrets and variables, Actions). The workflow reads them as `secrets.*`, the same as repository secrets:
+4. The five secrets below are **renaissanceabc organization secrets** for CI, and live in Infisical's `_Global` project (`/apple`) for Macs. Every Renaissance app shares them, because the match repo and the App Store Connect key are shared. A new app only needs to be added to each secret's repository access (Organization settings, Secrets and variables, Actions). The workflow reads them as `secrets.*`, the same as repository secrets:
 
 | Secret | What it is |
 | --- | --- |
