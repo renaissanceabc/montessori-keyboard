@@ -1,18 +1,19 @@
 import MontessoriUI
 import SwiftUI
 
-/// First launch: Welcome, Turn it on, Try it. Done lands in Settings without the gate, since a grown-up is holding the phone.
+/// First launch: Welcome, Make it yours, Turn it on, Try it. Done lands in Settings without the gate, since a grown-up is holding the phone.
 struct OnboardingFlow: View {
-    enum Step: Hashable { case setup, tryIt }
+    enum Step: Hashable { case preferences, setup, tryIt }
 
     @Environment(AppModel.self) private var model
     @State private var path: [Step] = []
 
     var body: some View {
         NavigationStack(path: $path) {
-            WelcomeView { path.append(.setup) }
+            WelcomeView { path.append(.preferences) }
                 .navigationDestination(for: Step.self) { step in
                     switch step {
+                    case .preferences: PreferencesView { path.append(.setup) }
                     case .setup: SetupView { path.append(.tryIt) }
                     case .tryIt: TryItView {
                         model.unlocked = true
