@@ -23,15 +23,30 @@ apps/ios/build
 xcuserdata
 *.xcuserstate
 
+apps/ios/shots
+*.ipa
+*.dSYM.zip
+
+# fastlane: gems install into vendor/bundle (.bundle/config stays tracked), and its reports
+# and previews are rewritten on every run.
+apps/ios/vendor/bundle
+apps/ios/fastlane/report.xml
+apps/ios/fastlane/README.md
+apps/ios/fastlane/Preview.html
+apps/ios/fastlane/screenshots
+apps/ios/fastlane/test_output
+
+# Signing files live in the match repo or Apple's portal, never here.
+*.p8
+*.p12
+*.cer
+*.certSigningRequest
+*.mobileprovision
+
 # Editors
 .vscode/*
 !.vscode/extensions.json
 .idea
-apps/ios/shots
-apps/ios/vendor/bundle
-apps/ios/fastlane/report.xml
-apps/ios/fastlane/README.md
-
 
 # TypeScript incremental state
 *.tsbuildinfo
