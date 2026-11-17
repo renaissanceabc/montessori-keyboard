@@ -42,6 +42,7 @@ struct Chip: View {
 
 struct ChipStyle: ButtonStyle {
     var selected: Bool
+    @Environment(\.palette) private var palette
 
     func makeBody(configuration: Configuration) -> some View {
         TileFace(pressed: configuration.isPressed || selected, cornerRadius: 7) {

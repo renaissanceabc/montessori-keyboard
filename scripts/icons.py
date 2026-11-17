@@ -95,7 +95,7 @@ def main():
     site.mkdir(parents=True, exist_ok=True)
     icon(512).save(site / "icon.png")
     icon(180).save(site / "apple-icon.png")
-    small = icon(64, trio=False)
+    small = icon(64, trio=False).convert("RGBA")
     small.save(site / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
     print("icons written")
 
