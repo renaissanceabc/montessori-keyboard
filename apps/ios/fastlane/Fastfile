@@ -100,7 +100,12 @@ platform :ios do
   # CI passes the key as base64 (a secret). On a Mac, APP_STORE_CONNECT_API_KEY_PATH can point
   # at the .p8 file instead.
   private_lane :asc_api_key do
-    key = { key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"), issuer_id: ENV.fetch("APP_STORE_CONNECT_API_ISSUER_ID") }
+    needed = %w[APP_STORE_CONNECT_API_KEY_ID APP_STORE_CONNECT_API_ISSUER_ID]
+    needed << "APP_STORE_CONNECT_API_KEY_BASE64" unless ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    missing = needed.reject { |name| ENV[name] }
+    UI.user_error!("Set #{missing.join(', ')} first (apps/ios/README.md, TestFlight).") unless missing.empty?
+
+    key = { key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"], issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"] }
     if ENV["APP_STORE_CONNECT_API_KEY_PATH"]
       app_store_connect_api_key(**key, key_filepath: File.expand_path(ENV["APP_STORE_CONNECT_API_KEY_PATH"]))
     else
