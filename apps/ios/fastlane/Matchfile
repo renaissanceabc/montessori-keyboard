@@ -1,7 +1,7 @@
-# Signing certificates and profiles live in an encrypted git repo, the same way Flourish does it.
-# Renaissance's App Store distribution certificate is shared by its apps (Apple allows only a few
-# per team), so this defaults to Flourish's match repo. Set MATCH_GIT_URL to use another one.
-git_url(ENV.fetch("MATCH_GIT_URL", "https://github.com/renaissanceabc/flourish-certificates.git"))
+# Signing certificates and profiles live in an encrypted git repo. Every Renaissance app shares one
+# repo and one App Store distribution certificate (Apple allows only a few per team), so this
+# defaults to it. Set MATCH_GIT_URL to use another one.
+git_url(ENV.fetch("MATCH_GIT_URL", "https://github.com/renaissanceabc/apple-certificates.git"))
 storage_mode("git")
 type("appstore")
 

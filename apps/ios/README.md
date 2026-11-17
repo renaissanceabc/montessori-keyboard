@@ -21,7 +21,7 @@ The lanes are in `fastlane/Fastfile`, and `bundle install` here installs fastlan
 ### One-time setup
 
 1. On a Mac signed in to the Renaissance developer account, run `APPLE_ID=<your Apple ID> bundle exec fastlane setup` in `apps/ios`. It registers `com.renaissance.montessorikeyboard` and `.keyboard` with the App Group `group.com.renaissance.montessorikeyboard`, creates the App Store Connect app, and adds App Store profiles for both ids to the match repo.
-2. Add these repository secrets. Flourish's values work for all five, since the match repo and the App Store Connect key are shared:
+2. The five secrets below are **renaissanceabc organization secrets**, shared by every Renaissance app, because the match repo and the App Store Connect key are shared. A new app only needs to be added to each secret's repository access (Organization settings, Secrets and variables, Actions). The workflow reads them as `secrets.*`, the same as repository secrets:
 
 | Secret | What it is |
 | --- | --- |
@@ -31,4 +31,4 @@ The lanes are in `fastlane/Fastfile`, and `bundle install` here installs fastlan
 | `APP_STORE_CONNECT_API_ISSUER_ID` | Its issuer id |
 | `APP_STORE_CONNECT_API_KEY_BASE64` | Base64 of the `.p8` key file |
 
-The match repo is Flourish's, `renaissanceabc/flourish-certificates`, because Apple allows a team only a few distribution certificates and the apps share one. Set `MATCH_GIT_URL` to use another.
+The match repo is Renaissance's shared one, `renaissanceabc/apple-certificates` (once `flourish-certificates`), because Apple allows a team only a few distribution certificates and every app uses the same one. Set `MATCH_GIT_URL` to use another.

@@ -48,6 +48,7 @@ jobs:
 
       - name: Archive and upload
         env:
+          # Organization secrets, shared by every Renaissance app (apps/ios/README.md, TestFlight).
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
