@@ -26,7 +26,6 @@ bun run dev:site        # the website on localhost:3000
 | iOS build and tests (macOS) | `bun run ios:build`, `bun run ios:test` |
 | Site typecheck, tests, build | `bun run typecheck`, `bun run test`, `bun run build` |
 | Icons | `bun run icons` (needs Pillow) |
-| GitHub settings and rulesets | `scripts/github-setup.sh` (an admin runs it with `gh`) |
 
 ## Privacy
 
