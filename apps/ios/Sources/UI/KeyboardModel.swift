@@ -59,8 +59,12 @@ public final class KeyboardModel {
     @ObservationIgnored public var host: KeyboardHost
     public private(set) var layer: KeyLayer = .letters
     public private(set) var shifted = false
-    /// The letter whose phonograms are showing, if the tray is open.
+    /// The letter whose phonograms are showing, if the popup is open.
     public private(set) var trayLetter: Character?
+    /// The held tile's frame in the keyboard's coordinate space, so the popup sits over it.
+    public private(set) var trayAnchor: CGRect = .zero
+    /// The popup choice under the finger: 0 is the letter itself, then its teams.
+    public private(set) var trayChoice: Int?
     /// In the letters strip, the tile picked to be changed by the next letter typed.
     public private(set) var selectedLetter: Int?
     /// The word before the cursor, refreshed after every key and whenever the host's text changes.
@@ -89,6 +93,12 @@ public final class KeyboardModel {
         trayLetter.map(Phonograms.teams(for:)) ?? []
     }
 
+    /// What the popup offers: the held letter, then its teams.
+    public var trayChoices: [String] {
+        guard let trayLetter else { return [] }
+        return [String(trayLetter)] + trayTeams
+    }
+
     /// Re-reads the text before the cursor. Call when the host's text changes from outside the keyboard.
     public func refresh() {
         trailing = TrailingWord(before: host.textBeforeCursor())
@@ -112,30 +122,57 @@ public final class KeyboardModel {
         }
         say(typed)
         shifted = false
-        trayLetter = nil
+        closeTray()
         refresh()
     }
 
-    /// Holding a tile opens its phonograms, when that's on and the letter has any.
-    public func hold(letter: Character) {
+    /// Holding a tile opens its phonograms over it, when that's on and the letter has any.
+    public func hold(letter: Character, at anchor: CGRect = .zero) {
         guard settings.phonograms, layer == .letters else { return }
         let key = Character(label(for: letter))
         guard !Phonograms.teams(for: key).isEmpty else { return }
         trayLetter = key
+        trayAnchor = anchor
+        trayChoice = 0
         say(String(key))
+    }
+
+    /// The finger slid over a popup choice, or off them all.
+    public func choose(_ index: Int?) {
+        guard trayLetter != nil else { return }
+        trayChoice = index.flatMap { trayChoices.indices.contains($0) ? $0 : nil }
+    }
+
+    /// The finger lifted: types the choice under it (the letter or a team) and closes the popup.
+    public func liftFromTray() {
+        guard let letter = trayLetter else { return }
+        let choices = trayChoices
+        let choice = trayChoice
+        closeTray()
+        guard let choice, choices.indices.contains(choice) else { return }
+        if choice == 0 {
+            tap(letter: Character(letter.lowercased()))
+        } else {
+            tap(team: choices[choice])
+        }
     }
 
     public func tap(team: String) {
         host.click()
-        host.insert(team)
+        if let index = selectedLetter, let trailing {
+            replaceLetter(at: index, in: trailing, with: team)
+        } else {
+            host.insert(team)
+        }
         say(team)
-        trayLetter = nil
+        closeTray()
         shifted = false
         refresh()
     }
 
     public func closeTray() {
         trayLetter = nil
+        trayChoice = nil
     }
 
     public func tapShift() {
@@ -167,7 +204,7 @@ public final class KeyboardModel {
     public func toggleLayer() {
         host.click()
         layer = layer == .letters ? .numbers : .letters
-        trayLetter = nil
+        closeTray()
         shifted = false
     }
 

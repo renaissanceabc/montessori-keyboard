@@ -11,8 +11,12 @@ public struct KeyboardView: View {
     public static let tileHeight: CGFloat = 46
     public static let rowSpacing: CGFloat = 11
     public static let stripHeight: CGFloat = 44
+    /// The coordinate space keys report their frames and touches in, for the phonogram popup.
+    static let space = "keyboard"
 
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var width: CGFloat = 375
 
     public init(model: KeyboardModel, showsGlobe: Bool = false) {
         self.model = model
@@ -39,17 +43,33 @@ public struct KeyboardView: View {
             }
             .padding(.horizontal, 3)
             .padding(.vertical, Self.rowSpacing)
-            .overlay(alignment: .top) {
-                // With the strip off, the phonogram tray sits over the top row instead.
-                if model.settings.strip == .off, model.trayLetter != nil {
-                    PhonogramTray(model: model)
-                        .frame(height: Self.stripHeight + Self.rowSpacing)
-                        .transition(.opacity)
-                }
+        }
+        .overlay(alignment: .topLeading) {
+            if model.trayLetter != nil {
+                PhonogramPopup(
+                    choices: model.trayChoices,
+                    layout: popupLayout,
+                    chosen: model.trayChoice,
+                    cursive: model.settings.cursive
+                )
+                .transition(
+                    reduceMotion
+                        ? .opacity
+                        : .opacity.combined(with: .scale(scale: 0.96, anchor: UnitPoint(
+                            x: (model.trayAnchor.midX - popupLayout.frame.minX) / max(popupLayout.frame.width, 1),
+                            y: 1
+                        )))
+                )
             }
         }
         .background(palette.tray)
+        .coordinateSpace(.named(Self.space))
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .animation(.easeOut(duration: 0.15), value: model.trayLetter)
+    }
+
+    private var popupLayout: PopupLayout {
+        PopupLayout(anchor: model.trayAnchor, count: model.trayChoices.count, width: width)
     }
 
     // MARK: Letters
@@ -80,9 +100,19 @@ public struct KeyboardView: View {
             color: palette.color(for: LetterKind(letter)),
             cursive: model.settings.cursive,
             fontSize: 26,
+            lifts: model.trayLetter == nil,
             onTap: { model.tap(letter: letter) },
-            onHold: model.settings.phonograms ? { model.hold(letter: letter) } : nil
+            onHold: model.settings.phonograms ? { model.hold(letter: letter, at: $0) } : nil,
+            onSlide: { model.choose(popupLayout.choice(at: $0, anchor: model.trayAnchor)) },
+            onLift: { model.liftFromTray() }
         )
+        .accessibilityActions {
+            if model.settings.phonograms {
+                ForEach(Phonograms.teams(for: Character(model.label(for: letter))), id: \.self) { team in
+                    Button(team) { model.tap(team: team) }
+                }
+            }
+        }
     }
 
     private var shiftKey: some View {

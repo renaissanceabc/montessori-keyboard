@@ -20,7 +20,7 @@ struct ColoredWord: View {
     }
 }
 
-/// A small tile in the strip: a rhyme, a phonogram, or one letter of the word being changed.
+/// A small tile in the strip: a rhyme, or one letter of the word being changed.
 struct Chip: View {
     var text: String
     var cursive: Bool
@@ -58,21 +58,17 @@ struct ChipStyle: ButtonStyle {
     }
 }
 
-/// The strip above the tiles. The phonogram tray takes it over while it's open.
+/// The strip above the tiles.
 struct StripView: View {
     @Bindable var model: KeyboardModel
     @Environment(\.palette) private var palette
 
     var body: some View {
         Group {
-            if model.trayLetter != nil {
-                PhonogramTray(model: model)
-            } else {
-                switch model.settings.strip {
-                case .rhymes: rhymes
-                case .letters: letters
-                case .off: Color.clear
-                }
+            switch model.settings.strip {
+            case .rhymes: rhymes
+            case .letters: letters
+            case .off: Color.clear
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -94,6 +90,7 @@ struct StripView: View {
                 }
                 .padding(.horizontal, 10)
             }
+            .noScrollEdgeEffect()
         } else {
             Text("Rhymes show up here")
                 .font(TileFont.text(13))
@@ -126,31 +123,13 @@ struct StripView: View {
     }
 }
 
-/// The phonograms for the letter being held: tap one to type it, or close the tray.
-struct PhonogramTray: View {
-    @Bindable var model: KeyboardModel
-    @Environment(\.palette) private var palette
-
-    var body: some View {
-        HStack(spacing: 6) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(model.trayTeams, id: \.self) { team in
-                        Chip(text: team, cursive: model.settings.cursive) { model.tap(team: team) }
-                    }
-                }
-                .padding(.leading, 10)
-            }
-            Button {
-                model.closeTray()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(palette.keyInk)
-                    .frame(width: 44, height: 44)
-            }
-            .accessibilityLabel("Close letter teams")
+extension View {
+    /// iOS 26 blurs scroll content near a scroll view's edges, which in a strip this short blurs every chip.
+    @ViewBuilder func noScrollEdgeEffect() -> some View {
+        if #available(iOS 26, *) {
+            scrollEdgeEffectHidden(true)
+        } else {
+            self
         }
-        .background(palette.tray)
     }
 }

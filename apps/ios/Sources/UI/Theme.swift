@@ -30,6 +30,10 @@ public struct Palette: Sendable {
     public let vowel: Color
     public let consonant: Color
     public let shadow: Color
+    /// The lifted tile's shadow, and the phonogram popup's tray and shadow.
+    public let liftShadow: Color
+    public let popup: Color
+    public let popupShadow: Color
 
     /// App surfaces.
     public let page: Color
@@ -57,6 +61,9 @@ public struct Palette: Sendable {
         vowel: Color(hex: 0x1650B0),
         consonant: Color(hex: 0xB3141A),
         shadow: Color(hex: 0x543412, opacity: 0.22),
+        liftShadow: Color(hex: 0x543412, opacity: 0.28),
+        popup: Color(hex: 0xD9BF93),
+        popupShadow: Color(hex: 0x3C240A, opacity: 0.28),
         page: Color(hex: 0xF6F1E7),
         card: Color(hex: 0xFFFDF8),
         ink: Color(hex: 0x2B2118),
@@ -83,6 +90,9 @@ public struct Palette: Sendable {
         vowel: Color(hex: 0x86BEFF),
         consonant: Color(hex: 0xFF7A6B),
         shadow: .black.opacity(0.45),
+        liftShadow: .black.opacity(0.5),
+        popup: Color(hex: 0x1E140E),
+        popupShadow: .black.opacity(0.55),
         page: Color(hex: 0x14100C),
         card: Color(hex: 0x221A13),
         ink: Color(hex: 0xF1E6D4),
