@@ -1,0 +1,12 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      // After typecheck: `next typegen` and `next build` both write .next/types, so running them at once races.
+      "dependsOn": ["^build", "typecheck"],
+      "inputs": ["$TURBO_DEFAULT$", "!.next/**", "!out/**", "!test/**"],
+      "outputs": ["out/**", ".next/**", "!.next/cache/**", "!.next/dev/**"]
+    }
+  }
+}
