@@ -34,6 +34,11 @@ public struct Palette: Sendable {
     public let liftShadow: Color
     public let popup: Color
     public let popupShadow: Color
+    /// The line under the strip, and the strip's chips: flat paper on a 1pt edge in maple, small tiles in walnut.
+    public let stripLine: Color
+    public let chipTop: Color
+    public let chipBottom: Color
+    public let chipDepth: CGFloat
 
     /// App surfaces.
     public let page: Color
@@ -42,6 +47,21 @@ public struct Palette: Sendable {
     public let ink2: Color
     public let muted: Color
     public let line: Color
+    /// Lines between rows in a group.
+    public let separator: Color
+    /// Setup pages, the gate, and labels on primary buttons.
+    public let paper: Color
+    /// Text boxes and mock rows.
+    public let field: Color
+    public let chevron: Color
+    public let switchOff: Color
+    public let segmentTrack: Color
+    public let segmentSelected: Color
+    /// Step dots and the gate's empty boxes.
+    public let dot: Color
+    /// The welcome screen's icon squares and their line icons.
+    public let iconBackground: Color
+    public let icon: Color
     public let success: Color
     public let successInk: Color
     public let successBackground: Color
@@ -64,12 +84,26 @@ public struct Palette: Sendable {
         liftShadow: Color(hex: 0x543412, opacity: 0.28),
         popup: Color(hex: 0xD9BF93),
         popupShadow: Color(hex: 0x3C240A, opacity: 0.28),
+        stripLine: Color(hex: 0x785428, opacity: 0.14),
+        chipTop: Color(hex: 0xFBF1DF),
+        chipBottom: Color(hex: 0xFBF1DF),
+        chipDepth: 1,
         page: Color(hex: 0xF6F1E7),
         card: Color(hex: 0xFFFDF8),
         ink: Color(hex: 0x2B2118),
         ink2: Color(hex: 0x4A3C2E),
         muted: Color(hex: 0x6B5B49),
         line: Color(hex: 0x2B2118, opacity: 0.1),
+        separator: Color(hex: 0x2B2118, opacity: 0.08),
+        paper: Color(hex: 0xFBF8F2),
+        field: .white,
+        chevron: Color(hex: 0xB8A68C),
+        switchOff: Color(hex: 0xD9D0C2),
+        segmentTrack: Color(hex: 0xEFE6D6),
+        segmentSelected: .white,
+        dot: Color(hex: 0xD9CBB3),
+        iconBackground: Color(hex: 0xF3E6CF),
+        icon: Color(hex: 0x6B4E2A),
         success: Color(hex: 0x2E8A4A),
         successInk: Color(hex: 0x22562F),
         successBackground: Color(hex: 0xE3EFE3)
@@ -93,12 +127,26 @@ public struct Palette: Sendable {
         liftShadow: .black.opacity(0.5),
         popup: Color(hex: 0x1E140E),
         popupShadow: .black.opacity(0.55),
+        stripLine: Color(hex: 0xF1E6D4, opacity: 0.14),
+        chipTop: Color(hex: 0x6E4C34),
+        chipBottom: Color(hex: 0x5C3F2B),
+        chipDepth: 2,
         page: Color(hex: 0x14100C),
         card: Color(hex: 0x221A13),
         ink: Color(hex: 0xF1E6D4),
         ink2: Color(hex: 0xD9CBB4),
         muted: Color(hex: 0xB8A88F),
         line: Color(hex: 0xF1E6D4, opacity: 0.1),
+        separator: Color(hex: 0xF1E6D4, opacity: 0.08),
+        paper: Color(hex: 0x17110C),
+        field: Color(hex: 0x221A13),
+        chevron: Color(hex: 0x7A6A57),
+        switchOff: Color(hex: 0x4A3F35),
+        segmentTrack: Color(hex: 0x2E241B),
+        segmentSelected: Color(hex: 0x4A3B2E),
+        dot: Color(hex: 0x4A3B2E),
+        iconBackground: Color(hex: 0x2E231A),
+        icon: Color(hex: 0xD9B98C),
         success: Color(hex: 0x3FA65E),
         successInk: Color(hex: 0x9FD8AE),
         successBackground: Color(hex: 0x1C2E20)

@@ -22,7 +22,7 @@ public struct NumberMarks: View {
                     ForEach(0..<digit, id: \.self) { _ in
                         Circle()
                             .fill(Color(hex: hex))
-                            .overlay { if digit == 7 { Circle().stroke(Color(hex: 0xBFAF98), lineWidth: 0.6) } }
+                            .overlay { if digit == 7 { Circle().strokeBorder(Color(hex: 0xBFAF98), lineWidth: 1) } }
                             .frame(width: 4, height: 4)
                     }
                 }
@@ -34,11 +34,11 @@ public struct NumberMarks: View {
                 HStack(spacing: 0) {
                     ForEach(0..<digit, id: \.self) { index in
                         Rectangle()
-                            .fill(Color(hex: index.isMultiple(of: 2) ? 0xD2232A : 0x1E5BB8))
+                            .fill(Color(hex: index.isMultiple(of: 2) ? 0xC4121A : 0x1650B0))
                             .frame(width: digit > 6 ? 3 : 4, height: 4)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 1.5))
+                .clipShape(RoundedRectangle(cornerRadius: 2))
                 .accessibilityHidden(true)
             }
         }

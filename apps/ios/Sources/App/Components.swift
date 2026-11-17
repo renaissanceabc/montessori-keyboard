@@ -7,12 +7,14 @@ import SwiftUI
 struct PrimaryButton: View {
     var title: String
     var systemImage: String?
+    var height: CGFloat = 52
     var action: () -> Void
     @Environment(\.palette) private var palette
 
-    init(_ title: String, systemImage: String? = nil, action: @escaping () -> Void) {
+    init(_ title: String, systemImage: String? = nil, height: CGFloat = 52, action: @escaping () -> Void) {
         self.title = title
         self.systemImage = systemImage
+        self.height = height
         self.action = action
     }
 
@@ -22,9 +24,9 @@ struct PrimaryButton: View {
                 if let systemImage { Image(systemName: systemImage) }
                 Text(title)
             }
-            .font(TileFont.text(17, weight: .semibold))
-            .frame(maxWidth: .infinity, minHeight: 52)
-            .foregroundStyle(palette.page)
+            .font(TileFont.text(height < 52 ? 16 : 17, weight: .semibold))
+            .frame(maxWidth: .infinity, minHeight: height)
+            .foregroundStyle(palette.paper)
             .background(palette.ink, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -96,27 +98,30 @@ struct SettingsGroup<Content: View>: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title.uppercased())
-                .font(TileFont.text(12.5, weight: .semibold))
-                .tracking(0.4)
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(TileFont.text(13, relativeTo: .footnote))
                 .foregroundStyle(palette.muted)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 4)
                 .accessibilityAddTraits(.isHeader)
             VStack(spacing: 0) {
                 Group(subviews: content) { rows in
                     ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
-                        if index > 0 { Rectangle().fill(palette.line).frame(height: 1).padding(.leading, 16) }
+                        if index > 0 { Rectangle().fill(palette.separator).frame(height: 1) }
                         row
                     }
                 }
             }
-            .background(palette.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(palette.card, in: shape)
+            .clipShape(shape)
+            .overlay { shape.strokeBorder(palette.line, lineWidth: 1) }
             if let footer {
                 Text(footer)
-                    .font(TileFont.text(13))
+                    .font(TileFont.text(12.5, relativeTo: .footnote))
                     .foregroundStyle(palette.muted)
-                    .padding(.horizontal, 16)
+                    .lineSpacing(2)
+                    .padding(.horizontal, 4)
             }
         }
     }
@@ -134,9 +139,10 @@ struct SettingsRow<Trailing: View>: View {
             Spacer(minLength: 12)
             trailing
         }
-        .font(TileFont.text(16))
-        .padding(.horizontal, 16)
-        .frame(minHeight: 50)
+        .font(TileFont.text(15.5))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
+        .frame(minHeight: 46)
     }
 }
 
@@ -147,7 +153,7 @@ struct ToggleRow: View {
 
     var body: some View {
         SettingsRow(title: title) {
-            Toggle(title, isOn: $isOn).labelsHidden().tint(palette.success)
+            Toggle(title, isOn: $isOn).labelsHidden().toggleStyle(WoodSwitch())
         }
     }
 }
@@ -159,13 +165,7 @@ struct SegmentRow<Value: Hashable>: View {
 
     var body: some View {
         SettingsRow(title: title) {
-            Picker(title, selection: $selection) {
-                ForEach(options.indices, id: \.self) { index in
-                    Text(options[index].1).tag(options[index].0)
-                }
-            }
-            .pickerStyle(.segmented)
-            .fixedSize()
+            Segments(title: title, selection: $selection, options: options)
         }
     }
 }
@@ -183,15 +183,129 @@ struct LinkRow<Destination: View>: View {
         } label: {
             SettingsRow(title: title) {
                 HStack(spacing: 6) {
-                    if let value { Text(value).foregroundStyle(palette.muted) }
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(palette.muted.opacity(0.7))
+                    if let value { Text(value).font(TileFont.text(15)).foregroundStyle(palette.muted) }
+                    Chevron()
                 }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// A number's beads in one row, 5pt each: the setup steps and the gate's keys.
+struct BeadRow: View {
+    var digit: Int
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(0..<digit, id: \.self) { _ in
+                Circle().fill(Color(hex: BeadStair.color(for: digit) ?? 0)).frame(width: 5, height: 5)
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+/// A green box saying the keyboard is on (Try it, the Setup guide).
+struct OnNotice: View {
+    var text: String
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark").font(.callout.weight(.bold)).accessibilityHidden(true)
+            Text(text)
+        }
+        .font(TileFont.text(14))
+        .foregroundStyle(palette.successInk)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.successBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+}
+
+/// The "›" at the end of a row that opens another screen.
+struct Chevron: View {
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Text("›")
+            .font(TileFont.text(18))
+            .foregroundStyle(palette.chevron)
+            .accessibilityHidden(true)
+    }
+}
+
+/// The canvas's switch: 50×30, green when on, a warm grey when off.
+struct WoodSwitch: ToggleStyle {
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            Capsule()
+                .fill(configuration.isOn ? palette.success : palette.switchOff)
+                .frame(width: 50, height: 30)
+                .overlay(alignment: configuration.isOn ? .trailing : .leading) {
+                    Circle()
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 1, y: 1)
+                        .frame(width: 26, height: 26)
+                        .padding(2)
+                }
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.16), value: configuration.isOn)
+        }
+        .buttonStyle(.plain)
+        .accessibilityRepresentation {
+            Toggle(isOn: configuration.$isOn) { configuration.label }.toggleStyle(.switch)
+        }
+    }
+}
+
+/// The canvas's segmented control: a warm track, the chosen segment raised in white.
+struct Segments<Value: Hashable>: View {
+    var title: String
+    @Binding var selection: Value
+    var options: [(Value, String)]
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(options.indices, id: \.self) { index in
+                let (value, label) = options[index]
+                let chosen = value == selection
+                Button {
+                    selection = value
+                } label: {
+                    Text(label)
+                        .font(TileFont.text(13, weight: chosen ? .semibold : .regular, relativeTo: .footnote))
+                        .foregroundStyle(chosen ? palette.ink : palette.ink2)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background {
+                            if chosen {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(palette.segmentSelected)
+                                    .shadow(color: .black.opacity(0.12), radius: 1, y: 1)
+                            }
+                        }
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(chosen ? .isSelected : [])
+            }
+        }
+        .padding(2)
+        .background(palette.segmentTrack, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .fixedSize()
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.16), value: selection)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(title)
     }
 }
 

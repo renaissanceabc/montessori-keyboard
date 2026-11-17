@@ -22,7 +22,7 @@ struct TryItView: View {
                     .focused($focused)
                     .padding(.horizontal, 14)
                     .frame(height: 54)
-                    .background(palette.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(palette.field, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .overlay {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .strokeBorder(focused ? palette.vowel : palette.line, lineWidth: 2)
@@ -30,24 +30,15 @@ struct TryItView: View {
                     .accessibilityLabel("Your child's name")
             }
             if model.keyboardEnabled {
-                HStack(spacing: 10) {
-                    Image(systemName: "checkmark").font(.callout.weight(.bold))
-                    Text("It's on. Hand it over whenever you like.")
-                }
-                .font(TileFont.text(14))
-                .foregroundStyle(palette.successInk)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(palette.successBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                OnNotice(text: "It's on. Hand it over whenever you like.")
             }
             Spacer(minLength: 0)
-            PrimaryButton("Done", action: done)
+            PrimaryButton("Done", height: 46, action: done)
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)
         .padding(.bottom, 12)
-        .pageBackground(palette.page)
+        .pageBackground(palette.paper)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) { StepDots(step: 2, of: 3) }

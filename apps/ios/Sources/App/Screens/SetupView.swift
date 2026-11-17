@@ -4,9 +4,23 @@ import SwiftUI
 
 /// The three steps in iPhone Settings, shared by setup and the Setup guide.
 struct SetupSteps: View {
+    /// The guide's short form: the steps without the drawings of iPhone Settings.
+    var compact = false
     @Environment(\.palette) private var palette
 
     var body: some View {
+        if compact {
+            VStack(alignment: .leading, spacing: 16) {
+                step(1, "Open Settings", detail: "The button below goes straight to this app.")
+                step(2, "Tap Keyboards")
+                step(3, "Turn on Montessori Keyboard")
+            }
+        } else {
+            full
+        }
+    }
+
+    private var full: some View {
         VStack(alignment: .leading, spacing: 20) {
             step(1, "Tap Open Settings below", detail: "It opens straight to this app's page.")
             step(2, "Tap Keyboards") {
@@ -28,7 +42,7 @@ struct SetupSteps: View {
     private func step<Mock: View>(_ n: Int, _ title: String, detail: String? = nil, @ViewBuilder mock: () -> Mock) -> some View {
         HStack(alignment: .top, spacing: 14) {
             NumberBadge(n: n)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: compact ? 4 : 8) {
                 Text(title).font(TileFont.text(16, weight: .semibold)).foregroundStyle(palette.ink)
                 mock()
                 if let detail {
@@ -48,7 +62,7 @@ struct NumberBadge: View {
     var body: some View {
         VStack(spacing: 3) {
             Text(String(n)).font(TileFont.tile(size: 18, cursive: false)).foregroundStyle(palette.ink)
-            NumberMarks(digit: n, style: .beads)
+            BeadRow(digit: n)
         }
         .frame(width: 36, height: 44)
         .background(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom), in: RoundedRectangle(cornerRadius: 7))
@@ -66,12 +80,12 @@ struct MockSettings<Content: View>: View {
         VStack(spacing: 0) {
             Group(subviews: content) { rows in
                 ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
-                    if index > 0 { Rectangle().fill(palette.line).frame(height: 1) }
+                    if index > 0 { Rectangle().fill(palette.separator).frame(height: 1) }
                     row
                 }
             }
         }
-        .background(palette.card, in: RoundedRectangle(cornerRadius: 10))
+        .background(palette.field, in: RoundedRectangle(cornerRadius: 10))
         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(palette.line))
         .accessibilityHidden(true)
     }
@@ -87,9 +101,9 @@ struct MockRow: View {
         HStack {
             Text(title).font(TileFont.text(14)).foregroundStyle(palette.ink)
             Spacer()
-            if chevron { Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(palette.muted) }
+            if chevron { Chevron() }
             if let on {
-                Capsule().fill(on ? palette.success : palette.tileEdge.opacity(0.5))
+                Capsule().fill(on ? palette.success : palette.switchOff)
                     .frame(width: 42, height: 25)
                     .overlay(alignment: on ? .trailing : .leading) {
                         Circle().fill(.white).shadow(radius: 1, y: 1).padding(2)
@@ -141,9 +155,9 @@ struct SetupView: View {
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 12)
-            .background(palette.page)
+            .background(palette.paper)
         }
-        .pageBackground(palette.page)
+        .pageBackground(palette.paper)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) { StepDots(step: 0, of: 3) }
@@ -164,7 +178,7 @@ struct StepDots: View {
         HStack(spacing: 6) {
             ForEach(0..<of, id: \.self) { index in
                 Capsule()
-                    .fill(index == step ? palette.ink : palette.tileEdge.opacity(0.5))
+                    .fill(index == step ? palette.ink : palette.dot)
                     .frame(width: index == step ? 22 : 8, height: 8)
             }
         }

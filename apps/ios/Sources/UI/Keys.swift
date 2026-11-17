@@ -119,35 +119,46 @@ struct KeyButton<Label: View>: View {
     }
 }
 
-/// A maple (or walnut) tile: a gradient face on a darker edge that disappears when it's pressed.
+/// A maple (or walnut) tile: a gradient face on a darker edge, as the canvas's Tiles board draws it. Pressing sinks
+/// the face onto its edge without changing its color; only a lit key (shift when on) gets the pale face, and it stays
+/// raised.
 struct TileFace<Content: View>: View {
     var pressed: Bool
     var function = false
+    var lit = false
     var cornerRadius: CGFloat = 7
     @ViewBuilder var content: Content
     @Environment(\.palette) private var palette
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        let top = function ? palette.keyTop : (pressed ? palette.tilePressed : palette.tileTop)
-        let bottom = function ? palette.keyBottom : (pressed ? palette.tilePressed : palette.tileBottom)
+        let colors = lit
+            ? [palette.tilePressed, palette.tilePressed]
+            : function ? [palette.keyTop, palette.keyBottom] : [palette.tileTop, palette.tileBottom]
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
-                shape.fill(LinearGradient(colors: [top, bottom], startPoint: .top, endPoint: .bottom))
-                    .overlay(alignment: .top) {
-                        if !function {
-                            shape.stroke(palette.tileHighlight, lineWidth: 1).mask(alignment: .top) { Rectangle().frame(height: 2) }
+                shape.fill(LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom))
+                    .overlay {
+                        // The 1pt highlight along the top of a letter tile.
+                        if !function && !lit {
+                            shape.strokeBorder(palette.tileHighlight, lineWidth: 1)
+                                .mask(alignment: .top) { Rectangle().frame(height: 1) }
                         }
                     }
             }
             .background {
+                // The edge, 2pt under the face, then the soft shadow, 3pt under the face.
                 shape.fill(function ? palette.keyEdge : palette.tileEdge)
                     .offset(y: pressed ? 0 : 2)
+            }
+            .background {
+                shape.fill(palette.tileEdge)
                     .shadow(color: palette.shadow, radius: pressed ? 1 : 2.5, y: pressed ? 1 : 3)
             }
             .offset(y: pressed ? 2 : 0)
-            .animation(.easeOut(duration: 0.08), value: pressed)
+            // Sinks at once, rises over 80ms, like the canvas's tiles.
+            .animation(pressed ? nil : .easeOut(duration: 0.08), value: pressed)
     }
 }
 
@@ -181,7 +192,7 @@ struct LetterKey: View {
         Text(label)
             .font(TileFont.tile(size: size, cursive: cursive))
             .foregroundStyle(color)
-            .padding(.bottom, cursive ? 2 : 4)
+            .padding(.bottom, cursive ? 2 : 3)
             .minimumScaleFactor(0.6)
             .lineLimit(1)
     }
@@ -226,9 +237,9 @@ struct FunctionKey<Icon: View>: View {
 
     var body: some View {
         KeyButton(accessibilityLabel: accessibilityLabel, repeats: repeats, onTap: onTap) { pressed in
-            TileFace(pressed: pressed || highlighted, function: !highlighted) {
+            TileFace(pressed: pressed, function: true, lit: highlighted) {
                 icon
-                    .font(TileFont.text(15, weight: .medium))
+                    .font(.custom(TileFont.medium, fixedSize: 15))
                     .foregroundStyle(palette.keyInk)
                     .opacity(dimmed ? 0.45 : 1)
             }
@@ -236,10 +247,80 @@ struct FunctionKey<Icon: View>: View {
     }
 }
 
-enum KeyIcon {
-    static let shift = "shift"
-    static let shiftOn = "shift.fill"
-    static let delete = "delete.left"
-    static let returnKey = "return"
-    static let globe = "globe"
+/// The function keys' icons, drawn as the canvas draws them: 1.8pt strokes with round joins, in a 24pt box. Shift
+/// stays an outline when it's on; the key lights up instead.
+@MainActor
+public enum KeyIcon {
+    case shift, delete, returnKey
+
+    @ViewBuilder public var image: some View {
+        switch self {
+        case .shift: KeyGlyph(path: Self.shiftPath).frame(width: 22, height: 22)
+        case .delete: KeyGlyph(path: Self.deletePath, box: CGSize(width: 26, height: 22)).frame(width: 25, height: 21)
+        case .returnKey: KeyGlyph(path: Self.returnPath, box: CGSize(width: 24, height: 22), lineWidth: 1.9).frame(width: 22, height: 20)
+        }
+    }
+
+    /// M12 4 4 12h4.5v7h7v-7H20z
+    nonisolated static func shiftPath(_ p: inout Path) {
+        p.move(to: CGPoint(x: 12, y: 4))
+        p.addLine(to: CGPoint(x: 4, y: 12))
+        p.addLine(to: CGPoint(x: 8.5, y: 12))
+        p.addLine(to: CGPoint(x: 8.5, y: 19))
+        p.addLine(to: CGPoint(x: 15.5, y: 19))
+        p.addLine(to: CGPoint(x: 15.5, y: 12))
+        p.addLine(to: CGPoint(x: 20, y: 12))
+        p.closeSubpath()
+    }
+
+    /// M8 3h15v16H8l-6-8z, m12 8 6 6m0-6-6 6
+    nonisolated static func deletePath(_ p: inout Path) {
+        p.move(to: CGPoint(x: 8, y: 3))
+        p.addLine(to: CGPoint(x: 23, y: 3))
+        p.addLine(to: CGPoint(x: 23, y: 19))
+        p.addLine(to: CGPoint(x: 8, y: 19))
+        p.addLine(to: CGPoint(x: 2, y: 11))
+        p.closeSubpath()
+        p.move(to: CGPoint(x: 12, y: 8))
+        p.addLine(to: CGPoint(x: 18, y: 14))
+        p.move(to: CGPoint(x: 18, y: 8))
+        p.addLine(to: CGPoint(x: 12, y: 14))
+    }
+
+    /// M20 4v7a3 3 0 0 1-3 3H5, m9 10-4 4 4 4
+    nonisolated static func returnPath(_ p: inout Path) {
+        p.move(to: CGPoint(x: 20, y: 4))
+        p.addLine(to: CGPoint(x: 20, y: 11))
+        p.addArc(center: CGPoint(x: 17, y: 11), radius: 3, startAngle: .degrees(0), endAngle: .degrees(90), clockwise: false)
+        p.addLine(to: CGPoint(x: 5, y: 14))
+        p.move(to: CGPoint(x: 9, y: 10))
+        p.addLine(to: CGPoint(x: 5, y: 14))
+        p.addLine(to: CGPoint(x: 9, y: 18))
+    }
+}
+
+/// A stroked icon drawn in a fixed box and scaled to its frame, in the current foreground style.
+struct KeyGlyph: View {
+    var path: @Sendable (inout Path) -> Void
+    var box = CGSize(width: 24, height: 24)
+    var lineWidth: CGFloat = 1.8
+
+    var body: some View {
+        GlyphShape(build: path, box: box)
+            .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+            .accessibilityHidden(true)
+    }
+}
+
+struct GlyphShape: Shape {
+    var build: @Sendable (inout Path) -> Void
+    var box: CGSize
+
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        build(&p)
+        let scale = min(rect.width / box.width, rect.height / box.height)
+        return p.applying(CGAffineTransform(scaleX: scale, y: scale)
+            .concatenating(CGAffineTransform(translationX: rect.minX, y: rect.minY)))
+    }
 }

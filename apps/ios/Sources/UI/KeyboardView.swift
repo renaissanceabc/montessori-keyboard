@@ -10,6 +10,9 @@ public struct KeyboardView: View {
 
     public static let tileHeight: CGFloat = 46
     public static let rowSpacing: CGFloat = 11
+    /// Space above the first row and below the last, as the canvas draws them.
+    public static let topInset: CGFloat = 8
+    public static let bottomInset: CGFloat = 4
     public static let stripHeight: CGFloat = 44
     /// The coordinate space keys report their frames and touches in, for the phonogram popup.
     static let space = "keyboard"
@@ -25,7 +28,7 @@ public struct KeyboardView: View {
 
     /// The keyboard's height for its settings, so the extension can size itself before it draws.
     public static func height(for settings: KeyboardSettings) -> CGFloat {
-        let rows = 4 * tileHeight + 3 * rowSpacing + 2 * rowSpacing
+        let rows = 4 * tileHeight + 3 * rowSpacing + topInset + bottomInset
         return rows + (settings.strip == .off ? 0 : stripHeight)
     }
 
@@ -42,7 +45,8 @@ public struct KeyboardView: View {
                 bottomRow
             }
             .padding(.horizontal, 3)
-            .padding(.vertical, Self.rowSpacing)
+            .padding(.top, Self.topInset)
+            .padding(.bottom, Self.bottomInset)
         }
         .overlay(alignment: .topLeading) {
             if model.trayLetter != nil {
@@ -123,13 +127,13 @@ public struct KeyboardView: View {
             highlighted: model.shifted,
             onTap: { model.tapShift() }
         ) {
-            Image(systemName: model.shifted ? KeyIcon.shiftOn : KeyIcon.shift)
+            KeyIcon.shift.image
         }
     }
 
     private var deleteKey: some View {
         FunctionKey(accessibilityLabel: "Delete", repeats: true, onTap: { model.tapDelete() }) {
-            Image(systemName: KeyIcon.delete)
+            KeyIcon.delete.image
         }
     }
 
@@ -174,25 +178,24 @@ public struct KeyboardView: View {
                 onTap: { model.toggleLayer() }
             ) {
                 Text(model.layer == .letters ? "123" : "abc")
-                    .font(TileFont.tile(size: 17, cursive: false))
             }
             .keyWeight(showsGlobe ? 1.5 : 2.3)
 
             if showsGlobe, let next = model.host.nextKeyboard {
                 FunctionKey(accessibilityLabel: "Next keyboard", onTap: next) {
-                    Image(systemName: KeyIcon.globe)
+                    Image(systemName: "globe")
                 }
                 .keyWeight(1.2)
             }
 
+            // Blank, like the canvas's space bar.
             FunctionKey(accessibilityLabel: "Space", onTap: { model.tapSpace() }) {
-                Text("space")
-                    .font(TileFont.tile(size: 16, cursive: false))
+                Color.clear
             }
             .keyWeight(showsGlobe ? 4.6 : 5)
 
             FunctionKey(accessibilityLabel: "Return", onTap: { model.tapReturn() }) {
-                Image(systemName: KeyIcon.returnKey)
+                KeyIcon.returnKey.image
             }
             .keyWeight(showsGlobe ? 2 : 2.3)
         }

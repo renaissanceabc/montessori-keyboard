@@ -27,7 +27,7 @@ struct SettingsView: View {
             // layout change), so scrolling stays smooth.
             ZStack(alignment: .top) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 18) {
                         SettingsGroup(title: "Keyboard") {
                             SegmentRow(title: "Order", selection: $model.settings.order, options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
                             SegmentRow(title: "Letter shapes", selection: $model.settings.cursive, options: [(false, "Print"), (true, "Cursive")])
@@ -42,20 +42,23 @@ struct SettingsView: View {
                             ToggleRow(title: "Say letter sounds", isOn: $model.settings.letterSounds)
                             ToggleRow(title: "Key clicks", isOn: $model.settings.keyClicks)
                         }
-                        SettingsGroup(title: "More") {
-                            LinkRow(title: "Setup guide") { GuideView() }
-                            LinkRow(title: "About and source code") { AboutView() }
+                        VStack(alignment: .leading, spacing: 6) {
+                            SettingsGroup(title: "More") {
+                                LinkRow(title: "Setup guide") { GuideView() }
+                                LinkRow(title: "About and source code") { AboutView() }
+                            }
+                            HStack(spacing: 8) {
+                                Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
+                                Text(model.statusLine)
+                            }
+                            .font(TileFont.text(13, relativeTo: .footnote))
+                            .foregroundStyle(model.keyboardEnabled ? palette.successInk : palette.muted)
+                            .padding(.horizontal, 4)
                         }
-                        HStack(spacing: 8) {
-                            Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
-                            Text(model.statusLine)
-                        }
-                        .font(TileFont.text(13))
-                        .foregroundStyle(palette.muted)
-                        .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 20)
+                    .padding(.top, 16)
+                    .padding(.bottom, 28)
                 }
                 .contentMargins(.top, previewHeight, for: .scrollContent)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
@@ -71,8 +74,9 @@ struct SettingsView: View {
                 // The preview never shows the strip: it's there to try the tiles.
                 LiveKeyboard(settings: previewSettings, text: previewText)
                     .padding(14)
-                    .background(palette.tray, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .padding(.horizontal, 12)
+                    .background(palette.tray, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay { RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(palette.line, lineWidth: 1) }
+                    .padding(.horizontal, 16)
                     .padding(.top, 4)
                     .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { previewHeight = $0 }
                     .scaleEffect(previewScale, anchor: .top)
@@ -119,7 +123,7 @@ struct StripOptionsView: View {
             }
             OptionCard(title: StripMode.letters.title, detail: "Tap a letter to change it.", selected: model.settings.strip == .letters, action: { pick(.letters) }) {
                 MiniStrip {
-                    ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0) }
+                    ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0, letter: true) }
                     Text("tap a tile to change it").font(TileFont.text(12.5)).foregroundStyle(palette.muted).padding(.leading, 6)
                 }
             }
@@ -191,6 +195,7 @@ struct MiniStrip<Content: View>: View {
 
 struct MiniChip: View {
     var text: String
+    var letter = false
     @Environment(\.palette) private var palette
 
     var body: some View {
@@ -200,11 +205,11 @@ struct MiniChip: View {
             }
         }
         .font(TileFont.tile(size: 19, cursive: false))
-        .padding(.horizontal, 9)
-        .padding(.bottom, 3)
-        .frame(height: 32)
-        .background(palette.tileTop, in: RoundedRectangle(cornerRadius: 7))
-        .background(RoundedRectangle(cornerRadius: 7).fill(palette.tileEdge).offset(y: 1))
+        .padding(.horizontal, letter ? 0 : 9)
+        .padding(.bottom, letter ? 2 : 3)
+        .frame(width: letter ? 26 : nil, height: 32)
+        .background(palette.chipTop, in: RoundedRectangle(cornerRadius: letter ? 5 : 7))
+        .background(RoundedRectangle(cornerRadius: letter ? 5 : 7).fill(palette.tileEdge).offset(y: 1))
     }
 }
 
