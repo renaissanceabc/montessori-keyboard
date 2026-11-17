@@ -49,7 +49,9 @@ struct KeyButton<Label: View>: View {
     var onLift: (() -> Void)?
     @ViewBuilder var label: (_ pressed: Bool) -> Label
 
-    @State private var pressed = false
+    /// Resets by itself if the system cancels the touch, so a key never stays stuck down.
+    @GestureState private var pressed = false
+    @State private var active = false
     @State private var held = false
     @State private var timer: Task<Void, Never>?
     @State private var frame: CGRect = .zero
@@ -60,11 +62,16 @@ struct KeyButton<Label: View>: View {
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(KeyboardView.space)) } action: { frame = $0 }
             .gesture(
                 DragGesture(minimumDistance: 0, coordinateSpace: .named(KeyboardView.space))
+                    .updating($pressed) { _, pressed, _ in pressed = true }
                     .onChanged { value in
-                        if !pressed { begin() } else if held { onSlide?(value.location) }
+                        if !active { begin() } else if held { onSlide?(value.location) }
                     }
                     .onEnded { _ in end() }
             )
+            .onChange(of: pressed) { _, isPressed in
+                // Cancelled by the system without an end: drop the press without typing.
+                if !isPressed, active { cancel() }
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isKeyboardKey)
@@ -72,7 +79,7 @@ struct KeyButton<Label: View>: View {
     }
 
     private func begin() {
-        pressed = true
+        active = true
         held = false
         if repeats {
             onTap()
@@ -95,11 +102,20 @@ struct KeyButton<Label: View>: View {
     }
 
     private func end() {
+        guard active else { return }
         timer?.cancel()
         timer = nil
+        active = false
         if held, !repeats { onLift?() }
         if !repeats && !held { onTap() }
-        pressed = false
+        held = false
+    }
+
+    private func cancel() {
+        timer?.cancel()
+        timer = nil
+        active = false
+        held = false
     }
 }
 

@@ -143,13 +143,20 @@ public final class KeyboardModel {
         trayChoice = index.flatMap { trayChoices.indices.contains($0) ? $0 : nil }
     }
 
-    /// The finger lifted: types the choice under it (the letter or a team) and closes the popup.
+    /// The finger lifted: types the choice under it (the letter or a team) and closes the popup. Lifted away from
+    /// every choice, the popup stays open so a child can tap one instead.
     public func liftFromTray() {
+        guard trayLetter != nil else { return }
+        guard let choice = trayChoice, trayChoices.indices.contains(choice) else { return }
+        pick(choice)
+    }
+
+    /// Types a popup choice: 0 is the letter itself, then its teams.
+    public func pick(_ choice: Int) {
         guard let letter = trayLetter else { return }
         let choices = trayChoices
-        let choice = trayChoice
         closeTray()
-        guard let choice, choices.indices.contains(choice) else { return }
+        guard choices.indices.contains(choice) else { return }
         if choice == 0 {
             tap(letter: Character(letter.lowercased()))
         } else {
@@ -177,18 +184,21 @@ public final class KeyboardModel {
 
     public func tapShift() {
         host.click()
+        closeTray()
         guard settings.capitalsWithShift else { return }
         shifted.toggle()
     }
 
     public func tapDelete() {
         host.click()
+        closeTray()
         host.deleteBackward()
         refresh()
     }
 
     public func tapSpace() {
         host.click()
+        closeTray()
         host.insert(" ")
         selectedLetter = nil
         refresh()
@@ -196,6 +206,7 @@ public final class KeyboardModel {
 
     public func tapReturn() {
         host.click()
+        closeTray()
         host.insert("\n")
         selectedLetter = nil
         refresh()
@@ -211,6 +222,7 @@ public final class KeyboardModel {
     /// Digits and punctuation on the 123 layer.
     public func tap(symbol: String) {
         host.click()
+        closeTray()
         host.insert(symbol)
         if let digit = Int(symbol) { say(NumberWords.spell(digit), ipa: false) }
         refresh()

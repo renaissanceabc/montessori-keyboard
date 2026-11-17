@@ -44,12 +44,13 @@ struct PopupLayout: Equatable {
 }
 
 /// The letter and its teams on a darker tray over the held tile. The one under the finger is lit and outlined;
-/// lifting types it.
+/// lifting types it. If the finger lifted away from them all, the popup stays and its tiles can be tapped.
 struct PhonogramPopup: View {
     var choices: [String]
     var layout: PopupLayout
     var chosen: Int?
     var cursive: Bool
+    var onPick: (Int) -> Void
     @Environment(\.palette) private var palette
 
     var body: some View {
@@ -60,15 +61,17 @@ struct PhonogramPopup: View {
                 .frame(width: layout.frame.width, height: layout.frame.height)
             ForEach(Array(zip(choices.indices, choices)), id: \.0) { index, choice in
                 let chip = layout.chips[index]
-                PopupChip(text: choice, cursive: cursive, chosen: chosen == index)
-                    .frame(width: chip.width, height: chip.height)
+                Button { onPick(index) } label: {
+                    PopupChip(text: choice, cursive: cursive, chosen: chosen == index)
+                }
+                .buttonStyle(.plain)
+                .frame(width: chip.width, height: chip.height)
+                .accessibilityLabel(choice)
                     .offset(x: chip.minX - layout.frame.minX, y: chip.minY - layout.frame.minY)
             }
         }
         .frame(width: layout.frame.width, height: layout.frame.height, alignment: .topLeading)
         .offset(x: layout.frame.minX, y: layout.frame.minY)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
     }
 }
 

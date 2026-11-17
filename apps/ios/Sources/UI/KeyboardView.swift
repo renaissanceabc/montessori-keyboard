@@ -50,7 +50,8 @@ public struct KeyboardView: View {
                     choices: model.trayChoices,
                     layout: popupLayout,
                     chosen: model.trayChoice,
-                    cursive: model.settings.cursive
+                    cursive: model.settings.cursive,
+                    onPick: { model.pick($0) }
                 )
                 .transition(
                     reduceMotion
