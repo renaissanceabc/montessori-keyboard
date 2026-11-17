@@ -8,11 +8,12 @@ import SwiftUI
 struct SettingsView: View {
     /// Points of scrolling over which the tray settles.
     static let settleDistance: CGFloat = 120
-    /// The tray's padding at rest and compact, and the gap under it.
+    /// The tray's padding at rest and compact, and the gap above it.
     static let restPadding: CGFloat = 14
     static let compactPadding: CGFloat = 10
     static let topGap: CGFloat = 4
-    static let bottomGap: CGFloat = 8
+    /// How far below the tray the rows fade out.
+    static let fade: CGFloat = 14
 
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
@@ -29,7 +30,7 @@ struct SettingsView: View {
     /// The pinned area's height at rest. The settings start under it, and it never changes while scrolling, so the
     /// scroll content never relayouts.
     private var restHeight: CGFloat {
-        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap + Self.bottomGap
+        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap
     }
 
     var body: some View {
@@ -72,7 +73,7 @@ struct SettingsView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 28)
                 }
-                .contentMargins(.top, restHeight - Self.bottomGap, for: .scrollContent)
+                .contentMargins(.top, restHeight, for: .scrollContent)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
                     scrolled = offset
                 }
@@ -99,7 +100,7 @@ struct SettingsView: View {
     }
 
     /// The pinned tray. The preview never shows the strip: it's there to try the tiles. The page color behind it
-    /// hides the rows passing under, and a hairline fades in under it once they do, like a navigation bar's edge.
+    /// hides the rows passing under, and they fade out just below its edge.
     private var preview: some View {
         let padding = Self.restPadding - (Self.restPadding - Self.compactPadding) * settle
         let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -109,13 +110,15 @@ struct SettingsView: View {
             .overlay { shape.strokeBorder(palette.line, lineWidth: 1) }
             .padding(.horizontal, 16)
             .padding(.top, Self.topGap)
-            .padding(.bottom, Self.bottomGap)
             .background(palette.page)
+            // Rows fade out as they slide under the tray rather than being cut flat, and the tray's own edge is the
+            // divider, so there's no separate line or empty band below it.
             .overlay(alignment: .bottom) {
-                Rectangle()
-                    .fill(palette.line)
-                    .frame(height: 1)
+                LinearGradient(colors: [palette.page, palette.page.opacity(0)], startPoint: .top, endPoint: .bottom)
+                    .frame(height: Self.fade)
+                    .offset(y: Self.fade)
                     .opacity(min(max(scrolled / 16, 0), 1))
+                    .allowsHitTesting(false)
             }
             .accessibilitySortPriority(1)
     }
