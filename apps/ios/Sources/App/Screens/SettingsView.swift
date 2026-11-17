@@ -12,8 +12,10 @@ struct SettingsView: View {
     static let restPadding: CGFloat = 14
     static let compactPadding: CGFloat = 10
     static let topGap: CGFloat = 4
-    /// How far below the tray the rows fade out.
-    static let fade: CGFloat = 22
+    /// A solid band of page color under the tray, so a row passing under it never shows as ghosted half letters.
+    static let bottomGap: CGFloat = 6
+    /// How far below that band the rows fade out.
+    static let fade: CGFloat = 28
 
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
@@ -30,7 +32,7 @@ struct SettingsView: View {
     /// The pinned area's height at rest. The settings start under it, and it never changes while scrolling, so the
     /// scroll content never relayouts.
     private var restHeight: CGFloat {
-        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap
+        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap + Self.bottomGap
     }
 
     var body: some View {
@@ -70,7 +72,7 @@ struct SettingsView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 16)
+                    .padding(.top, 10)
                     .padding(.bottom, 28)
                 }
                 .contentMargins(.top, restHeight, for: .scrollContent)
@@ -111,15 +113,19 @@ struct SettingsView: View {
             .overlay { shape.strokeBorder(palette.line, lineWidth: 1) }
             .padding(.horizontal, 16)
             .padding(.top, Self.topGap)
+            .padding(.bottom, Self.bottomGap)
             .background(palette.page)
             // Rows fade out as they slide under the tray rather than being cut flat, and the tray's own edge is the
             // divider, so there's no separate line or empty band below it.
             .overlay(alignment: .bottom) {
-                LinearGradient(colors: [palette.page, palette.page.opacity(0)], startPoint: .top, endPoint: .bottom)
+                LinearGradient(stops: [
+                    .init(color: palette.page, location: 0),
+                    .init(color: palette.page.opacity(0.85), location: 0.35),
+                    .init(color: palette.page.opacity(0), location: 1),
+                ], startPoint: .top, endPoint: .bottom)
                     .frame(height: Self.fade)
-                    // Starts a little inside the tray's bottom gap, so a row's cut-off top never shows as ghosted
-                    // half letters.
-                    .offset(y: Self.fade - 4)
+                    // Hangs entirely below the band, so it never covers the tray's own rounded edge and border.
+                    .offset(y: Self.fade)
                     .opacity(min(max(scrolled / 16, 0), 1))
                     .allowsHitTesting(false)
             }
