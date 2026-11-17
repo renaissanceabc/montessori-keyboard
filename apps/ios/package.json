@@ -1,0 +1,9 @@
+{
+  "name": "@montessori-keyboard/ios",
+  "private": true,
+  "scripts": {
+    "ios:generate": "tuist generate --no-open",
+    "ios:build": "tuist generate --no-open && xcodebuild -workspace MontessoriKeyboard.xcworkspace -scheme MontessoriKeyboard -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build",
+    "ios:test": "tuist generate --no-open && xcodebuild -workspace MontessoriKeyboard.xcworkspace -scheme MontessoriKeyboard -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17' CODE_SIGNING_ALLOWED=NO test"
+  }
+}
