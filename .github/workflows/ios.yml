@@ -1,0 +1,77 @@
+name: iOS
+
+# Builds the app and the keyboard for the simulator and runs the core unit tests.
+# Unsigned: nothing here archives or uploads.
+on:
+  push:
+    branches: [main, develop, "claude/**"]
+    paths: ["apps/ios/**", ".github/workflows/ios.yml"]
+  pull_request:
+    paths: ["apps/ios/**", ".github/workflows/ios.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  XCODE_VERSION: "26.6"
+  TUIST_VERSION: "4.205.0"
+
+jobs:
+  ios-build:
+    name: iOS Build And Test
+    runs-on: macos-26
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/ios
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+          xcodebuild -version
+
+      - name: Install Tuist
+        run: |
+          command -v mise >/dev/null 2>&1 || brew install mise
+          mise use --global "tuist@${TUIST_VERSION}"
+          echo "$HOME/.local/share/mise/shims" >> "$GITHUB_PATH"
+
+      - name: Generate project
+        run: tuist generate --no-open
+
+      - name: Pick a simulator
+        id: sim
+        run: |
+          id="$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          ios = sorted((k for k in devices if "iOS" in k), reverse=True)
+          for runtime in ios:
+              for d in devices[runtime]:
+                  if d["name"].startswith("iPhone"):
+                      print(d["udid"]); sys.exit()
+          ')"
+          echo "Using simulator $id"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test
+        run: |
+          status=0
+          xcodebuild test \
+            -workspace MontessoriKeyboard.xcworkspace \
+            -scheme MontessoriKeyboard \
+            -destination "id=${{ steps.sim.outputs.id }}" \
+            CODE_SIGNING_ALLOWED=NO > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || status=$?
+          grep -E "error:|Test (Suite|Case|run)|✔|✘|\*\* (TEST|BUILD)" "$RUNNER_TEMP/xcodebuild.log" | tail -200 || true
+          exit $status
+
+      - name: Show compile errors
+        if: failure()
+        run: grep -E "error:" "$RUNNER_TEMP/xcodebuild.log" | sort -u | head -100 || true
