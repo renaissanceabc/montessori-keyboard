@@ -21,9 +21,19 @@ bun run --cwd apps/site test       # vitest: the sitemap and the keyboard's data
 | `app/`                          | One folder per page: home (`page.tsx`), `guide` (Set up), `faq`, `privacy`, `credits`         |
 | `app/globals.css`               | Every style, with the palette as tokens on `:root` (maple) and in the dark-mode block (walnut) |
 | `app/robots.ts`, `app/sitemap.ts` | robots.txt and sitemap.xml, built from the nav                                              |
-| `vercel.json`                   | Security headers (a CSP that allows only this site) and caching for the icons                |
+| `vercel.json`                   | Security headers (a CSP that allows only this site), caching for the icons, and the ignore step |
+| `scripts/ignore-build.sh`       | Vercel's Ignored Build Step: deploys only when the site changed (see below)                   |
 
 The app icon (`app/icon.png`, `app/apple-icon.png`, `public/favicon.ico`) comes from the app's icon and is added separately; Next picks the files up by name, and the site builds without them.
+
+## Deploys
+
+Vercel builds only when the site changed. Before installing, it runs `scripts/ignore-build.sh` (`ignoreCommand` in `vercel.json`), which asks `turbo query affected` whether the site's `build` task is affected since the branch's last deployment (`VERCEL_GIT_PREVIOUS_SHA`, or the parent commit on a branch's first deploy). The root `turbo.json` turns on `affectedUsingTaskInputs`, so that is decided by `build`'s `inputs` in `turbo.json` here:
+
+- **Builds:** anything under `apps/site` except the exclusions below, a lockfile change to a package the site uses, and the root `turbo.json`.
+- **Skips:** `apps/ios`, `docs/`, `.github/`, root notes and scripts, and in `apps/site` the tests, `vitest.config.ts`, `scripts/` and Markdown.
+
+`typecheck` runs after `build` (not before), so a test-only change never pulls `build` in; `next build` type-checks the site itself. If the check fails or the previous commit isn't in Vercel's shallow clone, it builds. A new file that ends up in the deployed site but isn't under `apps/site` needs adding to `build`'s `inputs` (as `$TURBO_ROOT$/path`). To deploy anyway, redeploy from the Vercel dashboard.
 
 ## Design decisions
 

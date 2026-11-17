@@ -3,10 +3,25 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      // After typecheck: `next typegen` and `next build` both write .next/types, so running them at once races.
-      "dependsOn": ["^build", "typecheck"],
-      "inputs": ["$TURBO_DEFAULT$", "!.next/**", "!out/**", "!test/**"],
+      "dependsOn": ["^build"],
+      // What the deployed site is made of. Vercel skips a deploy unless one of these changed
+      // (scripts/ignore-build.sh), so tests, notes and the ignore script stay out.
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!.next/**",
+        "!out/**",
+        "!test/**",
+        "!vitest.config.ts",
+        "!scripts/**",
+        "!**/*.md"
+      ],
       "outputs": ["out/**", ".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "typecheck": {
+      // After build: `next typegen` and `next build` both write .next/types, so running them at once
+      // races. This way round, a test-only change touches typecheck but never makes build (and a
+      // Vercel deploy) run; `next build` type-checks the site itself.
+      "dependsOn": ["^build", "build"]
     }
   }
 }
