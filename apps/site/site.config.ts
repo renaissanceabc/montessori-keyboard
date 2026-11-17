@@ -12,4 +12,6 @@ export const site = {
   /** Who makes it. */
   maker: { name: "Renaissance", url: "https://renaissance.education" },
   license: "MIT",
+  /** Where people write for help. The App Store listing's support page points here. */
+  supportEmail: "support@montessorikeyboard.com",
 };

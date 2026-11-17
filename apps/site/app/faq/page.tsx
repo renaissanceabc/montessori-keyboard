@@ -37,7 +37,7 @@ export default function Faq() {
           </p>
         </Question>
         <Question q="Does it work on iPad or Android?">
-          <p>iPhone comes first. iPad and Android are planned for later.</p>
+          <p>It works on iPhone and iPad. Android is planned for later.</p>
         </Question>
         <Question q="How do I turn it on?">
           <p>
@@ -111,6 +111,16 @@ export default function Faq() {
           <p>
             Yes. The code and its issues are on{" "}
             <ExternalLink href={site.githubUrl}>GitHub</ExternalLink>.
+          </p>
+        </Question>
+      </section>
+
+      <section className="faq-group" aria-labelledby="help">
+        <h2 id="help">Help</h2>
+        <Question q="How do I get help?">
+          <p>
+            Email <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> with what you
+            see and which iPhone or iPad you use. A person reads every message.
           </p>
         </Question>
       </section>

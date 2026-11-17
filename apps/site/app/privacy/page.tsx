@@ -74,8 +74,9 @@ export default function Privacy() {
       <h2 id="contact">Questions</h2>
       <p>
         Montessori Keyboard is made by{" "}
-        <ExternalLink href={site.maker.url}>{site.maker.name}</ExternalLink>. If this policy
-        changes, the new version will be posted here with a new date.
+        <ExternalLink href={site.maker.url}>{site.maker.name}</ExternalLink>. Questions about
+        privacy go to <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. If this
+        policy changes, the new version will be posted here with a new date.
       </p>
     </div>
   );
