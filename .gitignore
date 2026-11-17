@@ -28,3 +28,6 @@ xcuserdata
 !.vscode/extensions.json
 .idea
 apps/ios/shots
+
+# TypeScript incremental state
+*.tsbuildinfo
