@@ -1,0 +1,3 @@
+---
+# Gems install into apps/ios/vendor/bundle (gitignored), never a system Ruby folder.
+BUNDLE_PATH: "vendor/bundle"
