@@ -2,27 +2,32 @@ name: iOS
 
 # Builds the app and the keyboard for the simulator and runs the core unit tests.
 # Unsigned: nothing here archives or uploads.
+# macOS minutes cost 10x Linux ones on a private repo, so this only runs when the iOS app or
+# this file changes, skips drafts, and a new push to a pull request cancels the run before it.
 on:
   push:
-    branches: [main, develop, "claude/**"]
+    branches: [main, develop]
+    paths: ["apps/ios/**", "mise.toml", ".github/workflows/ios.yml"]
   pull_request:
-    paths: ["apps/ios/**", ".github/workflows/ios.yml"]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths: ["apps/ios/**", "mise.toml", ".github/workflows/ios.yml"]
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Every commit on develop and main finishes; a pull request only needs its newest one.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 env:
   XCODE_VERSION: "26.6"
-  TUIST_VERSION: "4.205.0"
 
 jobs:
   ios-build:
     name: iOS Build And Test
+    if: github.event.pull_request.draft != true
     runs-on: macos-26
     timeout-minutes: 30
     defaults:
@@ -36,11 +41,20 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
           xcodebuild -version
 
-      - name: Install Tuist
-        run: |
-          command -v mise >/dev/null 2>&1 || brew install mise
-          mise use --global "tuist@${TUIST_VERSION}"
-          echo "$HOME/.local/share/mise/shims" >> "$GITHUB_PATH"
+      # Installs the Tuist pinned in mise.toml and caches it between runs.
+      - uses: jdx/mise-action@v2
+        with:
+          install_args: tuist
+          cache: true
+
+      # The precompiled SDK and framework modules: the slow part of a cold build that
+      # doesn't depend on our sources. Keyed on Xcode, so a new Xcode starts fresh.
+      - name: Cache module cache
+        uses: actions/cache@v4
+        with:
+          path: apps/ios/build/ModuleCache.noindex
+          key: ios-modules-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ hashFiles('apps/ios/Project.swift') }}
+          restore-keys: ios-modules-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-
 
       - name: Generate project
         run: tuist generate --no-open
@@ -73,7 +87,9 @@ jobs:
           exit $status
 
       # Debug builds open one screen from `-screen <name>` (DebugScreens.swift), so each shot is one launch.
+      # Shots are evidence for a pull request, so a push to develop or main skips them.
       - name: Screenshots
+        if: github.event_name != 'push'
         env:
           SIM: ${{ steps.sim.outputs.id }}
         run: |
@@ -97,7 +113,7 @@ jobs:
           ls shots
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && github.event_name != 'push'
         with:
           name: screenshots
           path: apps/ios/shots
