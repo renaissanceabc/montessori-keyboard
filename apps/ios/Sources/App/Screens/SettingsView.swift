@@ -13,7 +13,7 @@ struct SettingsView: View {
     static let compactPadding: CGFloat = 10
     static let topGap: CGFloat = 4
     /// How far below the tray the rows fade out.
-    static let fade: CGFloat = 14
+    static let fade: CGFloat = 22
 
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
@@ -83,9 +83,9 @@ struct SettingsView: View {
         }
         .pageBackground(palette.page)
         // The native bar stays up on every page in this stack, so push and pop (and swipe back) are Apple's own.
-        // The large title sits inline, so it never collapses over the pinned keyboard.
+        // The large title collapses into the bar as the settings scroll, like any Settings page.
         .navigationTitle("Settings")
-        .toolbarTitleDisplayMode(.inlineLarge)
+        .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
@@ -116,7 +116,9 @@ struct SettingsView: View {
             .overlay(alignment: .bottom) {
                 LinearGradient(colors: [palette.page, palette.page.opacity(0)], startPoint: .top, endPoint: .bottom)
                     .frame(height: Self.fade)
-                    .offset(y: Self.fade)
+                    // Starts a little inside the tray's bottom gap, so a row's cut-off top never shows as ghosted
+                    // half letters.
+                    .offset(y: Self.fade - 4)
                     .opacity(min(max(scrolled / 16, 0), 1))
                     .allowsHitTesting(false)
             }

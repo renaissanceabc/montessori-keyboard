@@ -14,24 +14,14 @@ struct MontessoriKeyboardApp: App {
 
     /// Native navigation bars with their titles in Allo, so every page title matches the rest of the app.
     private static func styleNavigationBars() {
-        // Since iOS 15 the bar draws from its appearance objects, which ignore the proxy's own title attributes, so
-        // Allo goes into each of them. The scroll-edge one stays transparent, as the system's is.
-        let large = allo(TileFont.bold, size: 34, style: .largeTitle)
-        let inline = allo(TileFont.semibold, size: 17, style: .headline)
-        func styled(_ appearance: UINavigationBarAppearance) -> UINavigationBarAppearance {
-            appearance.largeTitleTextAttributes[.font] = large
-            appearance.titleTextAttributes[.font] = inline
-            return appearance
-        }
-        let standard = UINavigationBarAppearance()
-        standard.configureWithDefaultBackground()
-        let edge = UINavigationBarAppearance()
-        edge.configureWithTransparentBackground()
+        // The proxy's title attributes reach `.large` and `.inline` titles. (`.inlineLarge` draws its own title and
+        // ignores them, so no page uses it.)
+        let light = UIColor(Palette.maple.ink)
+        let dark = UIColor(Palette.walnut.ink)
+        let ink = UIColor { $0.userInterfaceStyle == .dark ? dark : light }
         let bar = UINavigationBar.appearance()
-        bar.standardAppearance = styled(standard)
-        bar.compactAppearance = styled(standard.copy())
-        bar.scrollEdgeAppearance = styled(edge)
-        bar.compactScrollEdgeAppearance = styled(edge.copy())
+        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle), .foregroundColor: ink]
+        bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline), .foregroundColor: ink]
     }
 
     private static func allo(_ name: String, size: CGFloat, style: UIFont.TextStyle) -> UIFont {
