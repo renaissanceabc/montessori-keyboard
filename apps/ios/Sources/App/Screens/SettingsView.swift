@@ -3,28 +3,40 @@ import MontessoriUI
 import SwiftUI
 
 /// Settings, with the keyboard pinned at the top so every change shows (and sounds) right away. As the settings
-/// scroll up, the keyboard shrinks a little to give them room, tied to the scroll so it follows the finger.
+/// scroll up, the tray settles into a compact keyboard to give them room: it keeps its full width, lined up with
+/// the groups below, while its tiles get shorter and its rows and padding tighter. It follows the finger.
 struct SettingsView: View {
-    /// How far the preview shrinks, and over how many points of scrolling.
-    static let shrink: CGFloat = 0.2
-    static let shrinkDistance: CGFloat = 140
+    /// Points of scrolling over which the tray settles.
+    static let settleDistance: CGFloat = 120
+    /// The tray's padding at rest and compact, and the gap under it.
+    static let restPadding: CGFloat = 14
+    static let compactPadding: CGFloat = 10
+    static let topGap: CGFloat = 4
+    static let bottomGap: CGFloat = 8
 
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
     @State private var previewText = TypedText(limit: 40)
-    @State private var previewHeight: CGFloat = 0
     @State private var scrolled: CGFloat = 0
 
-    /// 1 at rest, down to `1 - shrink` once the settings have scrolled `shrinkDistance`.
-    private var previewScale: CGFloat {
-        1 - Self.shrink * min(max(scrolled / Self.shrinkDistance, 0), 1)
+    /// 0 at rest, 1 once the settings have scrolled `settleDistance`, eased at both ends so the tray starts and
+    /// finishes settling gently rather than at a constant rate.
+    private var settle: CGFloat {
+        let t = min(max(scrolled / Self.settleDistance, 0), 1)
+        return t * t * (3 - 2 * t)
+    }
+
+    /// The pinned area's height at rest. The settings start under it, and it never changes while scrolling, so the
+    /// scroll content never relayouts.
+    private var restHeight: CGFloat {
+        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap + Self.bottomGap
     }
 
     var body: some View {
         @Bindable var model = model
         VStack(spacing: 0) {
-            // The settings scroll under the preview, which stays pinned and only scales (a transform, never a
-            // layout change), so scrolling stays smooth.
+            // The settings scroll under the pinned preview. Their top margin is the preview's rest height, fixed, so
+            // only the small tray relayouts as it settles.
             ZStack(alignment: .top) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
@@ -60,27 +72,12 @@ struct SettingsView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 28)
                 }
-                .contentMargins(.top, previewHeight, for: .scrollContent)
+                .contentMargins(.top, restHeight - Self.bottomGap, for: .scrollContent)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
                     scrolled = offset
                 }
 
-                // The page color behind the preview hides the rows passing under it, and shrinks with it.
-                palette.page
-                    .frame(height: previewHeight)
-                    .scaleEffect(x: 1, y: previewScale, anchor: .top)
-                    .allowsHitTesting(false)
-
-                // The preview never shows the strip: it's there to try the tiles.
-                LiveKeyboard(settings: previewSettings, text: previewText)
-                    .padding(14)
-                    .background(palette.tray, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .overlay { RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(palette.line, lineWidth: 1) }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 4)
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { previewHeight = $0 }
-                    .scaleEffect(previewScale, anchor: .top)
-                    .accessibilitySortPriority(1)
+                preview
             }
         }
         .pageBackground(palette.page)
@@ -99,6 +96,28 @@ struct SettingsView: View {
             }
         }
         .onAppear { model.refreshStatus() }
+    }
+
+    /// The pinned tray. The preview never shows the strip: it's there to try the tiles. The page color behind it
+    /// hides the rows passing under, and a hairline fades in under it once they do, like a navigation bar's edge.
+    private var preview: some View {
+        let padding = Self.restPadding - (Self.restPadding - Self.compactPadding) * settle
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        return LiveKeyboard(settings: previewSettings, text: previewText, compact: settle)
+            .padding(padding)
+            .background(palette.tray, in: shape)
+            .overlay { shape.strokeBorder(palette.line, lineWidth: 1) }
+            .padding(.horizontal, 16)
+            .padding(.top, Self.topGap)
+            .padding(.bottom, Self.bottomGap)
+            .background(palette.page)
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(palette.line)
+                    .frame(height: 1)
+                    .opacity(min(max(scrolled / 16, 0), 1))
+            }
+            .accessibilitySortPriority(1)
     }
 
     private var previewSettings: KeyboardSettings {

@@ -37,14 +37,16 @@ final class TypedText {
 struct LiveKeyboard: View {
     var settings: KeyboardSettings
     var text: TypedText
+    /// See `KeyboardView.compact`.
+    var compact: CGFloat = 0
     @State private var model: KeyboardModel?
 
     var body: some View {
         Group {
             if let model {
-                KeyboardView(model: model)
+                KeyboardView(model: model, compact: compact)
             } else {
-                Color.clear.frame(height: KeyboardView.height(for: settings))
+                Color.clear.frame(height: KeyboardView.height(for: settings, compact: compact))
             }
         }
         .onAppear {
