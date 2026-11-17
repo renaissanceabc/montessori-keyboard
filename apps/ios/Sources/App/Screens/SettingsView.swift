@@ -83,9 +83,10 @@ struct SettingsView: View {
         }
         .pageBackground(palette.page)
         // The native bar stays up on every page in this stack, so push and pop (and swipe back) are Apple's own.
-        // The large title collapses into the bar as the settings scroll, like any Settings page.
+        // The title stays inline: the pinned tray is the page's header, and a large title above it showed as an
+        // empty band (the settings scroll under the tray, not under the bar).
         .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
