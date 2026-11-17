@@ -233,7 +233,7 @@ export default function Home() {
           <Tile size="lg">o</Tile>
         </div>
         <h2 id="cta-title">Ready when they are</h2>
-        <p>For iPhone first. iPad and Android are on the way.</p>
+        <p>For iPhone and iPad. Android is on the way.</p>
         <div className="actions">
           <DownloadButton />
           <Link href="/guide" className="button">
