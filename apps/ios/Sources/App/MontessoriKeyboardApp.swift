@@ -34,6 +34,23 @@ struct RootView: View {
 
     var body: some View {
         Group {
+            #if DEBUG
+            if let screen = DebugScreen.requested {
+                DebugScreenView(screen: screen)
+            } else {
+                flow
+            }
+            #else
+            flow
+            #endif
+        }
+        .tint(palette.vowel)
+        .animation(.easeOut(duration: 0.2), value: model.onboarded)
+        .animation(.easeOut(duration: 0.2), value: model.unlocked)
+    }
+
+    @ViewBuilder private var flow: some View {
+        Group {
             if !model.onboarded {
                 OnboardingFlow()
             } else if !model.unlocked {
@@ -42,8 +59,5 @@ struct RootView: View {
                 NavigationStack { SettingsView() }
             }
         }
-        .tint(palette.vowel)
-        .animation(.easeOut(duration: 0.2), value: model.onboarded)
-        .animation(.easeOut(duration: 0.2), value: model.unlocked)
     }
 }

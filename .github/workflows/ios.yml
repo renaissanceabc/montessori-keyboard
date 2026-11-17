@@ -67,9 +67,41 @@ jobs:
             -workspace MontessoriKeyboard.xcworkspace \
             -scheme MontessoriKeyboard \
             -destination "id=${{ steps.sim.outputs.id }}" \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO > "$RUNNER_TEMP/xcodebuild.log" 2>&1 || status=$?
           grep -E "error:|Test (Suite|Case|run)|✔|✘|\*\* (TEST|BUILD)" "$RUNNER_TEMP/xcodebuild.log" | tail -200 || true
           exit $status
+
+      # Debug builds open one screen from `-screen <name>` (DebugScreens.swift), so each shot is one launch.
+      - name: Screenshots
+        env:
+          SIM: ${{ steps.sim.outputs.id }}
+        run: |
+          app="$(find build/Build/Products -name 'MontessoriKeyboard.app' -path '*iphonesimulator*' | head -1)"
+          xcrun simctl boot "$SIM" 2>/dev/null || true
+          xcrun simctl bootstatus "$SIM" -b
+          xcrun simctl status_bar "$SIM" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          xcrun simctl install "$SIM" "$app"
+          mkdir -p shots
+          shoot() {
+            xcrun simctl terminate "$SIM" com.renaissance.montessorikeyboard 2>/dev/null || true
+            xcrun simctl launch "$SIM" com.renaissance.montessorikeyboard -screen "$2" -padText "${3:-}" > /dev/null
+            sleep 4
+            xcrun simctl io "$SIM" screenshot "shots/$1-$2.png"
+          }
+          for look in light dark; do
+            xcrun simctl ui "$SIM" appearance "$look"
+            for screen in welcome setup tryit gate settings strip numbers guide about; do shoot "$look" "$screen"; done
+            shoot "$look" pad "The cat sat"
+          done
+          ls shots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: apps/ios/shots
+          if-no-files-found: ignore
 
       - name: Show compile errors
         if: failure()

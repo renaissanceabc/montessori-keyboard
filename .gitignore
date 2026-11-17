@@ -27,3 +27,4 @@ xcuserdata
 .vscode/*
 !.vscode/extensions.json
 .idea
+apps/ios/shots

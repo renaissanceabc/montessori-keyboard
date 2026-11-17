@@ -5,7 +5,13 @@ import SwiftUI
 struct PadView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
-    @State private var text = TypedText()
+    @State private var text: TypedText
+
+    init(initialText: String = "") {
+        let typed = TypedText()
+        typed.text = initialText
+        _text = State(initialValue: typed)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
