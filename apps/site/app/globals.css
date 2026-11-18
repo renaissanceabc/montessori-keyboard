@@ -407,29 +407,38 @@ p {
     inset 0 -2px 0 var(--tray-edge),
     0 18px 40px -20px rgba(60, 35, 10, 0.45);
 }
+/* Three equal slots, like the system suggestion bar; blank when there are no rhymes. */
 .strip {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-height: 2.25rem;
   padding-bottom: 6px;
-  border-bottom: 1px solid color-mix(in srgb, var(--tile-edge) 50%, transparent);
-  overflow: hidden;
 }
 .strip-word {
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 6rem;
+  position: relative;
   padding: 4px 6px;
   border-radius: 8px;
   font: inherit;
   font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--ink);
+  font-size: 1.15rem;
   cursor: pointer;
 }
-.strip-word:hover,
-.strip-word[data-current] {
+.strip-word + .strip-word::before {
+  content: "";
+  position: absolute;
+  inset-block: 25%;
+  left: 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--tile-edge) 50%, transparent);
+}
+.strip-word:hover {
   background: color-mix(in srgb, var(--tile-top) 70%, transparent);
+}
+.strip-word [data-tone="vowel"] {
+  color: var(--vowel);
+}
+.strip-word [data-tone="consonant"] {
+  color: var(--consonant);
 }
 .kb-row {
   display: flex;
@@ -611,16 +620,13 @@ p {
 }
 .art-strip {
   display: flex;
-  gap: 4px;
   font-weight: 700;
 }
 .art-strip span {
-  padding: 3px 8px;
-  border-radius: 7px;
+  padding: 3px 12px;
 }
-.art-strip [data-current] {
-  background: linear-gradient(var(--tile-top), var(--tile-bottom));
-  box-shadow: var(--tile-shadow);
+.art-strip span + span {
+  border-left: 1px solid color-mix(in srgb, var(--tile-edge) 50%, transparent);
 }
 .art-beads {
   display: flex;

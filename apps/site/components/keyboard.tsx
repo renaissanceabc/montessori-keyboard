@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 
-import { BEADS, familyFor, isVowel, ROWS, type Letters, type Order } from "@/lib/keyboard";
+import { BEADS, isVowel, rhymesFor, ROWS, type Letters, type Order } from "@/lib/keyboard";
 
 /**
  * The keyboard, drawn in HTML and CSS: a tray of wooden tiles under a word-family
- * strip, with a line above to type into. Tap the tiles to type, a word in the strip
- * to swap it in, and 123 for the number keys in bead-stair colors. QWERTY or ABC and
- * print or cursive switch below, as in the app's settings.
+ * strip, with a line above to type into. Tap the tiles to type, one of the strip's
+ * three rhymes to swap it in (the strip is blank when there are none), and 123 for
+ * the number keys in bead-stair colors. QWERTY or ABC and print or cursive switch
+ * below, as in the app's settings.
  */
 export function Keyboard() {
   const [text, setText] = useState("the cat");
@@ -17,7 +18,7 @@ export function Keyboard() {
   const [numbers, setNumbers] = useState(false);
 
   const lastWord = text.split(" ").at(-1) ?? "";
-  const family = familyFor(lastWord);
+  const rhymes = rhymesFor(lastWord);
 
   const type = (s: string) => setText((t) => (t + s).slice(-24));
   const back = () => setText((t) => t.slice(0, -1));
@@ -37,16 +38,14 @@ export function Keyboard() {
       </div>
 
       <div className="tray" role="group" aria-label="Montessori Keyboard">
-        <div className="strip" role="group" aria-label="Word family">
-          {family.map((w) => (
-            <button
-              key={w}
-              type="button"
-              className="strip-word"
-              data-current={w === lastWord || undefined}
-              onClick={() => swap(w)}
-            >
-              {w}
+        <div className="strip" role="group" aria-label="Rhymes">
+          {rhymes.map((w) => (
+            <button key={w} type="button" className="strip-word" onClick={() => swap(w)}>
+              {[...w].map((l, i) => (
+                <span key={i} data-tone={isVowel(l) ? "vowel" : "consonant"}>
+                  {l}
+                </span>
+              ))}
             </button>
           ))}
         </div>

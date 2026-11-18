@@ -29,7 +29,7 @@ Allo everywhere: Bold for tiles and headings, Regular for children's writing, an
 
 ## Strip
 
-44pt above the tiles. Rhymes (default), Word mat (tap a letter, then a tile, to change it) or Quiet. It never autocorrects. Holding a tile opens its phonograms in a popup over the tile instead, like Apple's accent picker; over the top row the popup stops at the keyboard's top edge, because a keyboard can't draw above its frame.
+44pt above the tiles. Rhymes (default: three rhymes in three equal slots, no family label, blank when there are none), Word mat (tap a letter, then a tile, to change it) or Quiet. The strip never shows helper text. It never autocorrects. Holding a tile opens its phonograms in a popup over the tile instead, like Apple's accent picker; over the top row the popup stops at the keyboard's top edge, because a keyboard can't draw above its frame.
 
 ## Icon
 

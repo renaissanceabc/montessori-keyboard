@@ -33,11 +33,15 @@ export const FAMILIES: Record<string, string[]> = {
   en: ["hen", "pen", "ten", "den"],
 };
 
-/** The words in the strip for what's typed so far: its family if it has one, else the at family. */
-export function familyFor(word: string): string[] {
-  const end = Object.keys(FAMILIES).find((f) => word.length > f.length && word.endsWith(f));
+/** The strip offers three rhymes at a time, as on iOS. */
+export const RHYME_SLOTS = 3;
 
-  return FAMILIES[end ?? "at"];
+/** The rhymes in the strip for the word just typed: up to three from its family, or none. */
+export function rhymesFor(word: string): string[] {
+  const end = Object.keys(FAMILIES).find((f) => word.length > f.length && word.endsWith(f));
+  if (!end) return [];
+
+  return FAMILIES[end].filter((w) => w !== word).slice(0, RHYME_SLOTS);
 }
 
 /**

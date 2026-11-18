@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { BEADS, FAMILIES, familyFor, isVowel, ROWS } from "../lib/keyboard";
+import { BEADS, isVowel, rhymesFor, ROWS } from "../lib/keyboard";
 
 describe("the keyboard", () => {
   it("has all 26 letters once in each order", () => {
@@ -13,9 +13,14 @@ describe("the keyboard", () => {
     expect([..."abcdefghijklmnopqrstuvwxyz"].filter(isVowel)).toEqual([..."aeiou"]);
   });
 
-  it("offers a word's own family in the strip", () => {
-    expect(familyFor("sun")).toEqual(FAMILIES.un);
-    expect(familyFor("xyz")).toEqual(FAMILIES.at);
+  it("offers three rhymes from a word's family, leaving out the word", () => {
+    expect(rhymesFor("cat")).toEqual(["hat", "mat", "sat"]);
+    expect(rhymesFor("sun")).toEqual(["run", "fun", "bun"]);
+  });
+
+  it("leaves the strip empty for a word with no family", () => {
+    expect(rhymesFor("zebra")).toEqual([]);
+    expect(rhymesFor("")).toEqual([]);
   });
 
   it("has a bead color for 1 to 10", () => {
