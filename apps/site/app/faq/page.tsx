@@ -42,8 +42,8 @@ export default function Faq() {
         <Question q="How do I turn it on?">
           <p>
             In Settings, go to General › Keyboard › Keyboards › Add New Keyboard and pick Montessori
-            Keyboard. Then tap the globe key to switch to it.{" "}
-            <Link href="/install">Install</Link> has every step.
+            Keyboard. Then tap the globe key to switch to it. The app walks you through this the
+            first time you open it.
           </p>
         </Question>
       </section>

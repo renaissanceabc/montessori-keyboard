@@ -81,7 +81,7 @@ export default function Features() {
         <p>
           Each tile can say its letter sound as it’s tapped, and keys can click. iOS only lets a
           keyboard make sounds when you allow Full Access, so the keyboard is quiet until you do.
-          See <Link href="/install#full-access">Allow Full Access</Link>.
+          See <Link href="/privacy#full-access">Allow Full Access</Link>.
         </p>
       </section>
 

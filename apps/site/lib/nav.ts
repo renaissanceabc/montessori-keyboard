@@ -9,9 +9,6 @@ export type NavPage = {
 export const INSTALL_SECTIONS = [
   { id: "requirements", title: "Requirements" },
   { id: "get", title: "Get the app" },
-  { id: "turn-on", title: "Turn it on" },
-  { id: "switch", title: "Switch to it" },
-  { id: "full-access", title: "Allow Full Access" },
   { id: "source", title: "Build from source" },
 ];
 
@@ -36,7 +33,7 @@ export const PAGES: NavPage[] = [
     href: "/install",
     title: "Install",
     description:
-      "Get Montessori Keyboard, turn it on in Settings, switch to it with the globe key, and what Allow Full Access does.",
+      "What you need, where to get Montessori Keyboard, and how to build it from source.",
     sections: INSTALL_SECTIONS,
   },
   {

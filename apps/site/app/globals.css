@@ -443,17 +443,6 @@ pre {
   border-left: 2px solid var(--hairline-2);
   color: var(--ink-3);
 }
-/* A settings path, one step after another. */
-.path {
-  margin: 0 0 14px;
-  color: var(--ink);
-  font-weight: var(--w-strong);
-}
-.path span[aria-hidden] {
-  margin: 0 6px;
-  color: var(--ink-3);
-  font-weight: 400;
-}
 .content a:not(.download) {
   color: inherit;
   text-decoration: underline;
