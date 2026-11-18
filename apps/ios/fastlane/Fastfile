@@ -23,10 +23,10 @@ platform :ios do
     setup_ci if is_ci
   end
 
-  desc "One-time, on a Mac, after the app ids, App Group and App Store Connect app exist"
-  desc "(apps/ios/README.md, TestFlight): make the App Store profiles in the match repo."
-  desc "Signs in with the App Store Connect API key, never an Apple ID, so 2FA and federated"
-  desc "accounts don't matter. Usage: bundle exec fastlane setup"
+  desc "Once, after the app ids, App Group and App Store Connect app exist (apps/ios/README.md,"
+  desc "TestFlight): make the App Store profiles in the match repo. The TestFlight workflow runs it"
+  desc "with lane setup. Signs in with the App Store Connect API key, never an Apple ID, so 2FA and"
+  desc "federated accounts don't matter. Usage: bundle exec fastlane setup"
   lane :setup do
     match(type: "appstore", app_identifier: SIGNED_TARGETS.values, readonly: false, api_key: asc_api_key)
   end

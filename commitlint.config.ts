@@ -1,6 +1,7 @@
-// Conventional commits: `type(scope): subject`. The commit-msg hook (.githooks/commit-msg) runs
-// this on every commit, and pull request titles follow the same rule. Merge commits ("Merge branch …") and reverts are skipped by
-// commitlint's defaults (`defaultIgnores`). Dependabot's own commits are skipped below.
+// Conventional commits: `type(scope): subject`. The commit-msg hook (lefthook.yml) runs
+// this on every commit, and pull request titles follow the same rule. Merge commits
+// ("Merge branch …") and reverts are skipped by commitlint's defaults (`defaultIgnores`).
+// Dependabot's own commits are skipped below.
 // The rules, with examples: CONTRIBUTING.md › Commit messages.
 
 // The workspaces and areas. A warning only, so a new area doesn't block a commit.

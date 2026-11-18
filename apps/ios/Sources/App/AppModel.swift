@@ -47,7 +47,8 @@ final class AppModel {
     /// Whether Montessori Keyboard is in the person's list of keyboards.
     private static func isKeyboardEnabled() -> Bool {
         if let keyboards = UserDefaults.standard.array(forKey: "AppleKeyboards") as? [String],
-           keyboards.contains(keyboardBundleID) {
+            keyboards.contains(keyboardBundleID)
+        {
             return true
         }
         let selector = NSSelectorFromString("identifier")

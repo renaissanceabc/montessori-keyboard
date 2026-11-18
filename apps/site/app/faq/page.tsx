@@ -59,8 +59,7 @@ export default function Faq() {
         </Question>
         <Question q="Can it show capitals?">
           <p>
-            Yes. Turn on capitals in the app’s settings, then use shift. They’re off to start
-            with.
+            Yes. Turn on capitals in the app’s settings, then use shift. They’re off to start with.
           </p>
         </Question>
         <Question q="Can it show cursive?">
@@ -103,8 +102,8 @@ export default function Faq() {
         </Question>
         <Question q="How do I keep my child out of the settings?">
           <p>
-            The settings are behind a grown-ups gate. To open them, type a number that’s written
-            out in words, or use Face ID.
+            The settings are behind a grown-ups gate. To open them, type a number that’s written out
+            in words, or use Face ID.
           </p>
         </Question>
         <Question q="Can I help, or suggest something?">
@@ -119,8 +118,8 @@ export default function Faq() {
         <h2 id="help">Help</h2>
         <Question q="How do I get help?">
           <p>
-            Email <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> with what you
-            see and which iPhone or iPad you use. A person reads every message.
+            Email <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a> with what you see
+            and which iPhone or iPad you use. A person reads every message.
           </p>
         </Question>
       </section>

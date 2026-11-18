@@ -23,10 +23,7 @@ function Path({ steps }: { steps: string[] }) {
 export default function Guide() {
   return (
     <div className="prose">
-      <PageHead
-        title="Set up"
-        line="Turn the keyboard on once, and it’s there in every app."
-      />
+      <PageHead title="Set up" line="Turn the keyboard on once, and it’s there in every app." />
 
       <p>
         The Montessori Keyboard app walks you through these steps when you first open it. Here they
@@ -60,12 +57,14 @@ export default function Guide() {
         Full Access is only needed for letter sounds and key clicks. Without it, the keyboard works
         the same, just quietly.
       </p>
-      <Path steps={["General", "Keyboard", "Keyboards", "Montessori Keyboard", "Allow Full Access"]} />
+      <Path
+        steps={["General", "Keyboard", "Keyboards", "Montessori Keyboard", "Allow Full Access"]}
+      />
       <div className="callout">
         <p>
           iOS shows the same warning for every keyboard that asks for Full Access, saying it could
-          send what you type over the network. Montessori Keyboard has no network access at all,
-          so nothing your child types can leave the phone. The setting is what iOS requires for a
+          send what you type over the network. Montessori Keyboard has no network access at all, so
+          nothing your child types can leave the phone. The setting is what iOS requires for a
           keyboard to play sounds. See <Link href="/privacy">Privacy</Link>.
         </p>
       </div>

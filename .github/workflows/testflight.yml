@@ -2,9 +2,17 @@ name: TestFlight
 
 # Archives the app and the keyboard, signs them with match, and uploads the build to TestFlight
 # for testing on real devices. Manual only: run it from the Actions tab or
-# `gh workflow run testflight.yml --ref develop`. Setup: apps/ios/README.md, "TestFlight".
+# `gh workflow run testflight.yml --ref develop`. With lane `setup`, it makes the App Store
+# profiles in the match repo instead (once, and again for a new bundle id or an expired
+# certificate). Setup: apps/ios/README.md, "TestFlight".
 on:
   workflow_dispatch:
+    inputs:
+      lane:
+        description: release uploads a build; setup makes the App Store profiles in the match repo
+        type: choice
+        options: [release, setup]
+        default: release
 
 # A second run waits for the first. Cancelling mid-upload can leave a half-sent build at App
 # Store Connect.
@@ -46,7 +54,7 @@ jobs:
           bundler-cache: true
           working-directory: apps/ios
 
-      - name: Archive and upload
+      - name: Run fastlane ${{ inputs.lane }}
         env:
           # Organization secrets, shared by every Renaissance app (apps/ios/README.md, TestFlight).
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
@@ -54,7 +62,8 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
-        run: bundle exec fastlane release
+          LANE: ${{ inputs.lane }}
+        run: bundle exec fastlane "$LANE"
 
       # Kept a week, so a failed upload can be retried by hand without rebuilding.
       - uses: actions/upload-artifact@v4

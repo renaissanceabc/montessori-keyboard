@@ -48,7 +48,9 @@ public enum TileFont {
     }
 
     /// Everything else: labels, rows, captions. Scales with Dynamic Type like the system font it replaces.
-    public static func text(_ size: CGFloat, weight: Font.Weight = .regular, relativeTo style: Font.TextStyle = .body) -> Font {
+    public static func text(
+        _ size: CGFloat, weight: Font.Weight = .regular, relativeTo style: Font.TextStyle = .body
+    ) -> Font {
         .custom(name(for: weight), size: size, relativeTo: style)
     }
 

@@ -33,7 +33,9 @@ struct AboutView: View {
                 }
                 SettingsGroup(title: "Fonts", footer: "Both under the SIL Open Font License.") {
                     link("Allo", value: "Josh Puckett", url: URL(string: "https://allo.joshpuckett.me")!)
-                    link("Playwrite US Trad", value: "TypeTogether", url: URL(string: "https://github.com/TypeTogether/Playwrite")!)
+                    link(
+                        "Playwrite US Trad", value: "TypeTogether",
+                        url: URL(string: "https://github.com/TypeTogether/Playwrite")!)
                 }
                 SettingsGroup(title: "Feedback") {
                     link("Report a problem", value: "GitHub", url: Self.repo.appending(path: "issues"))

@@ -37,7 +37,7 @@ struct PopupLayout: Equatable {
     /// key. Sliding well away chooses nothing, so lifting there types nothing.
     func choice(at point: CGPoint, anchor: CGRect) -> Int? {
         guard point.y >= frame.minY - 40, point.y <= anchor.maxY + 24,
-              point.x >= frame.minX - 24, point.x <= frame.maxX + 24
+            point.x >= frame.minX - 24, point.x <= frame.maxX + 24
         else { return nil }
         return chips.indices.min { abs(chips[$0].midX - point.x) < abs(chips[$1].midX - point.x) }
     }
@@ -61,13 +61,15 @@ struct PhonogramPopup: View {
                 .frame(width: layout.frame.width, height: layout.frame.height)
             ForEach(Array(zip(choices.indices, choices)), id: \.0) { index, choice in
                 let chip = layout.chips[index]
-                Button { onPick(index) } label: {
+                Button {
+                    onPick(index)
+                } label: {
                     PopupChip(text: choice, cursive: cursive, chosen: chosen == index)
                 }
                 .buttonStyle(.plain)
                 .frame(width: chip.width, height: chip.height)
                 .accessibilityLabel(choice)
-                    .offset(x: chip.minX - layout.frame.minX, y: chip.minY - layout.frame.minY)
+                .offset(x: chip.minX - layout.frame.minX, y: chip.minY - layout.frame.minY)
             }
         }
         .frame(width: layout.frame.width, height: layout.frame.height, alignment: .topLeading)
@@ -91,7 +93,9 @@ private struct PopupChip: View {
                 if chosen {
                     shape.fill(palette.tilePressed)
                 } else {
-                    shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
+                    shape.fill(
+                        LinearGradient(
+                            colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
                 }
             }
             .background {

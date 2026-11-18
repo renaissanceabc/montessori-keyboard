@@ -50,3 +50,6 @@ apps/ios/fastlane/test_output
 
 # TypeScript incremental state
 *.tsbuildinfo
+
+# Per-machine mise settings.
+mise.local.toml

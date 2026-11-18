@@ -1,4 +1,5 @@
 import Testing
+
 @testable import MontessoriCore
 
 struct LettersTests {
@@ -28,6 +29,8 @@ struct LettersTests {
 
     @Test func `every letter and team has a sound`() {
         for letter in "abcdefghijklmnopqrstuvwxyz" { #expect(LetterSounds.ipa(for: String(letter)) != nil) }
-        for team in Phonograms.byLetter.values.flatMap({ $0 }) { #expect(LetterSounds.ipa(for: team) != nil, "\(team)") }
+        for team in Phonograms.byLetter.values.flatMap({ $0 }) {
+            #expect(LetterSounds.ipa(for: team) != nil, "\(team)")
+        }
     }
 }

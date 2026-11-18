@@ -24,31 +24,32 @@ The keyboard collects nothing and sends nothing. There are no accounts, ads or a
 
 ## What's here
 
-| Path | What it is |
-| --- | --- |
-| `apps/ios` | The keyboard extension and its companion app, in Swift and SwiftUI, generated with Tuist |
-| `apps/site` | The website, a static Next.js export |
-| `scripts/` | The app icon and favicons, drawn from code (`icons.py`), and the Allo Learner fonts (`learner-fonts.py`) |
-| `docs/features` | How each part works |
-| `DESIGN.md` | The sizes, colors and type the code depends on |
+| Path            | What it is                                                                                               |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| `apps/ios`      | The keyboard extension and its companion app, in Swift and SwiftUI, generated with Tuist                 |
+| `apps/site`     | The website, a static Next.js export                                                                     |
+| `scripts/`      | The app icon and favicons, drawn from code (`icons.py`), and the Allo Learner fonts (`learner-fonts.py`) |
+| `docs/features` | How each part works                                                                                      |
+| `DESIGN.md`     | The sizes, colors and type the code depends on                                                           |
 
 ## Getting started
 
 You need [mise](https://mise.jdx.dev), and Xcode 26 on a Mac for the app.
 
 ```sh
-mise install            # bun, tuist and ruby, pinned in mise.toml
+mise install            # bun, tuist, swiftlint and ruby, pinned in mise.toml
 bun install
 bun run ios:generate    # writes apps/ios/MontessoriKeyboard.xcworkspace
 open apps/ios/MontessoriKeyboard.xcworkspace
 bun run dev:site        # the website on localhost:3020
 ```
 
-| | |
-| --- | --- |
-| iOS build and tests (macOS) | `bun run ios:build`, `bun run ios:test` |
-| Site typecheck, tests, build | `bun run typecheck`, `bun run test`, `bun run build` |
-| Icons | `bun run icons` (needs Pillow) |
+|                              |                                                        |
+| ---------------------------- | ------------------------------------------------------ |
+| iOS build and tests (macOS)  | `bun run ios:build`, `bun run ios:test`                |
+| Site typecheck, tests, build | `bun run typecheck`, `bun run test`, `bun run build`   |
+| Lint, format                 | `bun run lint`, `bun run format`, `bun run lint:swift` |
+| Icons                        | `bun run icons` (needs Pillow)                         |
 
 To run the app on your own device, see [apps/ios/README.md](apps/ios/README.md).
 

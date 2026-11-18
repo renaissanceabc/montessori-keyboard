@@ -13,13 +13,13 @@ The sizes, colors and type the code depends on. Change them here and in the code
 
 ## Colors
 
-| | Maple (light) | Walnut (dark) |
-| --- | --- | --- |
-| Tray | `#EADBC0` | `#2A1D15` |
+|           | Maple (light)          | Walnut (dark)          |
+| --------- | ---------------------- | ---------------------- |
+| Tray      | `#EADBC0`              | `#2A1D15`              |
 | Tile face | `#F8E7C9` to `#F0D8B0` | `#6E4C34` to `#5C3F2B` |
-| Tile edge | `#CDAA78` | `#36241A` |
-| Vowel | `#1650B0` | `#86BEFF` |
-| Consonant | `#B3141A` | `#FF7A6B` |
+| Tile edge | `#CDAA78`              | `#36241A`              |
+| Vowel     | `#1650B0`              | `#86BEFF`              |
+| Consonant | `#B3141A`              | `#FF7A6B`              |
 
 Bead stair: 1 red `#D2232A`, 2 green `#2E9B45`, 3 pink `#EE86AE`, 4 yellow `#F2C318`, 5 light blue `#6DBFE8`, 6 purple `#8E5BB5`, 7 white `#E9E2D2`, 8 brown `#8A5A2E`, 9 dark blue `#1E3A8A`, 10 gold `#C9A227`.
 
@@ -33,7 +33,7 @@ Allo everywhere: Bold for tiles and headings, Regular for children's writing, an
 
 ## Icon
 
-Three maple tiles, a b c, on the tray, drawn by `scripts/icons.py`. The favicon is a single blue "a" tile.
+Three tiles stacked as a triangle, a on top and b c below, drawn by `scripts/icons.py`. The tiles have a faint wood grain and a lit top edge, and the letters look cut into them. It is maple only: one icon in light and dark mode, with no dark or tinted variant. The favicon is the same triangle filling a transparent square, drawn separately at each size.
 
 ## Settings preview
 

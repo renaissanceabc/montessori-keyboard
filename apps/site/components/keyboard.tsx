@@ -99,9 +99,12 @@ export function Keyboard() {
           <button type="button" className="key key-space key-plain" onClick={() => type(" ")}>
             <span className="sr-only">Space</span>
           </button>
-          <button type="button" className="key key-wide key-plain key-small" onClick={() => type(". ")}>
-            .
-            <span className="sr-only"> (full stop)</span>
+          <button
+            type="button"
+            className="key key-wide key-plain key-small"
+            onClick={() => type(". ")}
+          >
+            .<span className="sr-only"> (full stop)</span>
           </button>
         </div>
       </div>
@@ -149,7 +152,9 @@ function NumberRows({ type }: { type: (s: string) => void }) {
             onClick={() => type(String(b.n))}
           >
             {b.n}
-            {b.color && <span className="bead" style={{ background: b.color }} aria-hidden="true" />}
+            {b.color && (
+              <span className="bead" style={{ background: b.color }} aria-hidden="true" />
+            )}
           </button>
         ))}
       </div>
