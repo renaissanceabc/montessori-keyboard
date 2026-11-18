@@ -15,6 +15,8 @@
     "lint": "oxlint --deny-warnings",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "lint:swift": "cd apps/ios && xcrun swift-format lint --strict --recursive --configuration .swift-format Sources Tests Project.swift Tuist.swift && swiftlint lint --strict --quiet",
+    "format:swift": "cd apps/ios && xcrun swift-format format --in-place --recursive --configuration .swift-format Sources Tests Project.swift Tuist.swift",
     "ios:generate": "bun run --cwd apps/ios ios:generate",
     "ios:build": "bun run --cwd apps/ios ios:build",
     "ios:test": "bun run --cwd apps/ios ios:test",

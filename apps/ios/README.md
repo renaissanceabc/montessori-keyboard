@@ -28,8 +28,9 @@ The lanes are in `fastlane/Fastfile`. `mise install` installs the Ruby they run 
 
 1. In the [developer portal](https://developer.apple.com/account/resources/identifiers/list), register the App Group `group.com.renaissance.montessorikeyboard`, then the App IDs `com.renaissance.montessorikeyboard` and `com.renaissance.montessorikeyboard.keyboard`, each with App Groups on and that group selected. fastlane can't do this step: Apple's API can't assign an App Group, and signing in with an Apple ID fails for federated and passkey accounts.
 2. In [App Store Connect](https://appstoreconnect.apple.com/apps), add a new iOS app: name Montessori Keyboard, bundle id `com.renaissance.montessorikeyboard`, SKU `montessorikeyboard`.
-3. On a Mac, export the secrets below (`APP_STORE_CONNECT_API_KEY_PATH` can point at the `.p8` file in place of the base64), then run `bundle exec fastlane setup` here. It makes the App Store profiles in the match repo, signing in with the App Store Connect API key, never an Apple ID. Renaissance's maintainers can run `mise run ios:setup` from the repo root instead, which reads the secrets from Infisical: run `infisical login`, then `infisical init` at the repo root and pick the `_Global` project. That writes `.infisical.json`, which git ignores.
-4. CI reads the same secrets as GitHub Actions secrets:
+3. Run the `TestFlight` workflow with **lane** set to `setup`. It makes the App Store profiles in the match repo, signing in with the App Store Connect API key, never an Apple ID. Run it again only when you add a bundle id or capability, or when the certificate expires. The token in `MATCH_GIT_BASIC_AUTHORIZATION` needs write access to the match repo for this.
+
+The workflow reads these GitHub Actions secrets. To run a lane on a Mac instead, export them (`APP_STORE_CONNECT_API_KEY_PATH` can point at the `.p8` file in place of the base64) and run `bundle exec fastlane setup` or `release` here.
 
 | Secret                             | What it is                                                      |
 | ---------------------------------- | --------------------------------------------------------------- |
