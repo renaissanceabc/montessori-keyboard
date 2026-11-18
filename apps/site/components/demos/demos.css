@@ -106,8 +106,9 @@
 .mk-figure {
   position: relative;
   margin: 0 0 6px;
+  container-type: inline-size;
 }
-/* Pause, in the corner the fade at the top of the frame leaves empty (the bottom on settings). */
+/* Pause, in the stage's corner beside the device, at the faded edge (the bottom on settings). */
 .mk-pause {
   position: absolute;
   top: 8px;
@@ -126,6 +127,16 @@
 .mk-figure:has(.mk-stage--top) .mk-pause {
   top: auto;
   bottom: 8px;
+}
+/* A narrow stage has no room beside the device: the button moves onto its faded screen, clear of the frame. */
+@container (max-width: 559px) {
+  .mk-pause {
+    top: 12px;
+    right: 40px;
+  }
+  .mk-figure:has(.mk-stage--top) .mk-pause {
+    bottom: 12px;
+  }
 }
 .mk-pause:active {
   transform: scale(0.92);

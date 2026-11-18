@@ -42,7 +42,7 @@ const FRAMES = {
     compact: { w: 358, h: 368, phone: 326, gutter: 16 },
   },
   pad: {
-    wide: { w: 600, h: 420, phone: 560, gutter: 24 },
+    wide: { w: 600, h: 420, phone: 520, gutter: 24 },
     compact: { w: 358, h: 300, phone: 342, gutter: 16 },
   },
   app: {
