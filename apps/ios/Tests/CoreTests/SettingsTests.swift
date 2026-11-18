@@ -25,7 +25,7 @@ struct SettingsTests {
     }
 
     @Test func `missing and unknown keys keep the defaults`() throws {
-        let json = #"{"order":"qwerty","strip":"sparkles"}"#.data(using: .utf8)!
+        let json = Data(#"{"order":"qwerty","strip":"sparkles"}"#.utf8)
         let s = try JSONDecoder().decode(KeyboardSettings.self, from: json)
         #expect(s.order == .qwerty)
         #expect(s.strip == .rhymes)
