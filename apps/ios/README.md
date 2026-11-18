@@ -40,3 +40,13 @@ The lanes are in `fastlane/Fastfile`. `mise install` installs the Ruby they run 
 | `APP_STORE_CONNECT_API_KEY_BASE64` | Base64 of the `.p8` key file |
 
 The match repo is set in `fastlane/Matchfile`. Set `MATCH_GIT_URL` to use another.
+
+## Price
+
+Montessori Keyboard is a paid download: $1.99 (USD), once. There are no in-app purchases, subscriptions or ads, so the app has no StoreKit code. The source stays MIT. The price lives only in App Store Connect, not in this repo or in fastlane, so changing it never needs a build. A maintainer sets it once:
+
+1. In App Store Connect, under [Business](https://appstoreconnect.apple.com/business), the Account Holder accepts the **Paid Apps Agreement** and fills in its **tax forms** and **bank account**. Until the agreement is active, the app can only be priced free.
+2. In the app's **Pricing and Availability**, set the base country to the United States and the price to **$1.99**. Apple fills in the other storefronts' prices from that.
+3. Leave **In-App Purchases** empty, and leave the app out of Volume Purchase / Apple School Manager discounts unless Renaissance decides otherwise.
+
+App copy never says "free": the app, the screenshots and the site say "open source" instead.

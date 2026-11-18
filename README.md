@@ -1,8 +1,8 @@
 # Montessori Keyboard
 
-A free, open-source keyboard for iPhone and iPad, for young learners. It looks and works like the Montessori moveable alphabet: wooden tiles in lowercase print, blue vowels and red consonants, in ABC order or QWERTY. Made by [Renaissance](https://renaissance.education).
+An open-source keyboard for iPhone and iPad, for young learners. It looks and works like the Montessori moveable alphabet: wooden tiles in lowercase print, blue vowels and red consonants, in ABC order or QWERTY. Made by [Renaissance](https://renaissance.education).
 
-[montessorikeyboard.com](https://montessorikeyboard.com) · Coming soon to the App Store
+[montessorikeyboard.com](https://montessorikeyboard.com) · Coming soon to the App Store for $1.99
 
 ## What it does
 
@@ -13,6 +13,10 @@ A free, open-source keyboard for iPhone and iPad, for young learners. It looks a
 - **Bead colors on 123**, from the Montessori bead stair.
 - **Maple in light mode, walnut in dark.**
 - **A companion app** for grown-ups: setup, a live preview of every setting, and a blank pad to try it, behind a grown-ups gate.
+
+## Price
+
+The App Store download is $1.99, once, with no ads, subscriptions or in-app purchases. The source stays MIT, so anyone can build it from this repo for free.
 
 ## Privacy
 

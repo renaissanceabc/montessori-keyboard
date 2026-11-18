@@ -37,7 +37,7 @@ struct WelcomeView: View {
                 point(icon: AnyView(abIcon), title: "Blue vowels, red consonants", detail: "The same colors as the classroom box.")
                 point(icon: AnyView(DecorTile(letter: "m", size: 18)), title: "Big, clear tiles", detail: "Lowercase print, like the moveable alphabet.")
                 point(icon: AnyView(Image(systemName: "lock")), title: "Private by design", detail: "No ads, no accounts. Nothing leaves this iPhone.")
-                point(icon: AnyView(Image(systemName: "heart")), title: "Free and open source", detail: "Made by Renaissance. The code is public.")
+                point(icon: AnyView(Image(systemName: "heart")), title: "Open source", detail: "Made by Renaissance. The code is public.")
             }
             Spacer(minLength: 0)
             VStack(spacing: 10) {
