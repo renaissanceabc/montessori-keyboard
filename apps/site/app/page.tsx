@@ -28,28 +28,16 @@ export default function Overview() {
         <h2>What it does</h2>
         <ul>
           <li>
-            <strong>Types in lowercase print.</strong> The letters children meet first, on maple
-            tiles, or walnut in dark mode. Capitals come with shift, if you turn them on.
+            <strong>Wooden tiles.</strong> Lowercase print or cursive, blue vowels and red
+            consonants, in ABC or QWERTY order.
           </li>
           <li>
-            <strong>Keeps the alphabet in order.</strong> The tiles start in ABC order for a child
-            still finding each letter, and switch to QWERTY when they’re ready. Print or cursive.
+            <strong>Quiet help.</strong> Phonograms on a long press, rhymes in the strip, bead
+            colors on the numbers, and letter sounds if you turn them on.
           </li>
           <li>
-            <strong>Helps quietly.</strong> Phonograms on a long press, rhymes in the strip, bead
-            colors on the numbers. Nothing grades, quizzes or holds letters back.
-          </li>
-          <li>
-            <strong>Says the sounds.</strong> Each tile can say its letter sound as it’s tapped,
-            once you allow Full Access.
-          </li>
-          <li>
-            <strong>Keeps the settings for grown-ups.</strong> They sit behind a gate: a number
-            written in words, or Face ID.
-          </li>
-          <li>
-            <strong>Stays on the phone.</strong> No network, no accounts, no analytics. One price,
-            with no ads or in-app purchases.
+            <strong>Nothing leaves the phone.</strong> No network, accounts, ads or analytics. One
+            price.
           </li>
         </ul>
         <p>
@@ -68,11 +56,8 @@ export default function Overview() {
       </section>
 
       <section>
-        <h2>Settings</h2>
-        <p>
-          The keyboard comes with a small app for grown-ups. Its settings have a live keyboard at
-          the top that changes as you do.
-        </p>
+        <h2>Companion app for grown-ups</h2>
+        <p>Pick the order, the letters and the help, and watch the keyboard change as you do.</p>
         <SettingsScene />
       </section>
 
