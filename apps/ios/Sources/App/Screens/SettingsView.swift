@@ -2,11 +2,23 @@ import MontessoriCore
 import MontessoriUI
 import SwiftUI
 
-/// Settings, with the keyboard pinned at the top so every change shows (and sounds) right away.
+/// Settings, with the keyboard pinned at the top so every change shows (and sounds) right away. As the settings
+/// scroll up, the keyboard shrinks a little to give them room, tied to the scroll so it follows the finger.
 struct SettingsView: View {
+    /// How far the preview shrinks, and over how many points of scrolling.
+    static let shrink: CGFloat = 0.2
+    static let shrinkDistance: CGFloat = 140
+
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
     @State private var previewText = TypedText(limit: 40)
+    @State private var previewHeight: CGFloat = 0
+    @State private var scrolled: CGFloat = 0
+
+    /// 1 at rest, down to `1 - shrink` once the settings have scrolled `shrinkDistance`.
+    private var previewScale: CGFloat {
+        1 - Self.shrink * min(max(scrolled / Self.shrinkDistance, 0), 1)
+    }
 
     var body: some View {
         @Bindable var model = model
@@ -33,42 +45,59 @@ struct SettingsView: View {
             .padding(.top, 8)
             .padding(.bottom, 12)
 
-            // The preview never shows the strip: it's there to try the tiles.
-            LiveKeyboard(settings: previewSettings, text: previewText)
-                .padding(14)
-                .background(palette.tray, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .padding(.horizontal, 12)
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    SettingsGroup(title: "Keyboard") {
-                        SegmentRow(title: "Order", selection: $model.settings.order, options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
-                        SegmentRow(title: "Letter shapes", selection: $model.settings.cursive, options: [(false, "Print"), (true, "Cursive")])
-                        ToggleRow(title: "Capitals with shift", isOn: $model.settings.capitalsWithShift)
+            // The settings scroll under the preview, which stays pinned and only scales (a transform, never a
+            // layout change), so scrolling stays smooth.
+            ZStack(alignment: .top) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        SettingsGroup(title: "Keyboard") {
+                            SegmentRow(title: "Order", selection: $model.settings.order, options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
+                            SegmentRow(title: "Letter shapes", selection: $model.settings.cursive, options: [(false, "Print"), (true, "Cursive")])
+                            ToggleRow(title: "Capitals with shift", isOn: $model.settings.capitalsWithShift)
+                        }
+                        SettingsGroup(title: "Learning") {
+                            ToggleRow(title: "Phonograms on long press", isOn: $model.settings.phonograms)
+                            LinkRow(title: "Strip", value: model.settings.strip.title) { StripOptionsView() }
+                            LinkRow(title: "Numbers", value: model.settings.numbers.title) { NumbersOptionsView() }
+                        }
+                        SettingsGroup(title: "Sound", footer: "Tap the tiles above to hear them. On other apps, sounds need Allow Full Access in iPhone Settings.") {
+                            ToggleRow(title: "Say letter sounds", isOn: $model.settings.letterSounds)
+                            ToggleRow(title: "Key clicks", isOn: $model.settings.keyClicks)
+                        }
+                        SettingsGroup(title: "More") {
+                            LinkRow(title: "Setup guide") { GuideView() }
+                            LinkRow(title: "About and source code") { AboutView() }
+                        }
+                        HStack(spacing: 8) {
+                            Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
+                            Text(model.statusLine)
+                        }
+                        .font(TileFont.text(13))
+                        .foregroundStyle(palette.muted)
+                        .frame(maxWidth: .infinity)
                     }
-                    SettingsGroup(title: "Learning") {
-                        ToggleRow(title: "Phonograms on long press", isOn: $model.settings.phonograms)
-                        LinkRow(title: "Strip", value: model.settings.strip.title) { StripOptionsView() }
-                        LinkRow(title: "Numbers", value: model.settings.numbers.title) { NumbersOptionsView() }
-                    }
-                    SettingsGroup(title: "Sound", footer: "Tap the tiles above to hear them. On other apps, sounds need Allow Full Access in iPhone Settings.") {
-                        ToggleRow(title: "Say letter sounds", isOn: $model.settings.letterSounds)
-                        ToggleRow(title: "Key clicks", isOn: $model.settings.keyClicks)
-                    }
-                    SettingsGroup(title: "More") {
-                        LinkRow(title: "Setup guide") { GuideView() }
-                        LinkRow(title: "About and source code") { AboutView() }
-                    }
-                    HStack(spacing: 8) {
-                        Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
-                        Text(model.statusLine)
-                    }
-                    .font(TileFont.text(13))
-                    .foregroundStyle(palette.muted)
-                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 20)
+                .contentMargins(.top, previewHeight, for: .scrollContent)
+                .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
+                    scrolled = offset
+                }
+
+                // The page color behind the preview hides the rows passing under it, and shrinks with it.
+                palette.page
+                    .frame(height: previewHeight)
+                    .scaleEffect(x: 1, y: previewScale, anchor: .top)
+                    .allowsHitTesting(false)
+
+                // The preview never shows the strip: it's there to try the tiles.
+                LiveKeyboard(settings: previewSettings, text: previewText)
+                    .padding(14)
+                    .background(palette.tray, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .padding(.horizontal, 12)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { previewHeight = $0 }
+                    .scaleEffect(previewScale, anchor: .top)
+                    .accessibilitySortPriority(1)
             }
         }
         .pageBackground(palette.page)
