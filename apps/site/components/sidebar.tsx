@@ -18,7 +18,7 @@ export function Sidebar() {
     <aside className="sidebar">
       <Link className="wordmark" href="/">
         <span className="wordmark-logo" aria-hidden="true" />
-        Montessori Keyboard
+        montessori keyboard
       </Link>
       <nav className="toc" aria-label="Site">
         <ul>

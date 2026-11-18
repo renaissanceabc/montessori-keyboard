@@ -192,10 +192,11 @@ body {
 }
 /* The mark: the a tile. */
 /* The app icon's three tiles, a over b c (public/logo.png, drawn by scripts/icons.py). */
+/* Taller than the two lines of the name beside it. */
 .wordmark-logo {
   flex: none;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   background: url("/logo.png") center / contain no-repeat;
 }
 .toc ul {
@@ -550,6 +551,11 @@ pre {
   }
   .wordmark {
     margin-bottom: 12px;
+  }
+  /* On a phone the name is one line: the logo stays a little taller than it. */
+  .wordmark-logo {
+    width: 36px;
+    height: 36px;
   }
   .toc > ul {
     display: flex;
