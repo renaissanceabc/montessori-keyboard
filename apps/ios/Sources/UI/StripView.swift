@@ -72,6 +72,42 @@ struct ChipStyle: ButtonStyle {
     }
 }
 
+/// One rhyme in the strip: the word in tile colors, filling its third of the strip.
+/// It has no chip; pressing it shows a soft paper patch behind the word.
+struct RhymeSlot: View {
+    var word: String
+    var cursive: Bool
+    var onTap: () -> Void
+
+    var body: some View {
+        // A plain Button, not KeyButton, as with the chips.
+        Button(action: onTap) {
+            ColoredWord(word: word, size: 21, cursive: cursive)
+                .padding(.bottom, 3)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(RhymeSlotStyle())
+        .accessibilityLabel(word)
+    }
+}
+
+struct RhymeSlotStyle: ButtonStyle {
+    @Environment(\.palette) private var palette
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    .fill(palette.chipTop)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 4)
+                    .opacity(configuration.isPressed ? 1 : 0)
+            )
+            .animation(configuration.isPressed ? nil : .easeOut(duration: 0.08), value: configuration.isPressed)
+    }
+}
+
 /// The strip above the tiles.
 struct StripView: View {
     @Bindable var model: KeyboardModel
@@ -87,29 +123,29 @@ struct StripView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 44)
-        .overlay(alignment: .bottom) { Rectangle().fill(palette.stripLine).frame(height: 1) }
     }
 
+    /// Three rhymes in three equal slots, like the system suggestion bar. With none, the strip is blank.
     @ViewBuilder private var rhymes: some View {
-        if let family = model.family, !model.rhymes.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    Text("-" + family)
-                        .font(TileFont.tile(size: 15, cursive: false))
-                        .foregroundStyle(palette.hint)
-                        .accessibilityLabel("Rhymes with \(family)")
-                    ForEach(model.rhymes, id: \.self) { rhyme in
-                        Chip(text: rhyme, cursive: model.settings.cursive) { model.swap(to: rhyme) }
+        let words = model.rhymes
+        if !words.isEmpty {
+            HStack(spacing: 0) {
+                ForEach(0..<KeyboardModel.rhymeSlots, id: \.self) { index in
+                    if index > 0, index < words.count {
+                        Rectangle().fill(palette.stripLine).frame(width: 1, height: 24)
+                    }
+                    if index < words.count {
+                        RhymeSlot(word: words[index], cursive: model.settings.cursive) {
+                            model.swap(to: words[index])
+                        }
+                    } else {
+                        Color.clear.frame(maxWidth: .infinity)
                     }
                 }
-                .padding(.horizontal, 12)
             }
-            .noScrollEdgeEffect()
-        } else {
-            Text("Rhymes show up here")
-                .font(TileFont.text(13))
-                .foregroundStyle(palette.hint)
-                .padding(.horizontal, 12)
+            .padding(.horizontal, 8)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(model.family.map { "Rhymes with \($0)" } ?? "Rhymes")
         }
     }
 
@@ -124,18 +160,8 @@ struct StripView: View {
                         model.select(letterAt: index)
                     }
                 }
-                if model.selectedLetter != nil {
-                    Text("Tap a tile")
-                        .font(TileFont.text(13))
-                        .foregroundStyle(palette.hint)
-                }
             }
             .padding(.horizontal, 12)
-        } else {
-            Text("Tap a letter to change it")
-                .font(TileFont.text(13))
-                .foregroundStyle(palette.hint)
-                .padding(.horizontal, 12)
         }
     }
 }

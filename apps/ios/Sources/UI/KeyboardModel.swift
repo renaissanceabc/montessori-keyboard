@@ -80,9 +80,12 @@ public final class KeyboardModel {
 
     // MARK: What the strip shows
 
+    /// The strip offers three rhymes at a time, each in its own slot.
+    public static let rhymeSlots = 3
+
     public var rhymes: [String] {
         guard let trailing else { return [] }
-        return WordFamilies.rhymes(for: trailing.word)
+        return WordFamilies.rhymes(for: trailing.word, limit: Self.rhymeSlots)
     }
 
     public var family: String? {
