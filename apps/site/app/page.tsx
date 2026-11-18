@@ -105,14 +105,15 @@ export default function Home() {
             title="Word families"
             art={
               <div className="art-strip" aria-hidden="true">
-                <span>hat</span>
+                <span>cat</span>
+                <span data-current>hat</span>
                 <span>mat</span>
                 <span>sat</span>
               </div>
             }
           >
-            A strip above the tiles offers three words that rhyme with the one being typed. Tap one
-            to swap it in, and hear how only the first sound changes.
+            A strip above the tiles offers words that rhyme with the one being typed. Tap one to
+            swap it in, and hear how only the first sound changes.
           </Feature>
 
           <Feature
