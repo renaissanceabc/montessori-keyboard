@@ -222,6 +222,57 @@
 }
 
 /* The tray: the strip, then the tiles. */
+/* The keyboard to try, on Overview: a phone's width of page and tray, and the settings under it. */
+.mk-live {
+  max-width: 402px;
+  margin: 0 auto 6px;
+}
+.mk-live-card {
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--mk-page);
+  box-shadow:
+    0 0 0 1px var(--mk-line),
+    0 10px 20px -8px var(--mk-shadow),
+    0 2px 6px -2px var(--mk-shadow);
+}
+.mk-live-page {
+  padding: 14px 16px 10px;
+  font-size: 26px;
+  line-height: 34px;
+  color: var(--mk-ink);
+  font-feature-settings: "ss01", "cv03", "cv04";
+}
+.mk-live-page .mk-note-line {
+  min-height: 34px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.mk-live-page .mk-caret {
+  height: 28px;
+  vertical-align: -5px;
+}
+.mk-live-fit {
+  overflow: hidden;
+}
+.mk-live .mk-key,
+.mk-live .mk-slot,
+.mk-live .mk-pchip {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.mk-live-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+}
+.mk-live-controls .stage-tabs button[aria-pressed="true"] {
+  background: var(--wash);
+}
+
 .mk-tray {
   position: relative;
   background: var(--mk-tray);

@@ -31,6 +31,46 @@ export type TrayProps = {
   /** Draw the home indicator's strip under the keys (the keyboard at the foot of a screen). */
   home?: boolean;
   className?: string;
+  /** Makes the tray a real keyboard: keys, strip words and popup chips become buttons that call these. */
+  live?: Live;
+};
+
+/** What a live tray does when it's used (the site's try-it keyboard). */
+export type Live = {
+  /** A key was tapped, by its id: a letter, a digit or mark, or shift, delete, 123, space, return. */
+  onKey: (id: string) => void;
+  /** A finger went down on a key or lifted off it, so a hold can open the phonograms. */
+  onDown?: (id: string) => void;
+  onUp?: () => void;
+  /** A word in the strip was tapped. */
+  onWord: (word: string) => void;
+  /** A letter team in the popup was tapped. */
+  onPick: (team: string) => void;
+};
+
+const NAMES: Record<string, string> = {
+  shift: "Shift",
+  delete: "Delete",
+  "123": "Numbers",
+  space: "Space",
+  return: "Return",
+  globe: "Next keyboard",
+};
+
+/** A pressed look that follows the finger at once, like the scripted demos' data-pressed. */
+const press = {
+  onPointerDown: (e: { currentTarget: HTMLElement }) => {
+    e.currentTarget.dataset.pressed = "";
+  },
+  onPointerUp: (e: { currentTarget: HTMLElement }) => {
+    delete e.currentTarget.dataset.pressed;
+  },
+  onPointerLeave: (e: { currentTarget: HTMLElement }) => {
+    delete e.currentTarget.dataset.pressed;
+  },
+  onPointerCancel: (e: { currentTarget: HTMLElement }) => {
+    delete e.currentTarget.dataset.pressed;
+  },
 };
 
 const GAP = 6;
@@ -236,6 +276,7 @@ export function Tray({
   globe = true,
   home = true,
   className,
+  live,
 }: TrayProps) {
   const grid = rows(order, layer, globe).map((r) => layout(width, r));
   const top = noStrip ? 0 : STRIP_H;
@@ -268,10 +309,29 @@ export function Tray({
       style={{ width, height } as CSSProperties}
     >
       {!noStrip && (
-        <div className="mk-strip" data-target="strip">
+        <div
+          className="mk-strip"
+          data-target="strip"
+          role={live ? "group" : undefined}
+          aria-label={live ? "Rhymes" : undefined}
+        >
           {strip.length > 0 &&
             [0, 1, 2].map((i) => {
               const w = strip[i];
+
+              if (live && w) {
+                return (
+                  <button
+                    key={w}
+                    type="button"
+                    className="mk-slot"
+                    {...press}
+                    onClick={() => live.onWord(w)}
+                  >
+                    <Colored word={w} />
+                  </button>
+                );
+              }
 
               return (
                 <span key={w ?? `blank-${i}`} className="mk-slot" data-target={w && `chip-${w}`}>
@@ -283,19 +343,52 @@ export function Tray({
       )}
       {grid.map((r, ri) => (
         <div key={ri} className="mk-row" style={{ top: top + ROW_GAP + ri * (ROW_H + ROW_GAP) }}>
-          {r.map((k) => (
-            <span
-              key={k.id}
-              className={`mk-key mk-${k.kind}`}
-              data-target={`key-${k.id}`}
-              data-tone={k.letter ? (isVowel(k.letter) ? "v" : "c") : undefined}
-              data-down={down === k.id || undefined}
-              data-letter={k.kind === "letter" && !popup ? k.letter : undefined}
-              style={{ left: k.x, width: k.w }}
-            >
-              <span className="mk-face">{k.node}</span>
-            </span>
-          ))}
+          {r.map((k) => {
+            const common = {
+              className: `mk-key mk-${k.kind}`,
+              "data-tone": k.letter ? (isVowel(k.letter) ? "v" : "c") : undefined,
+              "data-down": down === k.id || undefined,
+              "data-letter": k.kind === "letter" && !popup ? k.letter : undefined,
+              style: { left: k.x, width: k.w },
+            };
+            const face = <span className="mk-face">{k.node}</span>;
+
+            if (live) {
+              const name = k.id === "123" && layer === "numbers" ? "Letters" : NAMES[k.id];
+
+              return (
+                <button
+                  key={k.id}
+                  type="button"
+                  {...common}
+                  aria-label={name ?? k.id}
+                  onPointerDown={(e) => {
+                    press.onPointerDown(e);
+                    live.onDown?.(k.id);
+                  }}
+                  onPointerUp={(e) => {
+                    press.onPointerUp(e);
+                    live.onUp?.();
+                  }}
+                  onPointerLeave={(e) => {
+                    press.onPointerLeave(e);
+                    live.onUp?.();
+                  }}
+                  onPointerCancel={press.onPointerCancel}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onClick={() => live.onKey(k.id)}
+                >
+                  {face}
+                </button>
+              );
+            }
+
+            return (
+              <span key={k.id} {...common} data-target={`key-${k.id}`}>
+                {face}
+              </span>
+            );
+          })}
         </div>
       ))}
       {p && popup && (
@@ -309,22 +402,28 @@ export function Tray({
             transformOrigin: `${p.ox}px 100%`,
           }}
         >
-          {popup.choices.map((c, i) => (
-            <span
-              key={c}
-              className="mk-pchip"
-              data-target={`pop-${i}`}
-              data-on={popup.chosen === i || undefined}
-              style={{
+          {popup.choices.map((c, i) => {
+            const common = {
+              className: "mk-pchip",
+              "data-on": popup.chosen === i || undefined,
+              style: {
                 left: p.inset + i * (p.cw + p.gap),
                 top: p.inset,
                 width: p.cw,
                 height: p.chipH,
-              }}
-            >
-              <Colored word={c} />
-            </span>
-          ))}
+              },
+            };
+
+            return live ? (
+              <button key={c} type="button" {...common} onClick={() => live.onPick(c)}>
+                <Colored word={c} />
+              </button>
+            ) : (
+              <span key={c} {...common} data-target={`pop-${i}`}>
+                <Colored word={c} />
+              </span>
+            );
+          })}
         </div>
       )}
       {home && <div className="mk-home" style={{ top: top + rowsH }} />}

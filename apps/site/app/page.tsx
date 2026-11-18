@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { LiveKeyboard } from "@/components/demos/live-keyboard";
 import { PadScene, SettingsScene } from "@/components/demos/scenes";
 import { DownloadButton } from "@/components/download-button";
 import { ExternalLink } from "@/components/external-link";
@@ -44,6 +45,12 @@ export default function Overview() {
           See <Link href="/features">Features</Link> for how each part works, or{" "}
           <Link href="/install">Install</Link> to set it up.
         </p>
+      </section>
+
+      <section>
+        <h2>Try it</h2>
+        <p>Tap the tiles, hold one for its letter teams, or tap a rhyme to swap it in.</p>
+        <LiveKeyboard />
       </section>
 
       <section>
