@@ -361,7 +361,7 @@ export function SettingsScene() {
         poster={{ order: "abc", cursive: true }}
         theme={dark ? "dark" : "light"}
         cursor={{ at: { x: f.wide.w / 2, y: f.wide.h - 40 }, style: "touch" }}
-        className="mk-stage"
+        className="mk-stage mk-stage--top"
         script={async (a) => {
           await a.wait(700);
           await a.click("seg-cursive");

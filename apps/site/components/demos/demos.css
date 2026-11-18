@@ -78,6 +78,15 @@
 .mk-stage .ss-stage {
   background: transparent;
 }
+/* The phone runs past the frame on purpose: clip it there, and fade the cut edge into the page */
+.mk-stage {
+  overflow: clip;
+  mask-image: linear-gradient(to bottom, transparent, #000 40px);
+}
+/* The app screen is pinned to the top, so its cut is at the bottom */
+.mk-stage--top {
+  mask-image: linear-gradient(to top, transparent, #000 40px);
+}
 .mk-phone .ss-phone__screen {
   color: var(--mk-ink);
   font-family: var(--font);
