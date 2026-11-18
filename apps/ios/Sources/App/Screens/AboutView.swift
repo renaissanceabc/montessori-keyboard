@@ -18,8 +18,7 @@ struct AboutView: View {
                 VStack(spacing: 12) {
                     TileTrio(size: 52)
                     Text("Montessori Keyboard").font(TileFont.heading(26)).foregroundStyle(palette.ink)
-                    Text("Version \(version) · Free and open source").font(TileFont.text(14)).foregroundStyle(
-                        palette.muted)
+                    Text("Version \(version) · Open source").font(TileFont.text(14)).foregroundStyle(palette.muted)
                 }
                 .padding(.top, 12)
 

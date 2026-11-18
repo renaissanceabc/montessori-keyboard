@@ -47,7 +47,7 @@ struct WelcomeView: View {
                     icon: AnyView(Image(systemName: "lock")), title: "Private by design",
                     detail: "No ads, no accounts. Nothing leaves this iPhone.")
                 point(
-                    icon: AnyView(Image(systemName: "heart")), title: "Free and open source",
+                    icon: AnyView(Image(systemName: "heart")), title: "Open source",
                     detail: "Made by Renaissance. The code is public.")
             }
             Spacer(minLength: 0)
