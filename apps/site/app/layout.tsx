@@ -60,7 +60,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <ExternalLink href={site.maker.url} arrow={false}>
                 {site.maker.name}
               </ExternalLink>
-              . Open source · <Link href="/credits">Credits</Link> ·{" "}
+              , {site.maker.tagline}. Open source · <Link href="/terms">Terms</Link> ·{" "}
+              <Link href="/credits">Credits</Link> ·{" "}
               <ExternalLink href={site.githubUrl} arrow={false}>
                 GitHub
               </ExternalLink>

@@ -53,6 +53,12 @@ export const PAGES: NavPage[] = [
 /** Pages linked from the footer only. */
 export const FOOTER_PAGES: NavPage[] = [
   {
+    href: "/terms",
+    title: "Terms of Service",
+    description:
+      "The terms for Montessori Keyboard: a one-time App Store purchase, open source code, no data collected, and the usual disclaimers.",
+  },
+  {
     href: "/credits",
     title: "Credits",
     description:

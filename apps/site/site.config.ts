@@ -10,7 +10,11 @@ export const site = {
   /** The source code. */
   githubUrl: "https://github.com/renaissanceabc/montessori-keyboard",
   /** Who makes it. */
-  maker: { name: "Renaissance", url: "https://renaissance.education" },
+  maker: {
+    name: "Renaissance",
+    url: "https://renaissance.education",
+    tagline: "tools for learning and thinking",
+  },
   license: "MIT",
   /** One price on the App Store: no ads, in-app purchases or subscription. */
   price: "$1.99",
