@@ -388,6 +388,10 @@
     0 2px 0 var(--mk-key-edge),
     0 3px 5px var(--mk-shadow);
 }
+/* Shift on: the tile gets the pale pressed face and stays raised, as TileFace(lit:) does in the app. */
+.mk-fn[data-lit] {
+  background: var(--mk-tile-pressed);
+}
 .mk-digit,
 .mk-mark {
   font-size: 22px;

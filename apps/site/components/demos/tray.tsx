@@ -18,6 +18,8 @@ export type TrayProps = {
   width: number;
   order?: Order;
   cursive?: boolean;
+  /** Shift is on: the letters show as capitals and the shift tile is lit, as in the app. */
+  shifted?: boolean;
   layer?: "letters" | "numbers";
   strip?: Strip;
   /** No strip row at all (the settings preview), rather than an empty one. */
@@ -198,13 +200,23 @@ function Beads({ n }: { n: number }) {
   );
 }
 
-function rows(order: Order, layer: "letters" | "numbers", globe: boolean): Key[][] {
+function rows(
+  order: Order,
+  layer: "letters" | "numbers",
+  globe: boolean,
+  shifted = false,
+): Key[][] {
   const out: Key[][] = [];
   const fw = order === "abc" ? 1 : 1.45;
 
   if (layer === "letters") {
     ROWS[order].forEach((letters, i) => {
-      const keys: Key[] = letters.map((l) => ({ id: l, kind: "letter", letter: l, node: l }));
+      const keys: Key[] = letters.map((l) => ({
+        id: l,
+        kind: "letter",
+        letter: l,
+        node: shifted ? l.toUpperCase() : l,
+      }));
 
       if (i === 2) {
         keys.unshift({ id: "shift", w: fw, kind: "fn", node: ICONS.shift });
@@ -268,6 +280,7 @@ export function Tray({
   width,
   order = "qwerty",
   cursive = false,
+  shifted = false,
   layer = "letters",
   strip = [],
   noStrip = false,
@@ -278,7 +291,7 @@ export function Tray({
   className,
   live,
 }: TrayProps) {
-  const grid = rows(order, layer, globe).map((r) => layout(width, r));
+  const grid = rows(order, layer, globe, shifted).map((r) => layout(width, r));
   const top = noStrip ? 0 : STRIP_H;
   const rowsH = grid.length * ROW_H + (grid.length + 1) * ROW_GAP;
   const height = top + rowsH + (home ? 34 : 0);
@@ -348,7 +361,13 @@ export function Tray({
               className: `mk-key mk-${k.kind}`,
               "data-tone": k.letter ? (isVowel(k.letter) ? "v" : "c") : undefined,
               "data-down": down === k.id || undefined,
-              "data-letter": k.kind === "letter" && !popup ? k.letter : undefined,
+              "data-letter":
+                k.kind === "letter" && !popup
+                  ? shifted
+                    ? k.letter?.toUpperCase()
+                    : k.letter
+                  : undefined,
+              "data-lit": (k.id === "shift" && shifted) || undefined,
               style: { left: k.x, width: k.w },
             };
             const face = <span className="mk-face">{k.node}</span>;

@@ -113,6 +113,7 @@ export function LiveKeyboard() {
               width={WIDTH}
               order={order}
               cursive={cursive}
+              shifted={caps}
               layer={layer}
               strip={layer === "letters" ? rhymesFor(word) : []}
               popup={popup && { ...popup, chosen: null }}
