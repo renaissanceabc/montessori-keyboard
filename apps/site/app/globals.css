@@ -337,6 +337,11 @@ body {
   text-decoration: none;
   transition: transform var(--dur-press) var(--ease-out);
 }
+.download-logo {
+  flex-shrink: 0;
+  /* Sits on the text's cap height, not its baseline */
+  margin-top: -2px;
+}
 a.download:active {
   transform: scale(0.97);
 }
