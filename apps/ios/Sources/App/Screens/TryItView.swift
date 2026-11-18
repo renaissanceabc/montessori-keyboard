@@ -50,7 +50,7 @@ struct TryItView: View {
         .pageBackground(palette.page)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .principal) { StepDots(step: 1, of: 2) }
+            ToolbarItem(placement: .principal) { StepDots(step: 2, of: 3) }
         }
         .onAppear {
             model.refreshStatus()

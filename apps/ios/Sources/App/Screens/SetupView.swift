@@ -146,7 +146,7 @@ struct SetupView: View {
         .pageBackground(palette.page)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .principal) { StepDots(step: 0, of: 2) }
+            ToolbarItem(placement: .principal) { StepDots(step: 0, of: 3) }
             if !model.keyboardEnabled {
                 ToolbarItem(placement: .topBarTrailing) { Button("Skip", action: next) }
             }
