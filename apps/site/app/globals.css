@@ -461,29 +461,35 @@ pre {
 }
 
 .footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
   padding-top: 18px;
   color: var(--ink-3);
   font-size: var(--text-ui);
 }
 
-/* System, light or dark: a small segmented control at the end of the footer. */
+/* System, light or dark: three icons at the foot of the sidebar. */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .wordmark {
+  align-self: flex-start;
+}
 .theme-switch {
   display: inline-flex;
+  align-self: flex-start;
+  gap: 2px;
+  margin-top: auto;
   padding: 2px;
   border-radius: var(--r-pill);
   background: var(--wash);
 }
 .theme-switch button {
-  padding: 3px 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 24px;
   border-radius: var(--r-pill);
   color: var(--ink-3);
-  font: inherit;
-  font-size: var(--text-small);
   transition:
     color var(--dur-press) var(--ease-out),
     background-color var(--dur-press) var(--ease-out);
@@ -533,10 +539,18 @@ pre {
     padding: 0 16px;
   }
   .sidebar {
-    position: static;
+    position: relative;
+    display: block;
     height: auto;
     padding: 24px 0 0;
     overflow: visible;
+  }
+  /* On a phone it sits level with the wordmark, at the right */
+  .theme-switch {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    margin: 0;
   }
   .wordmark {
     margin-bottom: 12px;

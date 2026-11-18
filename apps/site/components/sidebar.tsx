@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 
+import { ThemeSwitch } from "@/components/theme-switch";
 import { PAGES, type NavPage } from "@/lib/nav";
 
 /** The site's pages, kept in view. The page you're on opens its sections beneath it, and marks the one you're reading. */
@@ -37,6 +38,7 @@ export function Sidebar() {
           ))}
         </ul>
       </nav>
+      <ThemeSwitch />
     </aside>
   );
 }
