@@ -20,22 +20,8 @@ export const FEATURE_SECTIONS = [
   { id: "phonograms", title: "Phonograms" },
   { id: "rhymes", title: "Word families" },
   { id: "numbers", title: "Numbers" },
-  { id: "settings", title: "Settings" },
   { id: "sounds", title: "Letter sounds" },
-  { id: "gate", title: "The grown-ups gate" },
-  { id: "app", title: "The app" },
-];
-
-export const PRIVACY_SECTIONS = [
-  { id: "short", title: "In short" },
-  { id: "typing", title: "What your child types" },
-  { id: "settings", title: "Settings" },
-  { id: "full-access", title: "Allow Full Access" },
-  { id: "face-id", title: "Face ID" },
-  { id: "children", title: "Children" },
-  { id: "website", title: "This website" },
-  { id: "check", title: "Check for yourself" },
-  { id: "contact", title: "Questions" },
+  { id: "app", title: "Companion app" },
 ];
 
 /** The pages in the sidebar, in order. */
@@ -57,7 +43,7 @@ export const PAGES: NavPage[] = [
     href: "/features",
     title: "Features",
     description:
-      "Print or cursive tiles in QWERTY or ABC order, phonograms on a long press, word families in the strip, numbers in bead-stair colors, letter sounds and a grown-ups gate.",
+      "Print or cursive tiles in QWERTY or ABC order, phonograms on a long press, word families in the strip, numbers in bead-stair colors, letter sounds, and the companion app with its settings.",
     sections: FEATURE_SECTIONS,
   },
   {
@@ -65,7 +51,6 @@ export const PAGES: NavPage[] = [
     title: "Privacy",
     description:
       "Montessori Keyboard collects nothing. No ads, no accounts, no analytics, and no network at all.",
-    sections: PRIVACY_SECTIONS,
   },
   {
     href: "/faq",

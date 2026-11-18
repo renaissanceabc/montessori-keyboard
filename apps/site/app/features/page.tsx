@@ -76,15 +76,6 @@ export default function Features() {
         <p>The settings can show red and blue number rods under the digits instead, or nothing.</p>
       </section>
 
-      <section id="settings">
-        <h2>Settings</h2>
-        <p>
-          The settings live in the Montessori Keyboard app. A live keyboard at the top shows each
-          change as you make it.
-        </p>
-        <SettingsScene />
-      </section>
-
       <section id="sounds">
         <h2>Letter sounds</h2>
         <p>
@@ -94,22 +85,20 @@ export default function Features() {
         </p>
       </section>
 
-      <section id="gate">
-        <h2>The grown-ups gate</h2>
-        <p>
-          The settings open only for a grown-up: type the number that’s written out in words, like
-          seventy-four, or use Face ID.
-        </p>
-      </section>
-
       <section id="app">
-        <h2>The app</h2>
+        <h2>Companion app</h2>
+        <p>
+          The keyboard comes with a small app for grown-ups. Its settings have a live keyboard at
+          the top that shows each change as you make it.
+        </p>
+        <SettingsScene />
         <ul>
           <li>
             <strong>Setup</strong> walks you through adding the keyboard in Settings.
           </li>
           <li>
-            <strong>Settings</strong>, behind the gate, with the live keyboard.
+            <strong>Settings</strong> for the order, letter shapes, capitals, the strip, numbers
+            and sounds.
           </li>
           <li>
             <strong>Pad</strong>, a blank page for trying the keyboard without opening another
