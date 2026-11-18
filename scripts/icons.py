@@ -1,9 +1,7 @@
 """Draws the app icon and the site's favicons from code: a b c tiles stacked as a triangle, a on top.
 
 Run with `bun run icons` (Pillow required). It writes:
-  apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png         (maple, light)
-  apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024-dark.png    (walnut, dark)
-  apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024-tinted.png  (grayscale, tinted)
+  apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png
   apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico
 """
 
@@ -25,7 +23,7 @@ Rgb = tuple[int, int, int]
 
 @dataclass(frozen=True)
 class Look:
-    """The icon's colors. Maple and walnut match `Palette` in Theme.swift."""
+    """The icon's colors. Maple matches `Palette` in Theme.swift; the icon has one look in light and dark mode."""
 
     tray_top: Rgb
     tray_bottom: Rgb
@@ -53,36 +51,6 @@ MAPLE = Look(
     highlight=200,
     cut_shadow=110,
 )
-
-WALNUT = Look(
-    tray_top=(0x33, 0x24, 0x1A),
-    tray_bottom=(0x22, 0x17, 0x10),
-    tile_top=(0x6E, 0x4C, 0x34),
-    tile_bottom=(0x5C, 0x3F, 0x2B),
-    tile_edge=(0x36, 0x24, 0x1A),
-    vowel=(0x86, 0xBE, 0xFF),
-    consonant=(0xFF, 0x7A, 0x6B),
-    shadow=(0, 0, 0, 140),
-    grain=30,
-    highlight=50,
-    cut_shadow=150,
-)
-
-# iOS tints this one from its luminance, so it is gray on black: light tiles, dark letters.
-TINTED = Look(
-    tray_top=(0, 0, 0),
-    tray_bottom=(0, 0, 0),
-    tile_top=(0xF2, 0xF2, 0xF2),
-    tile_bottom=(0xD6, 0xD6, 0xD6),
-    tile_edge=(0x80, 0x80, 0x80),
-    vowel=(0x26, 0x26, 0x26),
-    consonant=(0x26, 0x26, 0x26),
-    shadow=(0, 0, 0, 0),
-    grain=0,
-    highlight=150,
-    cut_shadow=120,
-)
-
 
 def gradient(size, top, bottom):
     w, h = size
@@ -212,8 +180,6 @@ def main():
     appicon = ROOT / "apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset"
     appicon.mkdir(parents=True, exist_ok=True)
     icon(1024).save(appicon / "icon-1024.png")
-    icon(1024, WALNUT).save(appicon / "icon-1024-dark.png")
-    icon(1024, TINTED).convert("L").save(appicon / "icon-1024-tinted.png")
 
     site = ROOT / "apps/site/app"
     site.mkdir(parents=True, exist_ok=True)
