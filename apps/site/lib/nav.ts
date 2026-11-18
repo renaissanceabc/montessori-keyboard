@@ -6,12 +6,6 @@ export type NavPage = {
   sections?: { id: string; title: string }[];
 };
 
-export const INSTALL_SECTIONS = [
-  { id: "requirements", title: "Requirements" },
-  { id: "get", title: "Get the app" },
-  { id: "source", title: "Build from source" },
-];
-
 export const FEATURE_SECTIONS = [
   { id: "tiles", title: "The tiles" },
   { id: "phonograms", title: "Phonograms" },
@@ -34,7 +28,6 @@ export const PAGES: NavPage[] = [
     title: "Install",
     description:
       "What you need, where to get Montessori Keyboard, and how to build it from source.",
-    sections: INSTALL_SECTIONS,
   },
   {
     href: "/features",
