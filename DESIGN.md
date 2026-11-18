@@ -1,10 +1,10 @@
 # Design
 
-The full canvas (screens, keyboard states, light and dark) is the Montessori Keyboard design artifact. This file keeps the decisions the code depends on.
+The decisions the code depends on. The full design canvas (screens, keyboard states, light and dark) isn't in the repo; the code and this file are the source of truth.
 
 ## Tiles
 
-- Letter tiles are 46pt tall, 7pt corners, on a ten-tile grid with 6pt gaps, 11pt between rows and 3pt at the sides. Every row uses the same tile width; the third row scales down to fit shift and delete.
+- Letter tiles are 46pt tall, 7pt corners, on a ten-tile grid with 6pt gaps, 11pt between rows and 3pt at the sides. Every row uses the same tile width; a row that would overflow scales down to fit, and a shorter row sits in the middle.
 - A tile is a gradient face on a darker edge 2pt below it. Pressed, the face drops 2pt onto the edge and lightens.
 - Vowels are blue, consonants red, "y" included in red, as in the classroom box.
 - ABC rows: `abcdefghi`, `jklmnopqr`, `stuvwxyz`. QWERTY as usual. Shift and delete are 1 tile wide in ABC and 1.45 in QWERTY.

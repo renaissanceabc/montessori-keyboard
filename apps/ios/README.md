@@ -10,9 +10,13 @@ Needs Xcode 26 and Tuist (`mise install` at the repo root). Run `bun run ios:gen
 | MontessoriUI | Static framework, the SwiftUI keyboard |
 | CoreTests | Swift Testing unit tests for MontessoriCore |
 
-Both the app and the keyboard need the App Group `group.com.renaissance.montessorikeyboard` on team 6P8L9SND3U. To try the keyboard in the simulator, run the app, then add it in Settings, General, Keyboard, Keyboards.
+Both the app and the keyboard need the App Group `group.com.renaissance.montessorikeyboard` on Renaissance's team. To try the keyboard in the simulator, run the app, then add it in Settings, General, Keyboard, Keyboards. The simulator needs no signing.
+
+To run on your own iPhone, set `developmentTeam` and `bundleIdPrefix` at the top of `Project.swift` to your own team and a prefix you own (the App Group follows the prefix), then generate again. Keep that change out of pull requests.
 
 ## TestFlight
+
+For maintainers. Contributors don't need any of this, and the workflow can't run from a fork.
 
 The `TestFlight` workflow archives the app and the keyboard, signs them with [match](https://docs.fastlane.tools/actions/match/), and uploads the build. It's manual: run it from the Actions tab, or `gh workflow run testflight.yml --ref develop`. Internal testers get the build once Apple finishes processing it, usually 5 to 15 minutes later. Each build number is the UTC time of the run (`202611171430`); the version is `marketingVersion` in `Project.swift`.
 

@@ -1,6 +1,5 @@
 // Conventional commits: `type(scope): subject`. The commit-msg hook (.githooks/commit-msg) runs
-// this on every commit, and the PR title steps in promotion.yml apply the same
-// rule to pull request titles. Merge commits ("Merge branch …") and reverts are skipped by
+// this on every commit; pull request titles follow the same rule. Merge commits ("Merge branch …") and reverts are skipped by
 // commitlint's defaults (`defaultIgnores`). Dependabot's own commits are skipped below.
 // The rules, with examples: CONTRIBUTING.md › Commit messages.
 

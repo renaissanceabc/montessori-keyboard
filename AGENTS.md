@@ -9,7 +9,7 @@ An iOS keyboard for young learners modelled on the Montessori moveable alphabet 
 - `apps/ios/Sources/Keyboard`: the keyboard extension. A `UIInputViewController` hosting `KeyboardView`.
 - `apps/ios/Sources/App`: the companion app (setup, Try it, Settings behind the grown-ups gate, Pad, guide, about).
 - `apps/ios/Project.swift`: the Tuist project. Never commit the generated `.xcodeproj` or `.xcworkspace`.
-- `apps/site`: static Next.js site, structured like Galley's site.
+- `apps/site`: the website, a static Next.js export. See [apps/site/README.md](apps/site/README.md).
 
 ## Rules
 
