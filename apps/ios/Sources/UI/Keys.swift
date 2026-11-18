@@ -37,26 +37,41 @@ struct KeyRow: Layout {
 }
 
 /// Press handling shared by every key: tap on release (like Apple's keyboard), an optional hold, and an optional
-/// repeat for delete. `label` gets whether the key is down so it can sink.
+/// repeat for delete. `label` gets whether the key is down so it can sink. After a hold, the finger can keep
+/// sliding: `onSlide` and `onLift` get its point in the keyboard's coordinate space (`KeyboardView.space`).
 struct KeyButton<Label: View>: View {
     var accessibilityLabel: String
     var repeats = false
     var onTap: () -> Void
-    var onHold: (() -> Void)?
+    /// Gets the key's frame in the keyboard's coordinate space, so a popup can sit over it.
+    var onHold: ((CGRect) -> Void)?
+    var onSlide: ((CGPoint) -> Void)?
+    var onLift: (() -> Void)?
     @ViewBuilder var label: (_ pressed: Bool) -> Label
 
-    @State private var pressed = false
+    /// Resets by itself if the system cancels the touch, so a key never stays stuck down.
+    @GestureState private var pressed = false
+    @State private var active = false
     @State private var held = false
     @State private var timer: Task<Void, Never>?
+    @State private var frame: CGRect = .zero
 
     var body: some View {
         label(pressed)
             .contentShape(Rectangle())
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(KeyboardView.space)) } action: { frame = $0 }
             .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in if !pressed { begin() } }
+                DragGesture(minimumDistance: 0, coordinateSpace: .named(KeyboardView.space))
+                    .updating($pressed) { _, pressed, _ in pressed = true }
+                    .onChanged { value in
+                        if !active { begin() } else if held { onSlide?(value.location) }
+                    }
                     .onEnded { _ in end() }
             )
+            .onChange(of: pressed) { _, isPressed in
+                // Cancelled by the system without an end: drop the press without typing.
+                if !isPressed, active { cancel() }
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isKeyboardKey)
@@ -64,7 +79,7 @@ struct KeyButton<Label: View>: View {
     }
 
     private func begin() {
-        pressed = true
+        active = true
         held = false
         if repeats {
             onTap()
@@ -78,19 +93,29 @@ struct KeyButton<Label: View>: View {
             }
         } else if let onHold {
             timer = Task {
-                try? await Task.sleep(for: .milliseconds(420))
+                try? await Task.sleep(for: .milliseconds(400))
                 guard !Task.isCancelled else { return }
                 held = true
-                onHold()
+                onHold(frame)
             }
         }
     }
 
     private func end() {
+        guard active else { return }
         timer?.cancel()
         timer = nil
+        active = false
+        if held, !repeats { onLift?() }
         if !repeats && !held { onTap() }
-        pressed = false
+        held = false
+    }
+
+    private func cancel() {
+        timer?.cancel()
+        timer = nil
+        active = false
+        held = false
     }
 }
 
@@ -126,26 +151,66 @@ struct TileFace<Content: View>: View {
     }
 }
 
-/// A letter tile, blue or red.
+/// A letter tile, blue or red. While it's down (and no popup is open) a larger copy lifts above the finger,
+/// so small hands can see what they hit.
 struct LetterKey: View {
     var label: String
     var color: Color
     var cursive: Bool
     var fontSize: CGFloat
+    var lifts = true
     var onTap: () -> Void
-    var onHold: (() -> Void)?
+    var onHold: ((CGRect) -> Void)?
+    var onSlide: ((CGPoint) -> Void)?
+    var onLift: (() -> Void)?
 
     var body: some View {
-        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold) { pressed in
+        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold, onSlide: onSlide, onLift: onLift) { pressed in
             TileFace(pressed: pressed) {
-                Text(label)
-                    .font(TileFont.tile(size: fontSize, cursive: cursive))
-                    .foregroundStyle(color)
-                    .padding(.bottom, cursive ? 2 : 4)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
+                letter(size: fontSize)
+            }
+            .overlay(alignment: .bottom) {
+                if pressed && lifts {
+                    LiftedTile { letter(size: fontSize * 1.42) }
+                }
             }
         }
+    }
+
+    private func letter(size: CGFloat) -> some View {
+        Text(label)
+            .font(TileFont.tile(size: size, cursive: cursive))
+            .foregroundStyle(color)
+            .padding(.bottom, cursive ? 2 : 4)
+            .minimumScaleFactor(0.6)
+            .lineLimit(1)
+    }
+}
+
+/// The lifted copy of a pressed tile: about 1.4 times its size, its bottom a quarter of the way down the key.
+struct LiftedTile<Content: View>: View {
+    @ViewBuilder var content: Content
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        GeometryReader { proxy in
+            let key = proxy.size
+            let size = CGSize(width: key.width * 1.38, height: key.height * 1.35)
+            let shape = RoundedRectangle(cornerRadius: 9, style: .continuous)
+            content
+                .frame(width: size.width, height: size.height)
+                .background {
+                    shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
+                }
+                .background {
+                    shape.fill(palette.tileEdge)
+                        .offset(y: 4)
+                        .shadow(color: palette.liftShadow, radius: 9, y: 10)
+                }
+                .position(x: key.width / 2, y: key.height * 0.26 - size.height / 2)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 
