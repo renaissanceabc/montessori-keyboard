@@ -3,53 +3,46 @@ import MontessoriUI
 import SwiftUI
 
 /// Settings, with the keyboard pinned at the top so every change shows (and sounds) right away. As the settings
-/// scroll up, the keyboard shrinks a little to give them room, tied to the scroll so it follows the finger.
+/// scroll up, the tray settles into a compact keyboard to give them room: it keeps its full width, lined up with
+/// the groups below, while its tiles get shorter and its rows and padding tighter. It follows the finger.
 struct SettingsView: View {
-    /// How far the preview shrinks, and over how many points of scrolling.
-    static let shrink: CGFloat = 0.2
-    static let shrinkDistance: CGFloat = 140
+    /// Points of scrolling over which the tray settles.
+    static let settleDistance: CGFloat = 120
+    /// The tray's padding at rest and compact, and the gap above it.
+    static let restPadding: CGFloat = 14
+    static let compactPadding: CGFloat = 10
+    static let topGap: CGFloat = 4
+    /// A solid band of page color under the tray, so a row passing under it never shows as ghosted half letters.
+    static let bottomGap: CGFloat = 6
+    /// How far below that band the rows fade out.
+    static let fade: CGFloat = 28
 
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
     @State private var previewText = TypedText(limit: 40)
-    @State private var previewHeight: CGFloat = 0
     @State private var scrolled: CGFloat = 0
 
-    /// 1 at rest, down to `1 - shrink` once the settings have scrolled `shrinkDistance`.
-    private var previewScale: CGFloat {
-        1 - Self.shrink * min(max(scrolled / Self.shrinkDistance, 0), 1)
+    /// 0 at rest, 1 once the settings have scrolled `settleDistance`, eased at both ends so the tray starts and
+    /// finishes settling gently rather than at a constant rate.
+    private var settle: CGFloat {
+        let t = min(max(scrolled / Self.settleDistance, 0), 1)
+        return t * t * (3 - 2 * t)
+    }
+
+    /// The pinned area's height at rest. The settings start under it, and it never changes while scrolling, so the
+    /// scroll content never relayouts.
+    private var restHeight: CGFloat {
+        KeyboardView.height(for: previewSettings) + 2 * Self.restPadding + Self.topGap + Self.bottomGap
     }
 
     var body: some View {
         @Bindable var model = model
         VStack(spacing: 0) {
-            HStack {
-                Text("Settings")
-                    .font(TileFont.heading(30))
-                    .foregroundStyle(palette.ink)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                NavigationLink {
-                    PadView()
-                } label: {
-                    Image(systemName: "pencil.line")
-                        .font(.body.weight(.semibold))
-                        .foregroundStyle(palette.ink)
-                        .frame(width: 44, height: 44)
-                        .background(palette.card.opacity(0.8), in: Circle())
-                        .shadow(color: palette.shadow.opacity(0.5), radius: 6, y: 3)
-                }
-                .accessibilityLabel("Open a blank pad")
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
-
-            // The settings scroll under the preview, which stays pinned and only scales (a transform, never a
-            // layout change), so scrolling stays smooth.
+            // The settings scroll under the pinned preview. Their top margin is the preview's rest height, fixed, so
+            // only the small tray relayouts as it settles.
             ZStack(alignment: .top) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 18) {
                         SettingsGroup(title: "Keyboard") {
                             SegmentRow(title: "Order", selection: $model.settings.order, options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
                             SegmentRow(title: "Letter shapes", selection: $model.settings.cursive, options: [(false, "Print"), (true, "Cursive")])
@@ -64,45 +57,79 @@ struct SettingsView: View {
                             ToggleRow(title: "Say letter sounds", isOn: $model.settings.letterSounds)
                             ToggleRow(title: "Key clicks", isOn: $model.settings.keyClicks)
                         }
-                        SettingsGroup(title: "More") {
-                            LinkRow(title: "Setup guide") { GuideView() }
-                            LinkRow(title: "About and source code") { AboutView() }
+                        VStack(alignment: .leading, spacing: 6) {
+                            SettingsGroup(title: "More") {
+                                LinkRow(title: "Setup guide") { GuideView() }
+                                LinkRow(title: "About and source code") { AboutView() }
+                            }
+                            HStack(spacing: 8) {
+                                Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
+                                Text(model.statusLine)
+                            }
+                            .font(TileFont.text(13, relativeTo: .footnote))
+                            .foregroundStyle(model.keyboardEnabled ? palette.successInk : palette.muted)
+                            .padding(.horizontal, 4)
                         }
-                        HStack(spacing: 8) {
-                            Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
-                            Text(model.statusLine)
-                        }
-                        .font(TileFont.text(13))
-                        .foregroundStyle(palette.muted)
-                        .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 20)
+                    .padding(.top, 10)
+                    .padding(.bottom, 28)
                 }
-                .contentMargins(.top, previewHeight, for: .scrollContent)
+                .contentMargins(.top, restHeight, for: .scrollContent)
                 .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
                     scrolled = offset
                 }
 
-                // The page color behind the preview hides the rows passing under it, and shrinks with it.
-                palette.page
-                    .frame(height: previewHeight)
-                    .scaleEffect(x: 1, y: previewScale, anchor: .top)
-                    .allowsHitTesting(false)
-
-                // The preview never shows the strip: it's there to try the tiles.
-                LiveKeyboard(settings: previewSettings, text: previewText)
-                    .padding(14)
-                    .background(palette.tray, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .padding(.horizontal, 12)
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { previewHeight = $0 }
-                    .scaleEffect(previewScale, anchor: .top)
-                    .accessibilitySortPriority(1)
+                preview
             }
         }
         .pageBackground(palette.page)
-        .toolbar(.hidden, for: .navigationBar)
+        // The native bar stays up on every page in this stack, so push and pop (and swipe back) are Apple's own.
+        // The title stays inline: the pinned tray is the page's header, and a large title above it showed as an
+        // empty band (the settings scroll under the tray, not under the bar).
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    PadView()
+                } label: {
+                    Image(systemName: "pencil.line")
+                }
+                .accessibilityLabel("Open a blank pad")
+            }
+        }
         .onAppear { model.refreshStatus() }
+    }
+
+    /// The pinned tray. The preview never shows the strip: it's there to try the tiles. The page color behind it
+    /// hides the rows passing under, and they fade out just below its edge.
+    private var preview: some View {
+        let padding = Self.restPadding - (Self.restPadding - Self.compactPadding) * settle
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        return LiveKeyboard(settings: previewSettings, text: previewText, compact: settle)
+            .padding(padding)
+            .background(palette.tray, in: shape)
+            .overlay { shape.strokeBorder(palette.line, lineWidth: 1) }
+            .padding(.horizontal, 16)
+            .padding(.top, Self.topGap)
+            .padding(.bottom, Self.bottomGap)
+            .background(palette.page)
+            // Rows fade out as they slide under the tray rather than being cut flat, and the tray's own edge is the
+            // divider, so there's no separate line or empty band below it.
+            .overlay(alignment: .bottom) {
+                LinearGradient(stops: [
+                    .init(color: palette.page, location: 0),
+                    .init(color: palette.page.opacity(0.85), location: 0.35),
+                    .init(color: palette.page.opacity(0), location: 1),
+                ], startPoint: .top, endPoint: .bottom)
+                    .frame(height: Self.fade)
+                    // Hangs entirely below the band, so it never covers the tray's own rounded edge and border.
+                    .offset(y: Self.fade)
+                    .opacity(min(max(scrolled / 16, 0), 1))
+                    .allowsHitTesting(false)
+            }
+            .accessibilitySortPriority(1)
     }
 
     private var previewSettings: KeyboardSettings {
@@ -127,7 +154,7 @@ struct StripOptionsView: View {
             }
             OptionCard(title: StripMode.letters.title, detail: "Tap a letter to change it.", selected: model.settings.strip == .letters, action: { pick(.letters) }) {
                 MiniStrip {
-                    ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0) }
+                    ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0, letter: true) }
                     Text("tap a tile to change it").font(TileFont.text(12.5)).foregroundStyle(palette.muted).padding(.leading, 6)
                 }
             }
@@ -170,14 +197,17 @@ struct OptionsPage<Content: View>: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ScreenHeading(title: title, subtitle: subtitle)
+                Text(subtitle)
+                    .font(TileFont.text(15))
+                    .foregroundStyle(palette.ink2)
                 content
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 28)
         }
         .pageBackground(palette.page)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -196,6 +226,7 @@ struct MiniStrip<Content: View>: View {
 
 struct MiniChip: View {
     var text: String
+    var letter = false
     @Environment(\.palette) private var palette
 
     var body: some View {
@@ -205,11 +236,11 @@ struct MiniChip: View {
             }
         }
         .font(TileFont.tile(size: 19, cursive: false))
-        .padding(.horizontal, 9)
-        .padding(.bottom, 3)
-        .frame(height: 32)
-        .background(palette.tileTop, in: RoundedRectangle(cornerRadius: 7))
-        .background(RoundedRectangle(cornerRadius: 7).fill(palette.tileEdge).offset(y: 1))
+        .padding(.horizontal, letter ? 0 : 9)
+        .padding(.bottom, letter ? 2 : 3)
+        .frame(width: letter ? 26 : nil, height: 32)
+        .background(palette.chipTop, in: RoundedRectangle(cornerRadius: letter ? 5 : 7))
+        .background(RoundedRectangle(cornerRadius: letter ? 5 : 7).fill(palette.tileEdge).offset(y: 1))
     }
 }
 

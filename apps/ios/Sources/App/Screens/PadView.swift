@@ -5,6 +5,7 @@ import SwiftUI
 struct PadView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var text: TypedText
 
     init(initialText: String = "") {
@@ -17,7 +18,11 @@ struct PadView: View {
         VStack(spacing: 0) {
             ScrollViewReader { proxy in
                 ScrollView {
-                    (Text(text.text.isEmpty ? "" : text.text) + Text("|").foregroundStyle(palette.vowel))
+                    // The caret blinks once a second, like the canvas's; it holds still with Reduce Motion.
+                    TimelineView(.periodic(from: .now, by: 0.5)) { context in
+                        let on = reduceMotion || Int(context.date.timeIntervalSinceReferenceDate * 2).isMultiple(of: 2)
+                        Text("\(text.text)\(Text("|").foregroundStyle(palette.vowel.opacity(on ? 1 : 0)))")
+                    }
                         .font(TileFont.writing(34))
                         .foregroundStyle(palette.ink)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -28,13 +33,18 @@ struct PadView: View {
                 }
                 .onChange(of: text.text) { _, _ in proxy.scrollTo("end", anchor: .bottom) }
             }
-            .background(palette.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .background {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(palette.card)
+                    .shadow(color: palette.separator, radius: 1.5, y: 1)
+            }
             .padding(.horizontal, 16)
             .padding(.bottom, 14)
 
             LiveKeyboard(settings: model.settings, text: text)
         }
         .pageBackground(palette.page)
+        .navigationTitle("Pad")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

@@ -51,7 +51,7 @@ struct ChooseView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 12)
         }
-        .pageBackground(palette.page)
+        .pageBackground(palette.paper)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) { StepDots(step: 1, of: 3) }

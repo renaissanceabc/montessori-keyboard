@@ -1,14 +1,15 @@
 # Design
 
-The full canvas (screens, keyboard states, light and dark) is the Montessori Keyboard design artifact. This file keeps the decisions the code depends on.
+The sizes, colors and type the code depends on. Change them here and in the code together: colors live in `Palette` (`apps/ios/Sources/UI/Theme.swift`) and the site's CSS tokens.
 
 ## Tiles
 
 - Letter tiles are 46pt tall, 7pt corners, on a ten-tile grid with 6pt gaps, 11pt between rows and 3pt at the sides. Every row uses the same tile width; the third row scales down to fit shift and delete.
-- A tile is a gradient face on a darker edge 2pt below it. Pressed, the face drops 2pt onto the edge and lightens.
+- A tile is a gradient face on a darker edge 2pt below it, over a soft shadow, all drawn from parts. Pressed, the face sinks 2pt onto the edge at once and rises over 80ms, keeping its color. Only shift, when on, gets the pale face, and it stays raised.
+- Shift, delete and return are drawn strokes (1.8pt, round caps). The space bar is blank.
 - Vowels are blue, consonants red, "y" included in red, as in the classroom box.
-- ABC rows: `abcdefghi`, `jklmnopqr`, `stuvwxyz`. QWERTY as usual. Shift and delete are 1 tile wide in ABC and 1.45 in QWERTY.
-- Bottom row: 123 (2.3), space (5), return (2.3), and a globe only when iOS asks for one.
+- ABC rows: `abcdefghi`, `jklmnopqr`, `stuvwxyz`. QWERTY as usual. Shift and delete are 1 tile wide in ABC and 1.45 in QWERTY. With capitals off, shift's slot stays empty, so nothing moves.
+- Bottom row: 123 (2.3), space (5), return (2.3). When iOS asks for a globe: 123 (1.5), globe (1.2), space (4.6), return (2).
 
 ## Colors
 
@@ -28,8 +29,12 @@ Allo everywhere: Bold for tiles and headings, Regular for children's writing, an
 
 ## Strip
 
-44pt above the tiles. Rhymes (default), Word mat (tap a letter, then a tile, to change it) or Quiet. It never autocorrects. The phonogram tray takes it over while a tile is held.
+44pt above the tiles. Rhymes (default), Word mat (tap a letter, then a tile, to change it) or Quiet. It never autocorrects. Holding a tile opens its phonograms in a popup over the tile instead, like Apple's accent picker; over the top row the popup stops at the keyboard's top edge, because a keyboard can't draw above its frame.
 
 ## Icon
 
 Three maple tiles, a b c, on the tray, drawn by `scripts/icons.py`. The favicon is a single blue "a" tile.
+
+## Settings preview
+
+The app's Settings pins the live keyboard at the top. As the settings scroll, it settles over 120pt into a compact keyboard: full width, 36pt tiles and 7pt row gaps. Rows fade out below a 6pt band under it.
