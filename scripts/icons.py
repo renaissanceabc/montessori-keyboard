@@ -2,7 +2,7 @@
 
 Run with `bun run icons` (Pillow required). It writes:
   apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png
-  apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico
+  apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico, apps/site/public/logo.png
 """
 
 import random
@@ -189,6 +189,10 @@ def main():
     sizes = [16, 32, 48, 64]
     frames = [favicon(s) for s in sizes]
     frames[-1].save(site / "favicon.ico", sizes=[(s, s) for s in sizes], append_images=frames[:-1])
+    # The site's sidebar logo: the favicon's triangle, shown at 32px.
+    public = site.parent / "public"
+    public.mkdir(parents=True, exist_ok=True)
+    favicon(96).save(public / "logo.png")
     print("icons written")
 
 
