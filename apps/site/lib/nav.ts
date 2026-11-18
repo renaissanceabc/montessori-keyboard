@@ -46,7 +46,7 @@ export const PAGES: NavPage[] = [
     href: "/faq",
     title: "FAQ",
     description:
-      "Answers about Montessori Keyboard: ages, cursive, capitals, sounds, iPad and Android, and what it costs.",
+      "Short answers about Montessori Keyboard: who it’s for, what it costs, setup, Full Access and help.",
   },
 ];
 

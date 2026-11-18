@@ -20,71 +20,30 @@ export default function Privacy() {
       <section id="short">
         <h2>In short</h2>
         <ul>
-          <li>No ads.</li>
-          <li>No accounts or sign-in.</li>
-          <li>No analytics, tracking or crash reports.</li>
+          <li>No ads, accounts, analytics or tracking.</li>
           <li>No network access. The keyboard and the app never go online.</li>
+          <li>Nothing about you or your child is collected, so there’s nothing to delete.</li>
         </ul>
       </section>
 
-      <section id="typing">
-        <h2>What your child types</h2>
+      <section id="app">
+        <h2>In the app</h2>
         <p>
-          Everything typed with Montessori Keyboard stays on the device. The keyboard doesn’t store
-          it, send it, or show it to us. The word-family strip and the phonograms come from word lists
-          built into the app.
+          What your child types stays on the device. The rhymes and phonograms come from word
+          lists built into the app, and your settings are saved on the device until you delete it.
         </p>
-      </section>
-
-      <section id="settings">
-        <h2>Settings</h2>
         <p>
-          Your choices, such as the letter order or whether capitals are on, are saved on the device
-          so the keyboard can read them. They aren’t sent anywhere. Deleting the app removes them.
-        </p>
-      </section>
-
-      <section id="full-access">
-        <h2>Allow Full Access</h2>
-        <p>
-          iOS asks you to allow Full Access before a keyboard can play sounds. When you turn it on,
-          iOS warns that a keyboard with Full Access could send what you type over the network.
-          Montessori Keyboard has no network code at all, so even with Full Access on, nothing can
-          leave the phone. Sounds are the only thing Full Access is used for.
-        </p>
-      </section>
-
-      <section id="face-id">
-        <h2>Face ID</h2>
-        <p>
-          If you use Face ID to open the settings, iOS checks your face and tells the app only whether
-          it matched. The app never sees your face data.
-        </p>
-      </section>
-
-      <section id="children">
-        <h2>Children</h2>
-        <p>
-          Montessori Keyboard is made for young children. Because it collects no personal information
-          from anyone, there’s nothing to request, correct or delete.
+          iOS needs Full Access before a keyboard can play sounds, and warns that such a keyboard
+          could send what you type. Montessori Keyboard has no network code, so it can’t. If you
+          open the settings with Face ID, the app only learns whether it matched.
         </p>
       </section>
 
       <section id="website">
         <h2>This website</h2>
         <p>
-          This site has no cookies, no analytics and no third-party scripts. Its fonts, and the
-          keyboards drawn on its pages, are served from this site, and our host may keep standard
-          server logs, such as IP addresses, for security. If you pick light or dark at the bottom
-          of a page, your browser remembers that choice; it is never sent anywhere.
-        </p>
-      </section>
-
-      <section id="check">
-        <h2>Check for yourself</h2>
-        <p>
-          The app is open source, so anyone can read exactly what it does. The code is on{" "}
-          <ExternalLink href={site.githubUrl}>GitHub</ExternalLink>.
+          No cookies, analytics or third-party scripts. Our host may keep standard server logs for
+          security. If you pick a light or dark look, your browser remembers it.
         </p>
       </section>
 
@@ -92,9 +51,10 @@ export default function Privacy() {
         <h2>Questions</h2>
         <p>
           Montessori Keyboard is made by{" "}
-          <ExternalLink href={site.maker.url}>{site.maker.name}</ExternalLink>. Questions about
-          privacy go to <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. If this
-          policy changes, the new version will be posted here with a new date.
+          <ExternalLink href={site.maker.url}>{site.maker.name}</ExternalLink>. Write to{" "}
+          <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. The code is on{" "}
+          <ExternalLink href={site.githubUrl}>GitHub</ExternalLink>, so anyone can check what it
+          does. Changes to this policy are posted here with a new date.
         </p>
       </section>
     </>
