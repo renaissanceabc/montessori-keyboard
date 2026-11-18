@@ -12,6 +12,10 @@ export const site = {
   /** Who makes it. */
   maker: { name: "Renaissance", url: "https://renaissance.education" },
   license: "MIT",
+  /** What it runs on (Project.swift's deployment target). */
+  requirements: "iPhone and iPad · iOS 18 or later",
+  /** Who made it, as the footer credits them. */
+  author: { name: "@karelvuong", url: "https://x.com/karelvuong" },
   /** Where people write for help. The App Store listing's support page points here. */
   supportEmail: "support@montessorikeyboard.com",
 };

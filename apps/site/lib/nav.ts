@@ -1,31 +1,77 @@
-/** One page of the site: its address, its name in the header and a line for search results. */
-export type NavPage = { href: string; title: string; description: string };
+/** One page of the site: its address, its name in the sidebar and a line for search results. A page with `sections` lists them beneath it while you're on it. */
+export type NavPage = {
+  href: string;
+  title: string;
+  description: string;
+  sections?: { id: string; title: string }[];
+};
 
-/** The pages in the header, in order. */
+export const INSTALL_SECTIONS = [
+  { id: "requirements", title: "Requirements" },
+  { id: "get", title: "Get the app" },
+  { id: "turn-on", title: "Turn it on" },
+  { id: "switch", title: "Switch to it" },
+  { id: "full-access", title: "Allow Full Access" },
+  { id: "source", title: "Build from source" },
+];
+
+export const FEATURE_SECTIONS = [
+  { id: "tiles", title: "The tiles" },
+  { id: "phonograms", title: "Phonograms" },
+  { id: "rhymes", title: "Word families" },
+  { id: "numbers", title: "Numbers" },
+  { id: "settings", title: "Settings" },
+  { id: "sounds", title: "Letter sounds" },
+  { id: "gate", title: "The grown-ups gate" },
+  { id: "app", title: "The app" },
+];
+
+export const PRIVACY_SECTIONS = [
+  { id: "short", title: "In short" },
+  { id: "typing", title: "What your child types" },
+  { id: "settings", title: "Settings" },
+  { id: "full-access", title: "Allow Full Access" },
+  { id: "face-id", title: "Face ID" },
+  { id: "children", title: "Children" },
+  { id: "website", title: "This website" },
+  { id: "check", title: "Check for yourself" },
+  { id: "contact", title: "Questions" },
+];
+
+/** The pages in the sidebar, in order. */
 export const PAGES: NavPage[] = [
   {
     href: "/",
-    title: "Home",
+    title: "Overview",
     description:
-      "A free iPhone keyboard for young children that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
+      "A free keyboard for iPhone and iPad that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
   },
   {
-    href: "/guide",
-    title: "Set up",
+    href: "/install",
+    title: "Install",
     description:
-      "How to turn on Montessori Keyboard in Settings, switch to it with the globe key, and what Allow Full Access does.",
+      "Get Montessori Keyboard, turn it on in Settings, switch to it with the globe key, and what Allow Full Access does.",
+    sections: INSTALL_SECTIONS,
   },
   {
-    href: "/faq",
-    title: "FAQ",
+    href: "/features",
+    title: "Features",
     description:
-      "Answers about Montessori Keyboard: ages, cursive, capitals, sounds, iPad and Android, and what it costs.",
+      "Print or cursive tiles in QWERTY or ABC order, phonograms on a long press, word families in the strip, numbers in bead-stair colors, letter sounds and a grown-ups gate.",
+    sections: FEATURE_SECTIONS,
   },
   {
     href: "/privacy",
     title: "Privacy",
     description:
       "Montessori Keyboard collects nothing. No ads, no accounts, no analytics, and no network at all.",
+    sections: PRIVACY_SECTIONS,
+  },
+  {
+    href: "/faq",
+    title: "FAQ",
+    description:
+      "Answers about Montessori Keyboard: ages, cursive, capitals, sounds, iPad and Android, and what it costs.",
   },
 ];
 
@@ -35,7 +81,7 @@ export const FOOTER_PAGES: NavPage[] = [
     href: "/credits",
     title: "Credits",
     description:
-      "The fonts Montessori Keyboard uses, Allo and Playwrite US Trad, and the Montessori materials it is modelled on.",
+      "The fonts Montessori Keyboard uses, Allo and Playwrite US Trad, the Montessori materials it is modelled on, and Stageshow, which draws the site's demos.",
   },
 ];
 

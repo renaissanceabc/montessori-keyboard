@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 
 import { ExternalLink } from "@/components/external-link";
-import { SiteHeader } from "@/components/site-header";
+import { Sidebar } from "@/components/sidebar";
 import { allo, playwrite } from "@/lib/fonts";
 import { HOME_TITLE } from "@/lib/meta";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: HOME_TITLE, template: `%s · ${site.name}` },
   description:
-    "A free iPhone keyboard for young children that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
+    "A free iPhone and iPad keyboard for young children that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
   applicationName: site.name,
   openGraph: {
     title: HOME_TITLE,
@@ -33,31 +33,31 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${allo.variable} ${playwrite.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${allo.variable} ${playwrite.variable}`}>
       <body>
         <a className="skip" href="#content">
           Skip to content
         </a>
-        <SiteHeader />
-        <main className="content" id="content" tabIndex={-1}>
-          {children}
-        </main>
-        <footer className="footer">
-          <p>
-            Free and open source. Made by{" "}
-            <ExternalLink href={site.maker.url} arrow={false}>
-              {site.maker.name}
-            </ExternalLink>
-            .
-          </p>
-          <nav aria-label="More">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/credits">Credits</Link>
-            <ExternalLink href={site.githubUrl} arrow={false}>
-              GitHub
-            </ExternalLink>
-          </nav>
-        </footer>
+        <div className="layout">
+          <Sidebar />
+          <main className="content" id="content" tabIndex={-1}>
+            {children}
+            <footer className="footer">
+              Made by{" "}
+              <ExternalLink href={site.author.url} arrow={false}>
+                {site.author.name}
+              </ExternalLink>{" "}
+              via{" "}
+              <ExternalLink href={site.maker.url} arrow={false}>
+                {site.maker.name}
+              </ExternalLink>
+              . Free and open source · <Link href="/credits">Credits</Link> ·{" "}
+              <ExternalLink href={site.githubUrl} arrow={false}>
+                GitHub
+              </ExternalLink>
+            </footer>
+          </main>
+        </div>
       </body>
     </html>
   );

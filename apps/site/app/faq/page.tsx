@@ -12,8 +12,8 @@ export const metadata: Metadata = pageMeta("/faq");
 
 export default function Faq() {
   return (
-    <div className="prose">
-      <PageHead title="FAQ" line="Common questions about Montessori Keyboard." />
+    <>
+      <PageHead title="FAQ" line="Common questions about Montessori Keyboard" />
 
       <section className="faq-group" aria-labelledby="basics">
         <h2 id="basics">Basics</h2>
@@ -42,8 +42,8 @@ export default function Faq() {
         <Question q="How do I turn it on?">
           <p>
             In Settings, go to General › Keyboard › Keyboards › Add New Keyboard and pick Montessori
-            Keyboard. Then tap the globe key to switch to it. The <Link href="/guide">set up</Link>{" "}
-            page has every step.
+            Keyboard. Then tap the globe key to switch to it.{" "}
+            <Link href="/install">Install</Link> has every step.
           </p>
         </Question>
       </section>
@@ -124,6 +124,6 @@ export default function Faq() {
           </p>
         </Question>
       </section>
-    </div>
+    </>
   );
 }

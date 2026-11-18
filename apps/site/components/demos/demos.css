@@ -1,0 +1,430 @@
+/*
+ * The demos' phones (components/demos): the keyboard and the app at true iOS
+ * points, in the app's own palette (Theme.swift), maple on a light page and
+ * walnut on a dark one. The kit's styles are in @layer stageshow, so these
+ * plain rules sit over them.
+ */
+
+:root {
+  --mk-page: #f6f1e7;
+  --mk-card: #fffdf8;
+  --mk-ink: #2b2118;
+  --mk-muted: #6b5b49;
+  --mk-line: rgba(43, 33, 24, 0.1);
+  --mk-tray: #eadbc0;
+  --mk-tile-top: #f8e7c9;
+  --mk-tile-bottom: #f0d8b0;
+  --mk-tile-edge: #cdaa78;
+  --mk-tile-hl: rgba(255, 255, 255, 0.7);
+  --mk-tile-pressed: #fff7e8;
+  --mk-key-top: #edcfa3;
+  --mk-key-bottom: #e2bd88;
+  --mk-key-edge: #bf9862;
+  --mk-key-ink: #3a2c1e;
+  --mk-hint: #7a6650;
+  --mk-vowel: #1650b0;
+  --mk-consonant: #b3141a;
+  --mk-shadow: rgba(84, 52, 18, 0.22);
+  --mk-lift-shadow: rgba(84, 52, 18, 0.28);
+  --mk-popup: #d9bf93;
+  --mk-popup-shadow: rgba(60, 36, 10, 0.28);
+  --mk-strip-line: rgba(120, 84, 40, 0.14);
+  --mk-chip-top: #fbf1df;
+  --mk-chip-bottom: #fbf1df;
+  --mk-chip-depth: 1px;
+  --mk-seg-track: #efe6d6;
+  --mk-seg-on: #fff;
+  --mk-switch-off: #d9d0c2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mk-page: #14100c;
+    --mk-card: #221a13;
+    --mk-ink: #f1e6d4;
+    --mk-muted: #b8a88f;
+    --mk-line: rgba(241, 230, 212, 0.1);
+    --mk-tray: #2a1d15;
+    --mk-tile-top: #6e4c34;
+    --mk-tile-bottom: #5c3f2b;
+    --mk-tile-edge: #36241a;
+    --mk-tile-hl: rgba(255, 235, 210, 0.14);
+    --mk-tile-pressed: #8a6648;
+    --mk-key-top: #4c3526;
+    --mk-key-bottom: #402c1f;
+    --mk-key-edge: #24170f;
+    --mk-key-ink: #eadfcb;
+    --mk-hint: #a8957c;
+    --mk-vowel: #86beff;
+    --mk-consonant: #ff7a6b;
+    --mk-shadow: rgba(0, 0, 0, 0.45);
+    --mk-lift-shadow: rgba(0, 0, 0, 0.5);
+    --mk-popup: #1e140e;
+    --mk-popup-shadow: rgba(0, 0, 0, 0.55);
+    --mk-strip-line: rgba(241, 230, 212, 0.14);
+    --mk-chip-top: #6e4c34;
+    --mk-chip-bottom: #5c3f2b;
+    --mk-chip-depth: 2px;
+    --mk-seg-track: #2e241b;
+    --mk-seg-on: #4a3b2e;
+    --mk-switch-off: #4a3f35;
+  }
+}
+
+/* The figure: the stage is the shot, on the page's own ground. */
+.mk-figure {
+  margin: 0 0 6px;
+}
+.mk-stage .ss-stage {
+  background: transparent;
+}
+.mk-phone .ss-phone__screen {
+  color: var(--mk-ink);
+  font-family: var(--font);
+  font-feature-settings: "ss01", "cv03", "cv04";
+}
+
+/* A note being typed, its last line just over the keyboard. */
+.mk-note {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  font-size: 34px;
+  line-height: 44px;
+  color: var(--mk-ink);
+  white-space: nowrap;
+}
+.mk-caret {
+  display: inline-block;
+  width: 3px;
+  height: 36px;
+  margin-left: 2px;
+  border-radius: 2px;
+  vertical-align: -6px;
+  background: var(--mk-vowel);
+  animation: mk-blink 1.1s steps(1) infinite;
+}
+@keyframes mk-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The tray: the strip, then the tiles. */
+.mk-tray {
+  position: relative;
+  background: var(--mk-tray);
+  font-family: var(--font);
+  font-feature-settings: "ss01", "cv03", "cv04";
+}
+.mk-screen-tray {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.mk-v {
+  color: var(--mk-vowel);
+}
+.mk-c {
+  color: var(--mk-consonant);
+}
+.mk-strip {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--mk-strip-line);
+}
+.mk-strip:empty::before {
+  content: "Rhymes show up here";
+  font-size: 13px;
+  color: var(--mk-hint);
+}
+.mk-fam {
+  margin-right: 2px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--mk-hint);
+}
+.mk-chip {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 9px 3px;
+  border-radius: 7px;
+  font-size: 19px;
+  font-weight: 700;
+  background: linear-gradient(var(--mk-chip-top), var(--mk-chip-bottom));
+  box-shadow: 0 var(--mk-chip-depth) 0 var(--mk-tile-edge);
+  transition:
+    transform 80ms ease-out,
+    box-shadow 80ms ease-out;
+}
+.mk-chip[data-on] {
+  outline: 2px solid var(--mk-vowel);
+  outline-offset: 2px;
+}
+.mk-chip[data-pressed] {
+  transform: translateY(var(--mk-chip-depth));
+  box-shadow: none;
+  transition: none;
+}
+
+.mk-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 46px;
+}
+.mk-key {
+  position: absolute;
+  top: 0;
+  height: 46px;
+  border-radius: 7px;
+  font-weight: 700;
+  background: linear-gradient(var(--mk-tile-top), var(--mk-tile-bottom));
+  box-shadow:
+    inset 0 1px 0 var(--mk-tile-hl),
+    0 2px 0 var(--mk-tile-edge),
+    0 3px 5px var(--mk-shadow);
+  transition:
+    transform 80ms ease-out,
+    box-shadow 80ms ease-out,
+    background-color 80ms ease-out;
+}
+.mk-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+}
+.mk-letter {
+  font-size: 26px;
+}
+.mk-letter .mk-face {
+  padding-bottom: 4px;
+}
+.mk-key[data-tone="v"] {
+  color: var(--mk-vowel);
+}
+.mk-key[data-tone="c"] {
+  color: var(--mk-consonant);
+}
+.mk-tray[data-cursive] .mk-letter,
+.mk-tray[data-cursive] .mk-pchip,
+.mk-tray[data-cursive] .mk-chip {
+  font-family: var(--font-cursive-stack);
+  font-weight: 400;
+}
+.mk-tray[data-cursive] .mk-letter {
+  font-size: 20px;
+}
+.mk-fn {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--mk-key-ink);
+  background: linear-gradient(var(--mk-key-top), var(--mk-key-bottom));
+  box-shadow:
+    0 2px 0 var(--mk-key-edge),
+    0 3px 5px var(--mk-shadow);
+}
+.mk-digit,
+.mk-mark {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--mk-ink);
+}
+.mk-digit .mk-face > span:first-child {
+  line-height: 1;
+}
+.mk-beads {
+  display: grid;
+  gap: 1.5px;
+}
+.mk-beads i {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+.mk-beads i[data-pale] {
+  box-shadow: inset 0 0 0 0.6px #bfaf98;
+}
+
+/* A key under a finger sinks at once; a letter lifts a larger copy above it, so small hands see what they hit. */
+.mk-key[data-pressed],
+.mk-key[data-down] {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 var(--mk-tile-edge),
+    0 1px 2px var(--mk-shadow);
+  transition: none;
+}
+.mk-letter[data-pressed],
+.mk-letter[data-down] {
+  background: var(--mk-tile-pressed);
+}
+.mk-letter[data-letter][data-pressed]::after,
+.mk-letter[data-letter][data-down]::after {
+  content: attr(data-letter);
+  position: absolute;
+  left: -19%;
+  bottom: 74%;
+  display: grid;
+  place-items: center;
+  width: 138%;
+  height: 135%;
+  padding-bottom: 5px;
+  border-radius: 9px;
+  font-size: 37px;
+  background: linear-gradient(var(--mk-tile-top), var(--mk-tile-bottom));
+  box-shadow:
+    0 4px 0 var(--mk-tile-edge),
+    0 10px 18px var(--mk-lift-shadow);
+  z-index: 2;
+}
+.mk-tray[data-cursive] .mk-letter[data-letter]::after {
+  font-size: 28px;
+}
+
+/* The phonogram popup: the letter and its teams on a darker tray over the held tile. */
+.mk-popup {
+  position: absolute;
+  z-index: 3;
+  border-radius: 12px;
+  background: var(--mk-popup);
+  box-shadow: 0 6px 16px var(--mk-popup-shadow);
+  animation: mk-pop 160ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: 30px 100%;
+}
+@keyframes mk-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(4px);
+  }
+}
+.mk-pchip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding-bottom: 3px;
+  border-radius: 7px;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(var(--mk-tile-top), var(--mk-tile-bottom));
+  box-shadow: 0 2px 0 var(--mk-tile-edge);
+}
+.mk-pchip[data-on] {
+  background: var(--mk-tile-pressed);
+  box-shadow: inset 0 0 0 3px var(--mk-vowel);
+}
+
+/* The app's screens. */
+.mk-app {
+  padding-top: 4px;
+  color: var(--mk-ink);
+}
+.mk-app-title {
+  padding: 4px 20px 14px;
+  font-size: 30px;
+  font-weight: 800;
+}
+.mk-preview {
+  margin: 0 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--mk-tray);
+}
+.mk-preview .mk-tray {
+  background: none;
+}
+.mk-group {
+  padding: 24px 32px 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mk-muted);
+}
+.mk-card {
+  margin: 0 16px;
+  border-radius: 14px;
+  background: var(--mk-card);
+}
+.mk-srow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 16px;
+  font-size: 17px;
+  border-bottom: 1px solid var(--mk-line);
+}
+.mk-srow:last-child {
+  border-bottom: 0;
+}
+.mk-seg {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--mk-seg-track);
+  font-size: 15px;
+}
+.mk-seg i {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  border-radius: 7px;
+  background: var(--mk-seg-on);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 240ms cubic-bezier(0.45, 0, 0.1, 1);
+}
+.mk-seg[data-on="1"] i {
+  transform: translateX(100%);
+}
+.mk-seg b {
+  position: relative;
+  padding: 5px 14px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--mk-muted);
+  transition: color 160ms ease;
+}
+.mk-seg b[data-active] {
+  color: var(--mk-ink);
+  font-weight: 700;
+}
+.mk-toggle {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: 16px;
+  background: var(--mk-switch-off);
+}
+.mk-toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-caret,
+  .mk-popup {
+    animation: none;
+  }
+}

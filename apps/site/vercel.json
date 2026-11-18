@@ -2,6 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "bun run build",
   "ignoreCommand": "sh scripts/ignore-build.sh",
+  "redirects": [
+    {
+      "source": "/guide",
+      "destination": "/install",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(icon\\.png|apple-icon\\.png|favicon\\.ico)",
