@@ -111,8 +111,8 @@ export default function Home() {
               </div>
             }
           >
-            A strip above the tiles offers three words that rhyme with the one being typed. Tap
-            one to swap it in, and hear how only the first sound changes.
+            A strip above the tiles offers three words that rhyme with the one being typed. Tap one
+            to swap it in, and hear how only the first sound changes.
           </Feature>
 
           <Feature
