@@ -483,7 +483,11 @@ pre {
   color: var(--ink-3);
   transition:
     color var(--dur-press) var(--ease-out),
-    background-color var(--dur-press) var(--ease-out);
+    background-color var(--dur-press) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+.theme-switch button:active {
+  transform: scale(0.92);
 }
 .theme-switch button[aria-pressed="true"] {
   background: var(--paper);
@@ -634,7 +638,8 @@ pre {
   animation: fade-in 260ms var(--ease-out);
 }
 @media (prefers-reduced-motion: reduce) {
-  .stage-tabs button:active {
+  .stage-tabs button:active,
+  .theme-switch button:active {
     transform: none;
   }
   .stage-pill {

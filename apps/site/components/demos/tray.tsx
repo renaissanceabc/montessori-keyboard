@@ -218,7 +218,10 @@ function popupLayout(anchor: { x: number; y: number; w: number }, count: number,
   );
   const y = Math.max(anchor.y - 4 - h, 0);
 
-  return { x, y, w, h, cw, chipH: chip.h, inset, gap };
+  // Where the held key's middle falls in the popup, so it grows out of the key, not its own corner.
+  const ox = anchor.x + anchor.w / 2 - x;
+
+  return { x, y, w, h, ox, cw, chipH: chip.h, inset, gap };
 }
 
 export function Tray({
@@ -301,7 +304,16 @@ export function Tray({
         </div>
       ))}
       {p && popup && (
-        <div className="mk-popup" style={{ left: p.x, top: p.y, width: p.w, height: p.h }}>
+        <div
+          className="mk-popup"
+          style={{
+            left: p.x,
+            top: p.y,
+            width: p.w,
+            height: p.h,
+            transformOrigin: `${p.ox}px 100%`,
+          }}
+        >
           {popup.choices.map((c, i) => (
             <span
               key={c}

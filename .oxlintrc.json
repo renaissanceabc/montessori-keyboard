@@ -17,6 +17,7 @@
     "**/out/**",
     "**/next-env.d.ts",
     "apps/site/public/**",
+    "apps/site/components/stageshow/**",
     "apps/ios/**"
   ],
   "rules": {
