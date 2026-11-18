@@ -17,6 +17,7 @@ FONT = ROOT / "apps/ios/Sources/Shared/Fonts/AlloLearner-Bold.otf"
 # Allo Learner has the learner forms baked in (scripts/learner-fonts.py), so no OpenType features are needed.
 
 S = 4  # supersampling
+EDGE = 0.04  # the tile's darker edge below its face, as a share of its height
 
 Rgb = tuple[int, int, int]
 
@@ -84,7 +85,7 @@ def tile(letter, w, h, color, look, shadow=True):
     """One tile with its darker edge and soft shadow, on a transparent canvas with room for both."""
     pad = int(w * 0.35)
     r = int(w * 0.17)
-    edge = int(h * 0.055)
+    edge = int(h * EDGE)
     canvas = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
 
     if shadow and look.shadow[3]:
@@ -101,13 +102,15 @@ def tile(letter, w, h, color, look, shadow=True):
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, w - 1, h - 1], r, fill=255)
     canvas.paste(face, (pad, pad), mask)
 
-    font = ImageFont.truetype(str(FONT), int(h * 0.74))
+    font = ImageFont.truetype(str(FONT), int(h * 0.7))
     draw = ImageDraw.Draw(canvas)
     box = draw.textbbox((0, 0), letter, font=font, anchor="ls")
     x = pad + (w - (box[2] - box[0])) / 2 - box[0]
-    # Center the x-height, not the ink box, so a b c sit on one baseline.
-    xh = font.getbbox("x", anchor="ls")
-    y = pad + h / 2 - (xh[1] + xh[3]) / 2 - h * 0.03
+    # Every tile shares one baseline, like the moveable alphabet. The baseline sits so that an ascender
+    # letter (b) and an x-height letter (a, c) both look centered: halfway between centering each.
+    xh = font.getbbox("x", anchor="ls")[1]
+    asc = font.getbbox("b", anchor="ls")[1]
+    y = pad + h / 2 - (xh + asc) / 4
     draw.text((x, y), letter, font=font, fill=color, anchor="ls")
     return canvas
 
@@ -115,7 +118,7 @@ def tile(letter, w, h, color, look, shadow=True):
 def triangle(img, look, tile_w, tile_h, gap, shadow=True):
     """a on top, b and c below it, centered on the image as one group."""
     n = img.width
-    edge = int(tile_h * 0.055)
+    edge = int(tile_h * EDGE)
     group_h = 2 * tile_h + gap + edge
     top = (n - group_h) // 2
     rows = [
@@ -133,7 +136,7 @@ def icon(size, look=MAPLE):
     """The app icon: the triangle on the tray, with room around it for the icon mask."""
     n = size * S
     img = gradient((n, n), look.tray_top, look.tray_bottom).convert("RGBA")
-    triangle(img, look, int(n * 0.31), int(n * 0.335), int(n * 0.035))
+    triangle(img, look, int(n * 0.32), int(n * 0.32), int(n * 0.035))
     return img.resize((size, size), Image.LANCZOS).convert("RGB")
 
 
@@ -141,7 +144,7 @@ def favicon(size):
     """The tab icon: the same triangle filling a transparent square, so it stays legible at 16-48px."""
     n = size * S
     img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
-    triangle(img, MAPLE, int(n * 0.47), int(n * 0.455), int(n * 0.04), shadow=False)
+    triangle(img, MAPLE, int(n * 0.47), int(n * 0.46), int(n * 0.04), shadow=False)
     return img.resize((size, size), Image.LANCZOS)
 
 
