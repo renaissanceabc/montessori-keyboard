@@ -50,3 +50,7 @@ apps/ios/fastlane/test_output
 
 # TypeScript incremental state
 *.tsbuildinfo
+
+# Per-machine settings: mise env (INFISICAL_PROJECT_ID) and the Infisical project link.
+mise.local.toml
+.infisical.json

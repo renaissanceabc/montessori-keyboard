@@ -6,12 +6,21 @@ ruby = "3.3"
 
 # One-time signing setup (apps/ios/README.md, TestFlight). The five Apple secrets come from the
 # `_Global` Infisical project's /apple folder under your own `infisical login`, so nothing is
-# exported by hand. Set INFISICAL_PROJECT_ID to that project's id first (it's in Infisical's
-# project settings), so the repo doesn't name it.
+# exported by hand. Run `infisical init` once at the repo root and pick that project: it writes
+# .infisical.json (gitignored, so the public repo doesn't name the project). INFISICAL_PROJECT_ID
+# works instead.
 [tasks."ios:setup"]
 description = "Make the App Store profiles in the match repo"
 dir = "apps/ios"
 run = [
   "bundle install",
-  "infisical run --projectId=\"${INFISICAL_PROJECT_ID:?Set INFISICAL_PROJECT_ID to the _Global Infisical project id}\" --env=prod --path=/apple -- bundle exec fastlane setup",
+  """
+  if [ -z "${INFISICAL_PROJECT_ID:-}" ] && [ ! -f "{{config_root}}/.infisical.json" ]; then
+    echo "Run 'infisical init' at the repo root and pick the _Global project, or set INFISICAL_PROJECT_ID." >&2
+    exit 1
+  fi
+  # From the repo root, where .infisical.json lives.
+  cd "{{config_root}}" && infisical run ${INFISICAL_PROJECT_ID:+--projectId="$INFISICAL_PROJECT_ID"} \
+    --env=prod --path=/apple -- sh -c 'cd apps/ios && bundle exec fastlane setup'
+  """,
 ]

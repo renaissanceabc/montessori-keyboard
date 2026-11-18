@@ -61,8 +61,8 @@ export default function Privacy() {
       <h2 id="website">This website</h2>
       <p>
         This site has no cookies, no analytics and no third-party scripts. Its fonts and images are
-        served from this site, and our host may keep standard server logs, such as IP addresses,
-        for security.
+        served from this site, and our host may keep standard server logs, such as IP addresses, for
+        security.
       </p>
 
       <h2 id="check">Check for yourself</h2>

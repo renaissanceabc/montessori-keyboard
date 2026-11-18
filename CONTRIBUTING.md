@@ -32,10 +32,10 @@ docs: explain the word mat
 
 Run these before you push:
 
-| | |
-| --- | --- |
-| Site | `bun run typecheck`, `bun run test`, `bun run build` |
-| iOS (macOS) | `bun run ios:test` |
+|             |                                                      |
+| ----------- | ---------------------------------------------------- |
+| Site        | `bun run typecheck`, `bun run test`, `bun run build` |
+| iOS (macOS) | `bun run ios:test`                                   |
 
 CI runs the site checks on every pull request, and builds and tests the iOS app on pull requests that touch `apps/ios`.
 

@@ -149,8 +149,8 @@ export default function Home() {
               </div>
             }
           >
-            Each tile can say its letter sound as it’s tapped, and keys can click. Sounds need
-            Allow Full Access, and they play on the phone.{" "}
+            Each tile can say its letter sound as it’s tapped, and keys can click. Sounds need Allow
+            Full Access, and they play on the phone.{" "}
             <Link href="/guide#full-access">Why Full Access?</Link>
           </Feature>
 

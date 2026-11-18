@@ -9,20 +9,20 @@ bun run --cwd apps/site typecheck  # next typegen, then tsc
 bun run --cwd apps/site test       # vitest: the sitemap and the keyboard's data
 ```
 
-| Path                            | What it is                                                                                    |
-| ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `site.config.ts`                | The domain, the App Store link and whether it's live, GitHub, Renaissance, the support email  |
-| `lib/nav.ts`                    | Every page with its title and description, in header order; the footer's pages               |
-| `lib/meta.ts`                   | Each page's metadata, from the nav                                                            |
-| `lib/keyboard.ts`               | The rows (QWERTY and ABC), vowels, phonograms, word families and bead-stair colors           |
-| `lib/fonts.ts`                  | Allo (the `allo-font` package) and Playwrite US Trad (`@fontsource`), through `next/font/local` |
-| `components/keyboard.tsx`       | The interactive keyboard on the home page                                                     |
-| `components/tile.tsx`           | One wooden tile, and the wordmark                                                             |
-| `app/`                          | One folder per page: home (`page.tsx`), `guide` (Set up), `faq`, `privacy`, `credits`         |
-| `app/globals.css`               | Every style, with the palette as tokens on `:root` (maple) and in the dark-mode block (walnut) |
-| `app/robots.ts`, `app/sitemap.ts` | robots.txt and sitemap.xml, built from the nav                                              |
-| `vercel.json`                   | Security headers (a CSP that allows only this site), caching for the icons, and the ignore step |
-| `scripts/ignore-build.sh`       | Vercel's Ignored Build Step: deploys only when the site changed (see below)                   |
+| Path                              | What it is                                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `site.config.ts`                  | The domain, the App Store link and whether it's live, GitHub, Renaissance, the support email    |
+| `lib/nav.ts`                      | Every page with its title and description, in header order; the footer's pages                  |
+| `lib/meta.ts`                     | Each page's metadata, from the nav                                                              |
+| `lib/keyboard.ts`                 | The rows (QWERTY and ABC), vowels, phonograms, word families and bead-stair colors              |
+| `lib/fonts.ts`                    | Allo (the `allo-font` package) and Playwrite US Trad (`@fontsource`), through `next/font/local` |
+| `components/keyboard.tsx`         | The interactive keyboard on the home page                                                       |
+| `components/tile.tsx`             | One wooden tile, and the wordmark                                                               |
+| `app/`                            | One folder per page: home (`page.tsx`), `guide` (Set up), `faq`, `privacy`, `credits`           |
+| `app/globals.css`                 | Every style, with the palette as tokens on `:root` (maple) and in the dark-mode block (walnut)  |
+| `app/robots.ts`, `app/sitemap.ts` | robots.txt and sitemap.xml, built from the nav                                                  |
+| `vercel.json`                     | Security headers (a CSP that allows only this site), caching for the icons, and the ignore step |
+| `scripts/ignore-build.sh`         | Vercel's Ignored Build Step: deploys only when the site changed (see below)                     |
 
 The icons (`app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`) come from `scripts/icons.py` (`bun run icons`); Next picks the files up by name.
 
