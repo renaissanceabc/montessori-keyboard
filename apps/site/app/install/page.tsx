@@ -25,8 +25,8 @@ export default function Install() {
       <section id="get">
         <h2>Get the app</h2>
         <p>
-          Montessori Keyboard is free on the App Store. When you first open it, the app walks you
-          through turning the keyboard on in Settings.
+          Montessori Keyboard is {site.price} on the App Store. When you first open it, the app
+          walks you through turning the keyboard on in Settings.
         </p>
         <p>
           <DownloadButton />

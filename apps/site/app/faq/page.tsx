@@ -32,8 +32,9 @@ export default function Faq() {
         </Question>
         <Question q="What does it cost?">
           <p>
-            Nothing. It’s free, with no ads and no in-app purchases, and open source under the{" "}
-            {site.license} license.
+            {site.price} on the App Store, once. There are no ads, in-app purchases or
+            subscriptions. The code is open source under the {site.license} license, so you can also
+            build it yourself.
           </p>
         </Question>
         <Question q="Does it work on iPad or Android?">

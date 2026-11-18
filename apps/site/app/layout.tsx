@@ -15,12 +15,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: HOME_TITLE, template: `%s · ${site.name}` },
   description:
-    "A free iPhone and iPad keyboard for young children that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
+    "An iPhone and iPad keyboard for young children that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
   applicationName: site.name,
   openGraph: {
     title: HOME_TITLE,
     description:
-      "Wooden tiles, lowercase print, blue vowels and red consonants. Free, open source, and nothing leaves the phone.",
+      "Wooden tiles, lowercase print, blue vowels and red consonants. Open source, and nothing leaves the phone.",
     siteName: site.name,
     type: "website",
   },
@@ -59,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <ExternalLink href={site.maker.url} arrow={false}>
                   {site.maker.name}
                 </ExternalLink>
-                . Free and open source · <Link href="/credits">Credits</Link> ·{" "}
+                . Open source · <Link href="/credits">Credits</Link> ·{" "}
                 <ExternalLink href={site.githubUrl} arrow={false}>
                   GitHub
                 </ExternalLink>

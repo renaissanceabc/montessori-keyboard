@@ -12,6 +12,8 @@ export const site = {
   /** Who makes it. */
   maker: { name: "Renaissance", url: "https://renaissance.education" },
   license: "MIT",
+  /** One price on the App Store: no ads, in-app purchases or subscription. */
+  price: "$1.99",
   /** What it runs on (Project.swift's deployment target). */
   requirements: "iPhone and iPad · iOS 18 or later",
   /** Who made it, as the footer credits them. */

@@ -27,7 +27,7 @@ export const PAGES: NavPage[] = [
     href: "/",
     title: "Overview",
     description:
-      "A free keyboard for iPhone and iPad that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
+      "A keyboard for iPhone and iPad that looks like a Montessori moveable alphabet: wooden tiles, lowercase print, blue vowels and red consonants.",
   },
   {
     href: "/install",

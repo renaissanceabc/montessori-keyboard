@@ -52,8 +52,8 @@ export default function Overview() {
             written in words, or Face ID.
           </li>
           <li>
-            <strong>Stays on the phone.</strong> No network, no accounts, no analytics. Free, with
-            no ads or purchases.
+            <strong>Stays on the phone.</strong> No network, no accounts, no analytics. One price,
+            with no ads or in-app purchases.
           </li>
         </ul>
         <p>
@@ -80,7 +80,7 @@ export default function Overview() {
           look like the ones on the classroom shelf.
         </p>
         <p>
-          It’s free and open source under the {site.license} license, made by{" "}
+          It’s open source under the {site.license} license, made by{" "}
           <ExternalLink href={site.maker.url}>{site.maker.name}</ExternalLink>. The code is on{" "}
           <ExternalLink href={site.githubUrl}>GitHub</ExternalLink>.
         </p>
