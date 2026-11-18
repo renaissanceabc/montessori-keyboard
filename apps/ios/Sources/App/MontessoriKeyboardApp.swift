@@ -45,6 +45,8 @@ struct RootView: View {
             #endif
         }
         .tint(palette.vowel)
+        // Every line of text follows Dynamic Type; past the third accessibility size the setup layouts stop fitting.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .animation(.easeOut(duration: 0.2), value: model.onboarded)
         .animation(.easeOut(duration: 0.2), value: model.unlocked)
     }
