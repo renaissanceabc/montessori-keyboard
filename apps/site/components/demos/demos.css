@@ -37,8 +37,39 @@
   --mk-switch-off: #d9d0c2;
 }
 
+:root[data-theme="dark"] {
+  --mk-page: #14100c;
+  --mk-card: #221a13;
+  --mk-ink: #f1e6d4;
+  --mk-muted: #b8a88f;
+  --mk-line: rgba(241, 230, 212, 0.1);
+  --mk-tray: #2a1d15;
+  --mk-tile-top: #6e4c34;
+  --mk-tile-bottom: #5c3f2b;
+  --mk-tile-edge: #36241a;
+  --mk-tile-hl: rgba(255, 235, 210, 0.14);
+  --mk-tile-pressed: #8a6648;
+  --mk-key-top: #4c3526;
+  --mk-key-bottom: #402c1f;
+  --mk-key-edge: #24170f;
+  --mk-key-ink: #eadfcb;
+  --mk-hint: #a8957c;
+  --mk-vowel: #86beff;
+  --mk-consonant: #ff7a6b;
+  --mk-shadow: rgba(0, 0, 0, 0.45);
+  --mk-lift-shadow: rgba(0, 0, 0, 0.5);
+  --mk-popup: #1e140e;
+  --mk-popup-shadow: rgba(0, 0, 0, 0.55);
+  --mk-strip-line: rgba(241, 230, 212, 0.14);
+  --mk-chip-top: #6e4c34;
+  --mk-chip-bottom: #5c3f2b;
+  --mk-chip-depth: 2px;
+  --mk-seg-track: #2e241b;
+  --mk-seg-on: #4a3b2e;
+  --mk-switch-off: #4a3f35;
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --mk-page: #14100c;
     --mk-card: #221a13;
     --mk-ink: #f1e6d4;

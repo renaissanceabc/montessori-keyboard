@@ -75,7 +75,8 @@ export default function Privacy() {
         <p>
           This site has no cookies, no analytics and no third-party scripts. Its fonts, and the
           keyboards drawn on its pages, are served from this site, and our host may keep standard
-          server logs, such as IP addresses, for security.
+          server logs, such as IP addresses, for security. If you pick light or dark at the bottom
+          of a page, your browser remembers that choice; it is never sent anywhere.
         </p>
       </section>
 

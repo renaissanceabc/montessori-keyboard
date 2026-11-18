@@ -52,9 +52,33 @@
   --dur-panel: 220ms;
 }
 
-/* Walnut, for dark mode. */
+/* The switcher in the footer pins one look; without it the page follows the system. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Walnut, for dark mode: picked in the switcher, or by the system when nothing is picked. */
+:root[data-theme="dark"] {
+  --paper: #14100c;
+  --ink: #f1e6d4;
+  --text: rgba(241, 230, 212, 0.88);
+  --ink-3: rgba(241, 230, 212, 0.62);
+  --hairline: rgba(241, 230, 212, 0.1);
+  --hairline-2: rgba(241, 230, 212, 0.18);
+  --wash: rgba(241, 230, 212, 0.07);
+
+  --vowel: #86beff;
+  --consonant: #ff7a6b;
+
+  --tile-top: #6e4c34;
+  --tile-bottom: #5c3f2b;
+  --tile-edge: #36241a;
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #14100c;
     --ink: #f1e6d4;
     --text: rgba(241, 230, 212, 0.88);
@@ -443,9 +467,41 @@ pre {
 }
 
 .footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
   padding-top: 18px;
   color: var(--ink-3);
   font-size: var(--text-ui);
+}
+
+/* System, light or dark: a small segmented control at the end of the footer. */
+.theme-switch {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-pill);
+  background: var(--wash);
+}
+.theme-switch button {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  color: var(--ink-3);
+  font: inherit;
+  font-size: var(--text-small);
+  transition:
+    color var(--dur-press) var(--ease-out),
+    background-color var(--dur-press) var(--ease-out);
+}
+.theme-switch button[aria-pressed="true"] {
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--hairline-2);
+  color: var(--ink);
+}
+.theme-switch button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
 }
 .footer a {
   color: inherit;
@@ -453,7 +509,8 @@ pre {
 
 @media (hover: hover) and (pointer: fine) {
   .toc li a:hover,
-  .stage-tabs button:hover {
+  .stage-tabs button:hover,
+  .theme-switch button:hover {
     color: var(--ink);
   }
   .content a:not(.download):hover {

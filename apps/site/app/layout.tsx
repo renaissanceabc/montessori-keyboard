@@ -4,8 +4,10 @@ import Link from "next/link";
 
 import { ExternalLink } from "@/components/external-link";
 import { Sidebar } from "@/components/sidebar";
+import { ThemeSwitch } from "@/components/theme-switch";
 import { allo, playwrite } from "@/lib/fonts";
 import { HOME_TITLE } from "@/lib/meta";
+import { THEME_SCRIPT } from "@/lib/theme";
 
 import { site } from "../site.config";
 
@@ -33,7 +35,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${allo.variable} ${playwrite.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${allo.variable} ${playwrite.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>
         <a className="skip" href="#content">
           Skip to content
@@ -43,18 +50,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main className="content" id="content" tabIndex={-1}>
             {children}
             <footer className="footer">
-              Made by{" "}
-              <ExternalLink href={site.author.url} arrow={false}>
-                {site.author.name}
-              </ExternalLink>{" "}
-              via{" "}
-              <ExternalLink href={site.maker.url} arrow={false}>
-                {site.maker.name}
-              </ExternalLink>
-              . Free and open source · <Link href="/credits">Credits</Link> ·{" "}
-              <ExternalLink href={site.githubUrl} arrow={false}>
-                GitHub
-              </ExternalLink>
+              <p>
+                Made by{" "}
+                <ExternalLink href={site.author.url} arrow={false}>
+                  {site.author.name}
+                </ExternalLink>{" "}
+                via{" "}
+                <ExternalLink href={site.maker.url} arrow={false}>
+                  {site.maker.name}
+                </ExternalLink>
+                . Free and open source · <Link href="/credits">Credits</Link> ·{" "}
+                <ExternalLink href={site.githubUrl} arrow={false}>
+                  GitHub
+                </ExternalLink>
+              </p>
+              <ThemeSwitch />
             </footer>
           </main>
         </div>

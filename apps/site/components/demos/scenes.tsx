@@ -3,6 +3,7 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 
 import { FAMILIES, PHONOGRAMS, type Order } from "@/lib/keyboard";
+import { isDark, subscribeTheme } from "@/lib/theme";
 
 import { Phone } from "../stageshow/phone";
 import { Stage } from "../stageshow/stage";
@@ -24,19 +25,8 @@ const SCREEN_W = 402;
 const SCREEN_H = 874;
 
 /** Walnut when the page is dark, so the phone matches the page around it. */
-const DARK = "(prefers-color-scheme: dark)";
-
 export function useDark() {
-  return useSyncExternalStore(
-    (change) => {
-      const mq = window.matchMedia(DARK);
-      mq.addEventListener("change", change);
-
-      return () => mq.removeEventListener("change", change);
-    },
-    () => window.matchMedia(DARK).matches,
-    () => false,
-  );
+  return useSyncExternalStore(subscribeTheme, isDark, () => false);
 }
 
 /** The phone's size and place in each design: wide (the 600px column) and compact (a 358px phone column). */
