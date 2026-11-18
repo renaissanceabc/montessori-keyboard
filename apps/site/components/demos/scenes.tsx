@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
-import { FAMILIES, PHONOGRAMS, type Order } from "@/lib/keyboard";
+import { PHONOGRAMS, rhymesFor, type Order } from "@/lib/keyboard";
 import { isDark, subscribeTheme } from "@/lib/theme";
 
 import { Phone } from "../stageshow/phone";
@@ -240,14 +240,11 @@ type KeyboardState = {
   order?: Order;
 };
 
-const base = { strip: null, layer: "letters", down: null, popup: null } as const;
+const base = { strip: [] as Strip, layer: "letters", down: null, popup: null } as const;
 
-/** The strip for the word at the end of `text`: its family, with the word itself marked. */
+/** The strip for the word at the end of `text`: up to three rhymes, or blank. */
 function stripFor(text: string): Strip {
-  const word = text.split(" ").at(-1) ?? "";
-  const family = Object.keys(FAMILIES).find((f) => word.length > f.length && word.endsWith(f));
-
-  return family ? { family, words: FAMILIES[family], current: word } : null;
+  return rhymesFor(text.split(" ").at(-1) ?? "");
 }
 
 /** Taps a key and types what it makes, with the strip following the word. */
@@ -322,7 +319,7 @@ export function PadScene() {
   return (
     <KeyboardStage
       device="pad"
-      label="An iPad with Montessori Keyboard in QWERTY order: a finger types “a pig” on wide wooden tiles, and the strip offers big, dig, fig, pig and wig."
+      label="An iPad with Montessori Keyboard in QWERTY order: a finger types “a pig” on wide wooden tiles, and the strip offers big, dig and fig."
       initial={PAD_START}
       poster={{ ...PAD_START, text: "a pig", strip: stripFor("a pig") }}
       script={async (a) => {
@@ -387,7 +384,7 @@ export function PhonogramScene({ onDone }: { onDone?: () => void }) {
           },
         );
         await a.wait(300);
-        await a.set((s) => ({ text: s.text + "sh", down: null, popup: null, strip: null }));
+        await a.set((s) => ({ text: s.text + "sh", down: null, popup: null, strip: [] }));
         await a.wait(500);
 
         for (const l of "ip") await tap(a, l);
@@ -423,7 +420,7 @@ export function RhymeScene({ onDone }: { onDone?: () => void }) {
 
   return (
     <KeyboardStage
-      label="The word-family strip above the tiles offers bat, cat, hat, mat, rat and sat. Tapping hat changes “the cat” to “the hat”."
+      label="The strip above the tiles offers three rhymes for “cat”: bat, hat and mat. Tapping hat changes “the cat” to “the hat”, and the strip offers bat, cat and mat."
       initial={RHYME_START}
       poster={{ ...RHYME_START, text: "the hat", strip: stripFor("the hat") }}
       script={async (a) => {
@@ -432,7 +429,7 @@ export function RhymeScene({ onDone }: { onDone?: () => void }) {
         await a.wait(1400);
         await swap(a, "mat");
         await a.wait(1400);
-        await swap(a, "rat");
+        await swap(a, "bat");
         await a.wait(2000);
 
         if (onDone) return onDone();

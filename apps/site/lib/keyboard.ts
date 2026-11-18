@@ -41,11 +41,14 @@ export const FAMILIES: Record<string, string[]> = {
   en: ["hen", "men", "pen", "ten"],
 };
 
-/** The words in the strip for what's typed so far: its family if it has one, else the at family. */
-export function familyFor(word: string): string[] {
+/**
+ * The strip's words for the word being typed: up to three from its family, leaving out the word
+ * itself, so "cat" offers bat, hat and mat. None when the word has no family: the strip stays blank.
+ */
+export function rhymesFor(word: string): string[] {
   const end = Object.keys(FAMILIES).find((f) => word.length > f.length && word.endsWith(f));
 
-  return FAMILIES[end ?? "at"];
+  return end ? FAMILIES[end].filter((w) => w !== word).slice(0, 3) : [];
 }
 
 /**

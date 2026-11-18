@@ -10,8 +10,8 @@ import { BEADS_BY_DIGIT, isVowel, ROWS, type Order } from "@/lib/keyboard";
  * data-target so its pointer can find it.
  */
 
-/** The strip above the tiles: rhymes for the word being typed, or nothing yet. */
-export type Strip = { family: string; words: string[]; current?: string } | null;
+/** The strip above the tiles: up to three rhymes for the word being typed, or blank. */
+export type Strip = string[];
 
 export type TrayProps = {
   /** The keyboard's width in points: the phone screen's (402), or less in the app's settings preview. */
@@ -229,7 +229,7 @@ export function Tray({
   order = "qwerty",
   cursive = false,
   layer = "letters",
-  strip = null,
+  strip = [],
   noStrip = false,
   down = null,
   popup = null,
@@ -269,21 +269,16 @@ export function Tray({
     >
       {!noStrip && (
         <div className="mk-strip" data-target="strip">
-          {strip && (
-            <>
-              <span className="mk-fam">-{strip.family}</span>
-              {strip.words.map((w) => (
-                <span
-                  key={w}
-                  className="mk-chip"
-                  data-target={`chip-${w}`}
-                  data-on={w === strip.current || undefined}
-                >
-                  <Colored word={w} />
+          {strip.length > 0 &&
+            [0, 1, 2].map((i) => {
+              const w = strip[i];
+
+              return (
+                <span key={w ?? `blank-${i}`} className="mk-slot" data-target={w && `chip-${w}`}>
+                  {w && <Colored word={w} />}
                 </span>
-              ))}
-            </>
-          )}
+              );
+            })}
         </div>
       )}
       {grid.map((r, ri) => (
