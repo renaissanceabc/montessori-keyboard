@@ -26,18 +26,20 @@ docs: explain the word mat
 - **Scopes:** `ios`, `keyboard`, `app`, `kit`, `site`, `icons`, `docs`, `ci`, `deps`. A scope is optional.
 - A body is optional, and at most 10 short lines.
 
-`bun install` turns on a commit-msg hook that checks this (`commitlint.config.ts`). Skip it once with `git commit --no-verify`.
+`bun install` turns on the git hooks ([lefthook.yml](lefthook.yml)). The commit-msg hook checks this (`commitlint.config.ts`). Skip the hooks once with `git commit --no-verify`.
 
 ## Checks
 
-Run these before you push:
+The hooks run most of these for you. Before a commit, they lint and format the staged files: oxlint and oxfmt for the site, docs and config, swift-format and SwiftLint for Swift (on a Mac with Xcode and `mise install`). Before a push, they run lint, format, typecheck and tests.
 
-| | |
-| --- | --- |
-| Site | `bun run typecheck`, `bun run test`, `bun run build` |
-| iOS (macOS) | `bun run ios:test` |
+|                    |                                                                 |
+| ------------------ | --------------------------------------------------------------- |
+| Lint, format       | `bun run lint`, `bun run format` (`format:check` to only check) |
+| Swift lint, format | `bun run lint:swift`, `bun run format:swift` (macOS)            |
+| Site               | `bun run typecheck`, `bun run test`, `bun run build`            |
+| iOS (macOS)        | `bun run ios:test`                                              |
 
-CI runs the site checks on every pull request, and builds and tests the iOS app on pull requests that touch `apps/ios`.
+CI runs lint, format and the site checks on every pull request, and lints, builds and tests the iOS app on pull requests that touch `apps/ios`.
 
 ## Security and privacy
 

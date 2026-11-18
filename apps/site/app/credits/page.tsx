@@ -24,8 +24,8 @@ export default function Credits() {
           app and this site use it.
         </p>
         <p>
-          <ExternalLink href="https://allo.joshpuckett.me">allo.joshpuckett.me</ExternalLink>{" "}
-          · SIL Open Font License 1.1
+          <ExternalLink href="https://allo.joshpuckett.me">allo.joshpuckett.me</ExternalLink> · SIL
+          Open Font License 1.1
         </p>
       </section>
 
@@ -58,8 +58,8 @@ export default function Credits() {
         them with a pencil.
       </p>
       <p>
-        The moveable alphabet is a box of loose cutout letters, often wooden, with vowels in blue and
-        consonants in red. Children use it to build words from the sounds they hear, well before
+        The moveable alphabet is a box of loose cutout letters, often wooden, with vowels in blue
+        and consonants in red. Children use it to build words from the sounds they hear, well before
         their hands are ready to write. The keyboard’s tiles are modeled on it.
       </p>
       <p>

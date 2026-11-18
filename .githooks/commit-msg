@@ -1,5 +1,0 @@
-#!/bin/sh
-# Checks the commit message against commitlint.config.ts (conventional commits).
-# Installed by `bun install` (the root package.json's prepare script sets core.hooksPath).
-# Skip once with `git commit --no-verify`.
-exec bunx --no-install commitlint --edit "$1"

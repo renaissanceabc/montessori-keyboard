@@ -55,7 +55,10 @@ struct ChipStyle: ButtonStyle {
         let pressed = configuration.isPressed
         configuration.label
             .frame(maxHeight: .infinity)
-            .background(shape.fill(LinearGradient(colors: [palette.chipTop, palette.chipBottom], startPoint: .top, endPoint: .bottom)))
+            .background(
+                shape.fill(
+                    LinearGradient(colors: [palette.chipTop, palette.chipBottom], startPoint: .top, endPoint: .bottom))
+            )
             .background(shape.fill(palette.tileEdge).offset(y: pressed ? 0 : palette.chipDepth))
             .offset(y: pressed ? palette.chipDepth : 0)
             .fixedSize(horizontal: true, vertical: false)
@@ -114,7 +117,10 @@ struct StripView: View {
         if let word = model.trailing?.word {
             HStack(spacing: 6) {
                 ForEach(Array(word.enumerated()), id: \.offset) { index, ch in
-                    Chip(text: String(ch), cursive: model.settings.cursive, selected: model.selectedLetter == index, letter: true) {
+                    Chip(
+                        text: String(ch), cursive: model.settings.cursive, selected: model.selectedLetter == index,
+                        letter: true
+                    ) {
                         model.select(letterAt: index)
                     }
                 }

@@ -23,13 +23,13 @@ struct PadView: View {
                         let on = reduceMotion || Int(context.date.timeIntervalSinceReferenceDate * 2).isMultiple(of: 2)
                         Text("\(text.text)\(Text("|").foregroundStyle(palette.vowel.opacity(on ? 1 : 0)))")
                     }
-                        .font(TileFont.writing(34))
-                        .foregroundStyle(palette.ink)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                        .padding(.horizontal, 18)
-                        .padding(.vertical, 20)
-                        .id("end")
-                        .accessibilityLabel(text.text.isEmpty ? "Empty page" : text.text)
+                    .font(TileFont.writing(34))
+                    .foregroundStyle(palette.ink)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 20)
+                    .id("end")
+                    .accessibilityLabel(text.text.isEmpty ? "Empty page" : text.text)
                 }
                 .onChange(of: text.text) { _, _ in proxy.scrollTo("end", anchor: .bottom) }
             }

@@ -26,7 +26,11 @@ struct SetupSteps: View {
             step(2, "Tap Keyboards") {
                 MockSettings { MockRow(title: "Keyboards", chevron: true) }
             }
-            step(3, "Turn on Montessori Keyboard", detail: "Allow Full Access is optional. It adds letter sounds and key clicks; everything else works without it.") {
+            step(
+                3, "Turn on Montessori Keyboard",
+                detail:
+                    "Allow Full Access is optional. It adds letter sounds and key clicks; everything else works without it."
+            ) {
                 MockSettings {
                     MockRow(title: "Montessori Keyboard", on: true)
                     MockRow(title: "Allow Full Access", on: false)
@@ -39,7 +43,9 @@ struct SetupSteps: View {
         step(n, title, detail: detail) { EmptyView() }
     }
 
-    private func step<Mock: View>(_ n: Int, _ title: String, detail: String? = nil, @ViewBuilder mock: () -> Mock) -> some View {
+    private func step<Mock: View>(
+        _ n: Int, _ title: String, detail: String? = nil, @ViewBuilder mock: () -> Mock
+    ) -> some View {
         HStack(alignment: .top, spacing: 14) {
             NumberBadge(n: n)
             VStack(alignment: .leading, spacing: compact ? 4 : 8) {
@@ -65,7 +71,10 @@ struct NumberBadge: View {
             BeadRow(digit: n)
         }
         .frame(width: 36, height: 44)
-        .background(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom), in: RoundedRectangle(cornerRadius: 7))
+        .background(
+            LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 7)
+        )
         .background(RoundedRectangle(cornerRadius: 7).fill(palette.tileEdge).offset(y: 2))
         .accessibilityLabel("Step \(n)")
     }
@@ -122,7 +131,8 @@ struct KeyboardStatus: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
+            Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(
+                width: 8, height: 8)
             Text(model.keyboardEnabled ? "The keyboard is on" : "Waiting for the keyboard")
         }
         .font(TileFont.text(14))
@@ -138,7 +148,9 @@ struct SetupView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                ScreenHeading(title: "Turn it on", subtitle: "iPhone asks a grown-up to switch on new keyboards in Settings. It takes three taps.")
+                ScreenHeading(
+                    title: "Turn it on",
+                    subtitle: "iPhone asks a grown-up to switch on new keyboards in Settings. It takes three taps.")
                 SetupSteps()
             }
             .padding(.horizontal, 24)

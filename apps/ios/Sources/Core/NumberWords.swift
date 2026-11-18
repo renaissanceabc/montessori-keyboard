@@ -2,9 +2,11 @@ import Foundation
 
 /// Spells numbers in words, for the grown-ups gate: a child who can type digits can't yet read "eight hundred sixty-three".
 public enum NumberWords {
-    private static let ones = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-                               "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
-                               "eighteen", "nineteen"]
+    private static let ones = [
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+        "eighteen", "nineteen",
+    ]
     private static let tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
 
     /// 0 through 999 in American English, hyphenated the usual way ("sixty-three").

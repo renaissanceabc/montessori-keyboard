@@ -11,7 +11,10 @@ struct TryItView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            ScreenHeading(title: "Try it", subtitle: "Tap the box. If you see Apple's keyboard, tap the globe under it until the wooden tiles appear.")
+            ScreenHeading(
+                title: "Try it",
+                subtitle:
+                    "Tap the box. If you see Apple's keyboard, tap the globe under it until the wooden tiles appear.")
             VStack(alignment: .leading, spacing: 6) {
                 Text("Type your child's name").font(TileFont.text(13)).foregroundStyle(palette.muted)
                 TextField("", text: $name)

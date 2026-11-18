@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "ignorePatterns": [
+    ".claude/**",
+    ".devkit/**",
+    "**/.next/**",
+    "**/out/**",
+    "apps/site/public/**",
+    "**/*.xcassets/**",
+    "apps/ios/vendor/**",
+    "apps/ios/fastlane/report.xml",
+    "bun.lock",
+    "CHANGELOG.md"
+  ]
+}

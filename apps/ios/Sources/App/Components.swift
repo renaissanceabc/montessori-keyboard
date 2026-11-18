@@ -71,7 +71,10 @@ struct DecorTile: View {
             .foregroundStyle(palette.color(for: LetterKind(Character(letter))))
             .padding(.bottom, size * 0.08)
             .frame(width: size, height: size * 1.17)
-            .background(shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom)))
+            .background(
+                shape.fill(
+                    LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
+            )
             .background(shape.fill(palette.tileEdge).offset(y: 3).shadow(color: palette.shadow, radius: 5, y: 6))
     }
 }

@@ -42,7 +42,8 @@ struct GateView: View {
             }
             .modifier(Shake(animatableData: CGFloat(shake)))
             .accessibilityElement()
-            .accessibilityLabel(typed.isEmpty ? "Nothing typed" : "Typed \(typed.map(String.init).joined(separator: " "))")
+            .accessibilityLabel(
+                typed.isEmpty ? "Nothing typed" : "Typed \(typed.map(String.init).joined(separator: " "))")
 
             Spacer(minLength: 0)
 
@@ -108,7 +109,9 @@ struct GateView: View {
     private func authenticate() {
         Task {
             let context = LAContext()
-            let ok = (try? await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Open Montessori Keyboard's settings")) ?? false
+            let ok =
+                (try? await context.evaluatePolicy(
+                    .deviceOwnerAuthentication, localizedReason: "Open Montessori Keyboard's settings")) ?? false
             if ok { unlock() }
         }
     }
@@ -140,9 +143,15 @@ struct PadKeyStyle: ButtonStyle {
         let pressed = configuration.isPressed
         configuration.label
             .padding(.bottom, 4)
-            .background(shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom)))
+            .background(
+                shape.fill(
+                    LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
+            )
             .background(shape.fill(palette.tileEdge).offset(y: pressed ? 0 : 2))
-            .background(shape.fill(palette.tileEdge).shadow(color: palette.shadow, radius: pressed ? 1 : 2.5, y: pressed ? 1 : 3))
+            .background(
+                shape.fill(palette.tileEdge).shadow(
+                    color: palette.shadow, radius: pressed ? 1 : 2.5, y: pressed ? 1 : 3)
+            )
             .offset(y: pressed ? 2 : 0)
             .animation(pressed ? nil : .easeOut(duration: 0.08), value: pressed)
     }

@@ -24,6 +24,7 @@ An iOS keyboard for young learners modelled on the Montessori moveable alphabet 
 
 ## Checks
 
+- Lint and format: `bun run lint`, `bun run format:check`. Swift on macOS: `bun run lint:swift`, `bun run format:swift`. lefthook runs them on commit and push.
 - Site: `bun run typecheck`, `bun run test`, `bun run build`.
 - iOS needs macOS: `bun run ios:test`. In a cloud session, open a pull request and read its `iOS` workflow run instead (it runs on pull requests that touch `apps/ios`).
 - TestFlight builds come from the manual `TestFlight` workflow (fastlane and match). Setup is in [apps/ios/README.md](apps/ios/README.md#testflight).

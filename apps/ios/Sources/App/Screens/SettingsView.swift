@@ -44,8 +44,12 @@ struct SettingsView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
                         SettingsGroup(title: "Keyboard") {
-                            SegmentRow(title: "Order", selection: $model.settings.order, options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
-                            SegmentRow(title: "Letter shapes", selection: $model.settings.cursive, options: [(false, "Print"), (true, "Cursive")])
+                            SegmentRow(
+                                title: "Order", selection: $model.settings.order,
+                                options: [(.abc, "ABC"), (.qwerty, "QWERTY")])
+                            SegmentRow(
+                                title: "Letter shapes", selection: $model.settings.cursive,
+                                options: [(false, "Print"), (true, "Cursive")])
                             ToggleRow(title: "Capitals with shift", isOn: $model.settings.capitalsWithShift)
                         }
                         SettingsGroup(title: "Learning") {
@@ -53,7 +57,11 @@ struct SettingsView: View {
                             LinkRow(title: "Strip", value: model.settings.strip.title) { StripOptionsView() }
                             LinkRow(title: "Numbers", value: model.settings.numbers.title) { NumbersOptionsView() }
                         }
-                        SettingsGroup(title: "Sound", footer: "Tap the tiles above to hear them. On other apps, sounds need Allow Full Access in iPhone Settings.") {
+                        SettingsGroup(
+                            title: "Sound",
+                            footer:
+                                "Tap the tiles above to hear them. On other apps, sounds need Allow Full Access in iPhone Settings."
+                        ) {
                             ToggleRow(title: "Say letter sounds", isOn: $model.settings.letterSounds)
                             ToggleRow(title: "Key clicks", isOn: $model.settings.keyClicks)
                         }
@@ -63,7 +71,8 @@ struct SettingsView: View {
                                 LinkRow(title: "About and source code") { AboutView() }
                             }
                             HStack(spacing: 8) {
-                                Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten)).frame(width: 8, height: 8)
+                                Circle().fill(model.keyboardEnabled ? palette.success : Color(hex: BeadStair.ten))
+                                    .frame(width: 8, height: 8)
                                 Text(model.statusLine)
                             }
                             .font(TileFont.text(13, relativeTo: .footnote))
@@ -76,7 +85,9 @@ struct SettingsView: View {
                     .padding(.bottom, 28)
                 }
                 .contentMargins(.top, restHeight, for: .scrollContent)
-                .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
+                .onScrollGeometryChange(for: CGFloat.self) {
+                    $0.contentOffset.y + $0.contentInsets.top
+                } action: { _, offset in
                     scrolled = offset
                 }
 
@@ -118,16 +129,18 @@ struct SettingsView: View {
             // Rows fade out as they slide under the tray rather than being cut flat, and the tray's own edge is the
             // divider, so there's no separate line or empty band below it.
             .overlay(alignment: .bottom) {
-                LinearGradient(stops: [
-                    .init(color: palette.page, location: 0),
-                    .init(color: palette.page.opacity(0.85), location: 0.35),
-                    .init(color: palette.page.opacity(0), location: 1),
-                ], startPoint: .top, endPoint: .bottom)
-                    .frame(height: Self.fade)
-                    // Hangs entirely below the band, so it never covers the tray's own rounded edge and border.
-                    .offset(y: Self.fade)
-                    .opacity(min(max(scrolled / 16, 0), 1))
-                    .allowsHitTesting(false)
+                LinearGradient(
+                    stops: [
+                        .init(color: palette.page, location: 0),
+                        .init(color: palette.page.opacity(0.85), location: 0.35),
+                        .init(color: palette.page.opacity(0), location: 1),
+                    ], startPoint: .top, endPoint: .bottom
+                )
+                .frame(height: Self.fade)
+                // Hangs entirely below the band, so it never covers the tray's own rounded edge and border.
+                .offset(y: Self.fade)
+                .opacity(min(max(scrolled / 16, 0), 1))
+                .allowsHitTesting(false)
             }
             .accessibilitySortPriority(1)
     }
@@ -146,19 +159,29 @@ struct StripOptionsView: View {
 
     var body: some View {
         OptionsPage(title: "Strip", subtitle: "What the row above the tiles shows. It never autocorrects.") {
-            OptionCard(title: StripMode.rhymes.title, detail: "Rhyming words to swap in.", selected: model.settings.strip == .rhymes, action: { pick(.rhymes) }) {
+            OptionCard(
+                title: StripMode.rhymes.title, detail: "Rhyming words to swap in.",
+                selected: model.settings.strip == .rhymes, action: { pick(.rhymes) }
+            ) {
                 MiniStrip {
                     Text("-ig").font(TileFont.tile(size: 14, cursive: false)).foregroundStyle(palette.muted)
                     ForEach(["big", "dig", "fig", "wig"], id: \.self) { MiniChip(text: $0) }
                 }
             }
-            OptionCard(title: StripMode.letters.title, detail: "Tap a letter to change it.", selected: model.settings.strip == .letters, action: { pick(.letters) }) {
+            OptionCard(
+                title: StripMode.letters.title, detail: "Tap a letter to change it.",
+                selected: model.settings.strip == .letters, action: { pick(.letters) }
+            ) {
                 MiniStrip {
                     ForEach(["p", "i", "g"], id: \.self) { MiniChip(text: $0, letter: true) }
-                    Text("tap a tile to change it").font(TileFont.text(12.5)).foregroundStyle(palette.muted).padding(.leading, 6)
+                    Text("tap a tile to change it").font(TileFont.text(12.5)).foregroundStyle(palette.muted).padding(
+                        .leading, 6)
                 }
             }
-            OptionCard(title: StripMode.off.title, detail: "Nothing. Just the tiles.", selected: model.settings.strip == .off, action: { pick(.off) }) {
+            OptionCard(
+                title: StripMode.off.title, detail: "Nothing. Just the tiles.", selected: model.settings.strip == .off,
+                action: { pick(.off) }
+            ) {
                 MiniStrip { EmptyView() }
             }
         }
@@ -182,7 +205,10 @@ struct NumbersOptionsView: View {
     }
 
     private func card(_ style: NumberStyle, _ detail: String) -> some View {
-        OptionCard(title: style.title, detail: detail, selected: model.settings.numbers == style, action: { model.settings.numbers = style }) {
+        OptionCard(
+            title: style.title, detail: detail, selected: model.settings.numbers == style,
+            action: { model.settings.numbers = style }
+        ) {
             MiniNumbers(style: style)
         }
     }
@@ -256,7 +282,10 @@ struct MiniNumbers: View {
                     NumberMarks(digit: digit, style: style)
                 }
                 .frame(maxWidth: .infinity, minHeight: 42)
-                .background(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom), in: RoundedRectangle(cornerRadius: 6))
+                .background(
+                    LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom),
+                    in: RoundedRectangle(cornerRadius: 6)
+                )
                 .background(RoundedRectangle(cornerRadius: 6).fill(palette.tileEdge).offset(y: 1.5))
             }
         }
