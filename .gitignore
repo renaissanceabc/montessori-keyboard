@@ -53,3 +53,6 @@ apps/ios/fastlane/test_output
 
 # Per-machine mise settings.
 mise.local.toml
+
+# Python bytecode from the scripts
+__pycache__/
