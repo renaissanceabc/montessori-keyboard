@@ -20,64 +20,71 @@ struct ColoredWord: View {
     }
 }
 
-/// A small tile in the strip: a rhyme, a phonogram, or one letter of the word being changed.
+/// A small tile in the strip: a rhyme, or one letter of the word being changed.
 struct Chip: View {
     var text: String
     var cursive: Bool
     var selected = false
+    /// A letter of the word mat: a fixed 26×32 tile.
+    var letter = false
     var onTap: () -> Void
 
     var body: some View {
         // A plain Button, not KeyButton, so the strip's horizontal scroll still works.
         Button(action: onTap) {
-            ColoredWord(word: text, size: 20, cursive: cursive)
-                .padding(.horizontal, 10)
-                .padding(.bottom, 3)
+            ColoredWord(word: text, size: 19, cursive: cursive)
+                .padding(.horizontal, letter ? 0 : 9)
+                .padding(.bottom, letter ? 2 : 3)
+                .frame(width: letter ? 26 : nil)
         }
-        .buttonStyle(ChipStyle(selected: selected))
+        .buttonStyle(ChipStyle(selected: selected, cornerRadius: letter ? 5 : 7))
         .accessibilityLabel(text)
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
+/// A strip chip, as the canvas's Strip board draws it: flat paper on a 1pt edge in maple, a small tile in walnut.
+/// The chosen letter gets a blue ring outside it and stays up.
 struct ChipStyle: ButtonStyle {
     var selected: Bool
+    var cornerRadius: CGFloat
     @Environment(\.palette) private var palette
 
     func makeBody(configuration: Configuration) -> some View {
-        TileFace(pressed: configuration.isPressed || selected, cornerRadius: 7) {
-            configuration.label
-        }
-        .fixedSize(horizontal: true, vertical: false)
-        .frame(height: 34)
-        .overlay {
-            if selected {
-                RoundedRectangle(cornerRadius: 7).stroke(palette.vowel, lineWidth: 2).offset(y: 2)
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        let pressed = configuration.isPressed
+        configuration.label
+            .frame(maxHeight: .infinity)
+            .background(shape.fill(LinearGradient(colors: [palette.chipTop, palette.chipBottom], startPoint: .top, endPoint: .bottom)))
+            .background(shape.fill(palette.tileEdge).offset(y: pressed ? 0 : palette.chipDepth))
+            .offset(y: pressed ? palette.chipDepth : 0)
+            .fixedSize(horizontal: true, vertical: false)
+            .frame(height: 32)
+            .overlay {
+                if selected {
+                    shape.inset(by: -2).stroke(palette.vowel, lineWidth: 2)
+                }
             }
-        }
+            .animation(pressed ? nil : .easeOut(duration: 0.08), value: pressed)
     }
 }
 
-/// The strip above the tiles. The phonogram tray takes it over while it's open.
+/// The strip above the tiles.
 struct StripView: View {
     @Bindable var model: KeyboardModel
     @Environment(\.palette) private var palette
 
     var body: some View {
         Group {
-            if model.trayLetter != nil {
-                PhonogramTray(model: model)
-            } else {
-                switch model.settings.strip {
-                case .rhymes: rhymes
-                case .letters: letters
-                case .off: Color.clear
-                }
+            switch model.settings.strip {
+            case .rhymes: rhymes
+            case .letters: letters
+            case .off: Color.clear
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 44)
-        .overlay(alignment: .bottom) { Rectangle().fill(palette.line).frame(height: 1) }
+        .overlay(alignment: .bottom) { Rectangle().fill(palette.stripLine).frame(height: 1) }
     }
 
     @ViewBuilder private var rhymes: some View {
@@ -92,8 +99,9 @@ struct StripView: View {
                         Chip(text: rhyme, cursive: model.settings.cursive) { model.swap(to: rhyme) }
                     }
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 12)
             }
+            .noScrollEdgeEffect()
         } else {
             Text("Rhymes show up here")
                 .font(TileFont.text(13))
@@ -106,7 +114,7 @@ struct StripView: View {
         if let word = model.trailing?.word {
             HStack(spacing: 6) {
                 ForEach(Array(word.enumerated()), id: \.offset) { index, ch in
-                    Chip(text: String(ch), cursive: model.settings.cursive, selected: model.selectedLetter == index) {
+                    Chip(text: String(ch), cursive: model.settings.cursive, selected: model.selectedLetter == index, letter: true) {
                         model.select(letterAt: index)
                     }
                 }
@@ -116,7 +124,7 @@ struct StripView: View {
                         .foregroundStyle(palette.hint)
                 }
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 12)
         } else {
             Text("Tap a letter to change it")
                 .font(TileFont.text(13))
@@ -126,31 +134,13 @@ struct StripView: View {
     }
 }
 
-/// The phonograms for the letter being held: tap one to type it, or close the tray.
-struct PhonogramTray: View {
-    @Bindable var model: KeyboardModel
-    @Environment(\.palette) private var palette
-
-    var body: some View {
-        HStack(spacing: 6) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(model.trayTeams, id: \.self) { team in
-                        Chip(text: team, cursive: model.settings.cursive) { model.tap(team: team) }
-                    }
-                }
-                .padding(.leading, 10)
-            }
-            Button {
-                model.closeTray()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(palette.keyInk)
-                    .frame(width: 44, height: 44)
-            }
-            .accessibilityLabel("Close letter teams")
+extension View {
+    /// iOS 26 blurs scroll content near a scroll view's edges, which in a strip this short blurs every chip.
+    @ViewBuilder func noScrollEdgeEffect() -> some View {
+        if #available(iOS 26, *) {
+            scrollEdgeEffectHidden(true)
+        } else {
+            self
         }
-        .background(palette.tray)
     }
 }

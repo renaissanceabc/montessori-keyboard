@@ -22,7 +22,7 @@ let baseSettings: SettingsDictionary = [
 
 let fonts: [ResourceFileElement] = ["Sources/Shared/Fonts/*.otf", "Sources/Shared/Fonts/*.ttf"]
 let fontList: Plist.Value = .array([
-    "Allo-Regular.otf", "Allo-Medium.otf", "Allo-SemiBold.otf", "Allo-Bold.otf", "PlaywriteUSTrad.ttf",
+    "AlloLearner-Regular.otf", "AlloLearner-Medium.otf", "AlloLearner-SemiBold.otf", "AlloLearner-Bold.otf", "PlaywriteUSTrad.ttf",
 ])
 
 let appInfoPlist: InfoPlist = .extendingDefault(with: [

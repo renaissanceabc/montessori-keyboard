@@ -1,7 +1,7 @@
 /** Links and facts the pages share. */
 export const site = {
   name: "Montessori Keyboard",
-  /** The site's address. A placeholder until the domain is bought. */
+  /** The site's address. */
   url: "https://montessorikeyboard.com",
   /** The App Store listing. A placeholder until the app is published (the link goes to the App Store's home). */
   appStoreUrl: "https://apps.apple.com/",

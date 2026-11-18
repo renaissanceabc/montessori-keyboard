@@ -15,8 +15,8 @@ struct GateView: View {
         VStack(spacing: 24) {
             VStack(spacing: 10) {
                 Image(systemName: "lock")
-                    .font(.system(size: 34, weight: .regular))
-                    .foregroundStyle(palette.hint)
+                    .font(.largeTitle.weight(.light))
+                    .foregroundStyle(palette.icon)
                     .accessibilityHidden(true)
                 ScreenHeading(title: "Grown-ups only", subtitle: "Type the number written below.", centered: true)
                 Text(NumberWords.spell(challenge))
@@ -33,10 +33,10 @@ struct GateView: View {
                         .font(TileFont.tile(size: 40, cursive: false))
                         .foregroundStyle(palette.ink)
                         .frame(width: 64, height: 76)
-                        .background(palette.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .background(palette.field, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                         .overlay {
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .strokeBorder(index == typed.count ? palette.vowel : palette.tileEdge.opacity(0.6), lineWidth: 2)
+                                .strokeBorder(index == typed.count ? palette.vowel : palette.dot, lineWidth: 2)
                         }
                 }
             }
@@ -55,21 +55,22 @@ struct GateView: View {
                 Button {
                     if !typed.isEmpty { typed.removeLast() }
                 } label: {
-                    Image(systemName: "delete.left")
-                        .font(.system(size: 22))
+                    KeyIcon.delete.image
+                        .scaleEffect(1.2)
                         .foregroundStyle(palette.ink2)
                         .frame(maxWidth: .infinity, minHeight: 62)
+                        .contentShape(Rectangle())
                 }
                 .accessibilityLabel("Delete")
             }
 
             if let biometry = Biometry.current {
-                PrimaryButton(biometry.title, systemImage: biometry.symbol) { authenticate() }
+                PrimaryButton(biometry.title, systemImage: biometry.symbol, height: 48) { authenticate() }
             }
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 12)
-        .pageBackground(palette.page)
+        .pageBackground(palette.paper)
     }
 
     private func padKey(_ digit: Int) -> some View {
@@ -78,7 +79,7 @@ struct GateView: View {
         } label: {
             VStack(spacing: 4) {
                 Text(String(digit)).font(TileFont.tile(size: 28, cursive: false))
-                NumberMarks(digit: digit, style: .beads)
+                BeadRow(digit: digit)
             }
             .foregroundStyle(palette.ink)
             .frame(maxWidth: .infinity, minHeight: 62)
@@ -130,7 +131,7 @@ struct Biometry {
     }
 }
 
-/// A gate key: a tile that sinks when pressed.
+/// A gate key: a tile that sinks onto its edge when pressed, like the keyboard's.
 struct PadKeyStyle: ButtonStyle {
     @Environment(\.palette) private var palette
 
@@ -139,10 +140,11 @@ struct PadKeyStyle: ButtonStyle {
         let pressed = configuration.isPressed
         configuration.label
             .padding(.bottom, 4)
-            .background(shape.fill(LinearGradient(colors: pressed ? [palette.tilePressed, palette.tilePressed] : [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom)))
-            .background(shape.fill(palette.tileEdge).offset(y: pressed ? 0 : 2).shadow(color: palette.shadow, radius: 2.5, y: 3))
+            .background(shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom)))
+            .background(shape.fill(palette.tileEdge).offset(y: pressed ? 0 : 2))
+            .background(shape.fill(palette.tileEdge).shadow(color: palette.shadow, radius: pressed ? 1 : 2.5, y: pressed ? 1 : 3))
             .offset(y: pressed ? 2 : 0)
-            .animation(.easeOut(duration: 0.08), value: pressed)
+            .animation(pressed ? nil : .easeOut(duration: 0.08), value: pressed)
     }
 }
 

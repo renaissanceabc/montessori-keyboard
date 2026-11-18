@@ -107,7 +107,7 @@ jobs:
           }
           for look in light dark; do
             xcrun simctl ui "$SIM" appearance "$look"
-            for screen in welcome setup tryit gate settings strip numbers guide about; do shoot "$look" "$screen"; done
+            for screen in welcome setup choose tryit gate settings strip numbers guide about; do shoot "$look" "$screen"; done
             shoot "$look" pad "The cat sat"
           done
           ls shots

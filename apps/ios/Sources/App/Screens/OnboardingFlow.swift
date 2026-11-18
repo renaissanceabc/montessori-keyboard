@@ -1,9 +1,9 @@
 import MontessoriUI
 import SwiftUI
 
-/// First launch: Welcome, Turn it on, Try it. Done lands in Settings without the gate, since a grown-up is holding the phone.
+/// First launch: Welcome, Turn it on, Make it yours, Try it. Done lands in Settings without the gate, since a grown-up is holding the phone.
 struct OnboardingFlow: View {
-    enum Step: Hashable { case setup, tryIt }
+    enum Step: Hashable { case setup, choose, tryIt }
 
     @Environment(AppModel.self) private var model
     @State private var path: [Step] = []
@@ -13,7 +13,8 @@ struct OnboardingFlow: View {
             WelcomeView { path.append(.setup) }
                 .navigationDestination(for: Step.self) { step in
                     switch step {
-                    case .setup: SetupView { path.append(.tryIt) }
+                    case .setup: SetupView { path.append(.choose) }
+                    case .choose: ChooseView { path.append(.tryIt) }
                     case .tryIt: TryItView {
                         model.unlocked = true
                         model.onboarded = true
@@ -31,7 +32,7 @@ struct WelcomeView: View {
     var body: some View {
         VStack(spacing: 30) {
             TileTrio().padding(.top, 40)
-            ScreenHeading(title: "A keyboard for young learners", subtitle: "A moveable alphabet in the palm of your hands", centered: true)
+            ScreenHeading(title: "A keyboard for\nyoung learners", subtitle: "A moveable alphabet in the palm of your hands", centered: true)
             VStack(alignment: .leading, spacing: 18) {
                 point(icon: AnyView(abIcon), title: "Blue vowels, red consonants", detail: "The same colors as the classroom box.")
                 point(icon: AnyView(DecorTile(letter: "m", size: 18)), title: "Big, clear tiles", detail: "Lowercase print, like the moveable alphabet.")
@@ -46,7 +47,7 @@ struct WelcomeView: View {
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 12)
-        .pageBackground(palette.page)
+        .pageBackground(palette.paper)
         .toolbar(.hidden, for: .navigationBar)
     }
 
@@ -62,9 +63,9 @@ struct WelcomeView: View {
         HStack(alignment: .top, spacing: 14) {
             icon
                 .font(TileFont.text(16, weight: .semibold))
-                .foregroundStyle(palette.hint)
+                .foregroundStyle(palette.icon)
                 .frame(width: 32, height: 32)
-                .background(palette.tray.opacity(0.6), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(palette.iconBackground, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(TileFont.text(15, weight: .semibold)).foregroundStyle(palette.ink)

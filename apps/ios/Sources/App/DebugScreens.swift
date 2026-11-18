@@ -5,7 +5,7 @@ import SwiftUI
 /// Opens one screen straight away, for screenshots: `-screen settings` (and `-padText "the cat"` for the Pad).
 /// Debug builds only.
 enum DebugScreen: String {
-    case welcome, setup, tryit, gate, settings, pad, strip, numbers, guide, about
+    case welcome, setup, choose, tryit, gate, settings, pad, strip, numbers, guide, about
 
     static var requested: DebugScreen? {
         let args = ProcessInfo.processInfo.arguments
@@ -27,6 +27,7 @@ struct DebugScreenView: View {
         switch screen {
         case .welcome: NavigationStack { WelcomeView {} }
         case .setup: NavigationStack { SetupView {} }
+        case .choose: NavigationStack { ChooseView {} }
         case .tryit: NavigationStack { TryItView {} }
         case .gate: GateView {}
         case .settings: NavigationStack { SettingsView() }

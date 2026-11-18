@@ -1,5 +1,6 @@
 import MontessoriUI
 import SwiftUI
+import UIKit
 
 @main
 struct MontessoriKeyboardApp: App {
@@ -8,6 +9,24 @@ struct MontessoriKeyboardApp: App {
 
     init() {
         TileFont.registerIfNeeded()
+        Self.styleNavigationBars()
+    }
+
+    /// Native navigation bars with their titles in Allo, so every page title matches the rest of the app.
+    private static func styleNavigationBars() {
+        // The proxy's title attributes reach `.large` and `.inline` titles. (`.inlineLarge` draws its own title and
+        // ignores them, so no page uses it.)
+        let light = UIColor(Palette.maple.ink)
+        let dark = UIColor(Palette.walnut.ink)
+        let ink = UIColor { $0.userInterfaceStyle == .dark ? dark : light }
+        let bar = UINavigationBar.appearance()
+        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle), .foregroundColor: ink]
+        bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline), .foregroundColor: ink]
+    }
+
+    private static func allo(_ name: String, size: CGFloat, style: UIFont.TextStyle) -> UIFont {
+        let font = UIFont(name: name, size: size) ?? .systemFont(ofSize: size, weight: .bold)
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: font)
     }
 
     var body: some Scene {
@@ -45,6 +64,8 @@ struct RootView: View {
             #endif
         }
         .tint(palette.vowel)
+        // Every line of text follows Dynamic Type; past the third accessibility size the setup layouts stop fitting.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .animation(.easeOut(duration: 0.2), value: model.onboarded)
         .animation(.easeOut(duration: 0.2), value: model.unlocked)
     }
