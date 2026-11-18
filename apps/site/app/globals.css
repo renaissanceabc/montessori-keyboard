@@ -191,21 +191,11 @@ body {
   text-decoration: none;
 }
 /* The mark: the a tile. */
-.wordmark-tile {
-  display: grid;
-  place-items: center;
+/* The app icon's three tiles, a over b c (public/logo.png, drawn by scripts/icons.py). */
+.wordmark-logo {
   flex: none;
   width: 32px;
   height: 32px;
-  padding-bottom: 3px;
-  border-radius: 8px;
-  background: linear-gradient(var(--tile-top), var(--tile-bottom));
-  box-shadow:
-    0 2px 0 var(--tile-edge),
-    0 3px 6px -2px rgba(80, 50, 15, 0.3);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--vowel);
 }
 .toc ul {
   list-style: none;
