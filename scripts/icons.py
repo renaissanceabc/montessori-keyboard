@@ -1,28 +1,56 @@
-"""Draws the app icon and the site's favicons from code: three maple tiles, a b c, on the tray.
+"""Draws the app icon and the site's favicons from code: a b c tiles stacked as a triangle, a on top.
 
 Run with `bun run icons` (Pillow required). It writes:
   apps/ios/Sources/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png
-  apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico
+  apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico, apps/site/public/logo.png
 """
 
+import random
+from dataclasses import dataclass, replace
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "apps/ios/Sources/Shared/Fonts/AlloLearner-Bold.otf"
 # Allo Learner has the learner forms baked in (scripts/learner-fonts.py), so no OpenType features are needed.
 
-TRAY_TOP = (0xF1, 0xE4, 0xCC)
-TRAY_BOTTOM = (0xE2, 0xCF, 0xAE)
-TILE_TOP = (0xF8, 0xE7, 0xC9)
-TILE_BOTTOM = (0xF0, 0xD8, 0xB0)
-TILE_EDGE = (0xCD, 0xAA, 0x78)
-VOWEL = (0x16, 0x50, 0xB0)
-CONSONANT = (0xB3, 0x14, 0x1A)
-
 S = 4  # supersampling
+EDGE = 0.04  # the tile's darker edge below its face, as a share of its height
 
+Rgb = tuple[int, int, int]
+
+
+@dataclass(frozen=True)
+class Look:
+    """The icon's colors. Maple matches `Palette` in Theme.swift; the icon has one look in light and dark mode."""
+
+    tray_top: Rgb
+    tray_bottom: Rgb
+    tile_top: Rgb
+    tile_bottom: Rgb
+    tile_edge: Rgb
+    vowel: Rgb
+    consonant: Rgb
+    shadow: tuple[int, int, int, int]
+    grain: int  # wood grain strength, 0-255
+    highlight: int  # light on the bevel and under cut edges, 0-255
+    cut_shadow: int  # shade inside a cut letter, 0-255
+
+
+MAPLE = Look(
+    tray_top=(0xF1, 0xE4, 0xCC),
+    tray_bottom=(0xE2, 0xCF, 0xAE),
+    tile_top=(0xF8, 0xE7, 0xC9),
+    tile_bottom=(0xF0, 0xD8, 0xB0),
+    tile_edge=(0xCD, 0xAA, 0x78),
+    vowel=(0x16, 0x50, 0xB0),
+    consonant=(0xB3, 0x14, 0x1A),
+    shadow=(84, 52, 18, 90),
+    grain=26,
+    highlight=200,
+    cut_shadow=110,
+)
 
 def gradient(size, top, bottom):
     w, h = size
@@ -34,57 +62,118 @@ def gradient(size, top, bottom):
     return img
 
 
-def tile(letter, w, h, color):
+def tile(letter, w, h, color, look, shadow=True):
     """One tile with its darker edge and soft shadow, on a transparent canvas with room for both."""
     pad = int(w * 0.35)
-    r = int(w * 0.16)
-    edge = int(h * 0.05)
+    r = int(w * 0.17)
+    edge = int(h * EDGE)
     canvas = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
 
-    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).rounded_rectangle(
-        [pad, pad + edge * 2, pad + w, pad + h + edge * 2], r, fill=(84, 52, 18, 90)
-    )
-    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(w * 0.08)))
+    if shadow and look.shadow[3]:
+        layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+        ImageDraw.Draw(layer).rounded_rectangle(
+            [pad, pad + edge * 2, pad + w, pad + h + edge * 2], r, fill=look.shadow
+        )
+        canvas.alpha_composite(layer.filter(ImageFilter.GaussianBlur(w * 0.07)))
 
-    ImageDraw.Draw(canvas).rounded_rectangle([pad, pad + edge, pad + w, pad + h + edge], r, fill=TILE_EDGE)
+    ImageDraw.Draw(canvas).rounded_rectangle([pad, pad + edge, pad + w, pad + h + edge], r, fill=look.tile_edge)
 
-    face = gradient((w, h), TILE_TOP, TILE_BOTTOM).convert("RGBA")
+    face = gradient((w, h), look.tile_top, look.tile_bottom).convert("RGBA")
+    face = grain(face, look.grain)
     mask = Image.new("L", (w, h), 0)
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, w - 1, h - 1], r, fill=255)
+    # A bevel: light catches the face's top edge.
+    lip = max(2, int(h * 0.012))
+    glint(face, mask, shift(mask, lip), (255, 255, 255, look.highlight), lip)
     canvas.paste(face, (pad, pad), mask)
 
-    font = ImageFont.truetype(str(FONT), int(h * 0.72))
-    draw = ImageDraw.Draw(canvas)
-    box = draw.textbbox((0, 0), letter, font=font, anchor="ls")
+    font = ImageFont.truetype(str(FONT), int(h * 0.7))
+    box = ImageDraw.Draw(canvas).textbbox((0, 0), letter, font=font, anchor="ls")
     x = pad + (w - (box[2] - box[0])) / 2 - box[0]
-    # Center the x-height, not the ink box, so a b c sit on one baseline.
-    xh = font.getbbox("x", anchor="ls")
-    y = pad + h / 2 - (xh[1] + xh[3]) / 2 - h * 0.03
-    draw.text((x, y), letter, font=font, fill=color, anchor="ls")
+    # Every tile shares one baseline, like the moveable alphabet. The baseline sits so that an ascender
+    # letter (b) and an x-height letter (a, c) both look centered: halfway between centering each.
+    xh = font.getbbox("x", anchor="ls")[1]
+    asc = font.getbbox("b", anchor="ls")[1]
+    y = pad + h / 2 - (xh + asc) / 4
+    ink = Image.new("L", canvas.size, 0)
+    ImageDraw.Draw(ink).text((x, y), letter, font=font, fill=255, anchor="ls")
+    engrave(canvas, ink, color, look, max(2, int(h * 0.018)))
     return canvas
 
 
-def icon(size, trio=True):
-    n = size * S
-    img = gradient((n, n), TRAY_TOP, TRAY_BOTTOM).convert("RGBA")
-    if trio:
-        w, h = int(n * 0.265), int(n * 0.32)
-        specs = [("a", VOWEL, -5, 0.0), ("b", CONSONANT, 0, -0.045), ("c", CONSONANT, 4, 0.0)]
-        gap = int(n * 0.03)
-        total = 3 * w + 2 * gap
-        x0 = (n - total) // 2
-        for i, (letter, color, angle, dy) in enumerate(specs):
-            t = tile(letter, w, h, color).rotate(angle, resample=Image.BICUBIC, expand=False)
-            cx = x0 + i * (w + gap) + w // 2
-            cy = n // 2 + int(n * dy) + int(n * 0.01)
+def shift(mask, dy):
+    """The mask moved down by dy pixels."""
+    out = Image.new("L", mask.size, 0)
+    out.paste(mask, (0, dy))
+    return out
+
+
+def glint(img, inside, cut, rgba, blur):
+    """Paints rgba where `inside` is set and `cut` is not, softened by blur: an edge catching light or shade."""
+    band = ImageChops.subtract(inside, cut).filter(ImageFilter.GaussianBlur(blur / 2))
+    band = ImageChops.multiply(band, inside)
+    layer = Image.new("RGBA", img.size, rgba[:3] + (0,))
+    layer.putalpha(band.point(lambda v: v * rgba[3] // 255))
+    img.alpha_composite(layer)
+
+
+def engrave(canvas, ink, color, look, depth):
+    """The letter cut into the face: shade inside its top edges, light on the face under its bottom edges."""
+    fill = Image.new("RGBA", canvas.size, color + (0,))
+    fill.putalpha(ink)
+    canvas.alpha_composite(fill)
+    glint(canvas, ink, shift(ink, depth), (0, 0, 0, look.cut_shadow), depth)
+    glint(canvas, shift(ink, depth), ink, (255, 255, 255, look.highlight), depth)
+
+
+def grain(face, strength):
+    """Faint wood grain: long horizontal streaks of random tone, wavering a little."""
+    if not strength:
+        return face
+    w, h = face.size
+    rng = random.Random(7)
+    streaks = Image.new("L", (6, max(h // 22, 2)))
+    streaks.putdata([rng.randrange(256) for _ in range(streaks.width * streaks.height)])
+    streaks = streaks.resize((w, h), Image.BICUBIC).rotate(-3, resample=Image.BICUBIC, expand=False, fillcolor=128)
+    dark = Image.new("RGBA", (w, h), (90, 55, 20, 0))
+    dark.putalpha(streaks.point(lambda v: max(0, v - 128) * strength // 128))
+    face.alpha_composite(dark)
+    return face
+    return canvas
+
+
+def triangle(img, look, tile_w, tile_h, gap, shadow=True):
+    """a on top, b and c below it, centered on the image as one group."""
+    n = img.width
+    edge = int(tile_h * EDGE)
+    group_h = 2 * tile_h + gap + edge
+    top = (n - group_h) // 2
+    rows = [
+        (("a", look.vowel, n // 2),),
+        (("b", look.consonant, n // 2 - (tile_w + gap) // 2), ("c", look.consonant, n // 2 + (tile_w + gap) // 2)),
+    ]
+    for row, specs in enumerate(rows):
+        cy = top + row * (tile_h + gap) + tile_h // 2
+        for letter, color, cx in specs:
+            t = tile(letter, tile_w, tile_h, color, look, shadow)
             img.alpha_composite(t, (cx - t.width // 2, cy - t.height // 2))
-    else:
-        # Small sizes: one big "a" tile reads better than three.
-        w, h = int(n * 0.62), int(n * 0.72)
-        t = tile("a", w, h, VOWEL)
-        img.alpha_composite(t, ((n - t.width) // 2, (n - t.height) // 2 - int(n * 0.02)))
+
+
+def icon(size, look=MAPLE):
+    """The app icon: the triangle on the tray, with room around it for the icon mask."""
+    n = size * S
+    img = gradient((n, n), look.tray_top, look.tray_bottom).convert("RGBA")
+    triangle(img, look, int(n * 0.32), int(n * 0.32), int(n * 0.035))
     return img.resize((size, size), Image.LANCZOS).convert("RGB")
+
+
+def favicon(size):
+    """The tab icon: the same triangle filling a transparent square, so it stays legible at 16-48px."""
+    n = size * S
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    # No grain: at 16-64px it reads as smudges.
+    triangle(img, replace(MAPLE, grain=0), int(n * 0.47), int(n * 0.46), int(n * 0.04), shadow=False)
+    return img.resize((size, size), Image.LANCZOS)
 
 
 def main():
@@ -96,8 +185,14 @@ def main():
     site.mkdir(parents=True, exist_ok=True)
     icon(512).save(site / "icon.png")
     icon(180).save(site / "apple-icon.png")
-    small = icon(64, trio=False).convert("RGBA")
-    small.save(site / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
+    # Each size is drawn on its own, not scaled down from one big image.
+    sizes = [16, 32, 48, 64]
+    frames = [favicon(s) for s in sizes]
+    frames[-1].save(site / "favicon.ico", sizes=[(s, s) for s in sizes], append_images=frames[:-1])
+    # The site's sidebar logo: the favicon's triangle, shown at 32px.
+    public = site.parent / "public"
+    public.mkdir(parents=True, exist_ok=True)
+    favicon(96).save(public / "logo.png")
     print("icons written")
 
 
