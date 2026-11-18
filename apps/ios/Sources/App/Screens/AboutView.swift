@@ -18,7 +18,8 @@ struct AboutView: View {
                 VStack(spacing: 12) {
                     TileTrio(size: 52)
                     Text("Montessori Keyboard").font(TileFont.heading(26)).foregroundStyle(palette.ink)
-                    Text("Version \(version) · Free and open source").font(TileFont.text(14)).foregroundStyle(palette.muted)
+                    Text("Version \(version) · Free and open source").font(TileFont.text(14)).foregroundStyle(
+                        palette.muted)
                 }
                 .padding(.top, 12)
 
@@ -33,7 +34,9 @@ struct AboutView: View {
                 }
                 SettingsGroup(title: "Fonts", footer: "Both under the SIL Open Font License.") {
                     link("Allo", value: "Josh Puckett", url: URL(string: "https://allo.joshpuckett.me")!)
-                    link("Playwrite US Trad", value: "TypeTogether", url: URL(string: "https://github.com/TypeTogether/Playwrite")!)
+                    link(
+                        "Playwrite US Trad", value: "TypeTogether",
+                        url: URL(string: "https://github.com/TypeTogether/Playwrite")!)
                 }
                 SettingsGroup(title: "Feedback") {
                     link("Report a problem", value: "GitHub", url: Self.repo.appending(path: "issues"))

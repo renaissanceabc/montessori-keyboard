@@ -1,6 +1,6 @@
 name: CI
 
-# The site: typecheck, unit tests and the static build.
+# Lint and format for the repo, then the site: typecheck, unit tests and the static build.
 on:
   push:
     branches: [main, develop]
@@ -31,6 +31,8 @@ jobs:
           key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
           restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run format:check
       - run: bun run typecheck
       - run: bun run test
       - run: bun run build

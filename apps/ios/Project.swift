@@ -22,7 +22,8 @@ let baseSettings: SettingsDictionary = [
 
 let fonts: [ResourceFileElement] = ["Sources/Shared/Fonts/*.otf", "Sources/Shared/Fonts/*.ttf"]
 let fontList: Plist.Value = .array([
-    "AlloLearner-Regular.otf", "AlloLearner-Medium.otf", "AlloLearner-SemiBold.otf", "AlloLearner-Bold.otf", "PlaywriteUSTrad.ttf",
+    "AlloLearner-Regular.otf", "AlloLearner-Medium.otf", "AlloLearner-SemiBold.otf", "AlloLearner-Bold.otf",
+    "PlaywriteUSTrad.ttf",
 ])
 
 let appInfoPlist: InfoPlist = .extendingDefault(with: [
@@ -34,7 +35,7 @@ let appInfoPlist: InfoPlist = .extendingDefault(with: [
     "NSFaceIDUsageDescription": "Face ID lets a grown-up open the keyboard's settings.",
     "UIAppFonts": fontList,
     "UILaunchScreen": .dictionary([
-        "UIColorName": "LaunchBackground",
+        "UIColorName": "LaunchBackground"
     ]),
     "UISupportedInterfaceOrientations": .array(["UIInterfaceOrientationPortrait"]),
     "UISupportedInterfaceOrientations~ipad": .array([
@@ -89,7 +90,7 @@ let project = Project(
                 .target(name: "MontessoriUI"),
             ],
             settings: .settings(base: [
-                "APPLICATION_EXTENSION_API_ONLY": "YES",
+                "APPLICATION_EXTENSION_API_ONLY": "YES"
             ])
         ),
         .target(

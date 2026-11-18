@@ -76,12 +76,21 @@ export function StageFigure() {
         {pill && (
           <i
             className="stage-pill"
-            style={{ width: pill.span, clipPath: `inset(0 ${pill.right}px 0 ${pill.left}px round 999px)` }}
+            style={{
+              width: pill.span,
+              clipPath: `inset(0 ${pill.right}px 0 ${pill.left}px round 999px)`,
+            }}
             aria-hidden="true"
           />
         )}
         {TABS.map((t) => (
-          <button key={t.key} type="button" data-key={t.key} aria-pressed={t.key === key} onClick={() => setKey(t.key)}>
+          <button
+            key={t.key}
+            type="button"
+            data-key={t.key}
+            aria-pressed={t.key === key}
+            onClick={() => setKey(t.key)}
+          >
             {t.name}
           </button>
         ))}

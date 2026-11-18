@@ -51,7 +51,13 @@ export function Colored({ word }: { word: string }) {
   );
 }
 
-type Key = { id: string; w?: number; node: ReactNode; kind: "letter" | "fn" | "digit" | "mark"; letter?: string };
+type Key = {
+  id: string;
+  w?: number;
+  node: ReactNode;
+  kind: "letter" | "fn" | "digit" | "mark";
+  letter?: string;
+};
 
 /** Lays a row on the app's ten-tile grid: tiles one unit wide, wider keys in units, the row centered. */
 function layout(width: number, keys: Key[]) {
@@ -75,24 +81,57 @@ function layout(width: number, keys: Key[]) {
 
 const ICONS = {
   shift: (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+    >
       <path d="M10 3 3 10.5h4V17h6v-6.5h4Z" />
     </svg>
   ),
   delete: (
-    <svg width="25" height="19" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+    <svg
+      width="25"
+      height="19"
+      viewBox="0 0 24 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
       <path d="M8 2h13a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 21 16H8L1.5 9Z" />
       <path d="m11.5 6 6 6m0-6-6 6" />
     </svg>
   ),
   return: (
-    <svg width="22" height="18" viewBox="0 0 22 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round">
+    <svg
+      width="22"
+      height="18"
+      viewBox="0 0 22 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
       <path d="M19 2v7a2 2 0 0 1-2 2H4" />
       <path d="m8 6.5-4.5 4.5L8 15.5" />
     </svg>
   ),
   globe: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
       <circle cx="10" cy="10" r="8" />
       <ellipse cx="10" cy="10" rx="3.6" ry="8" />
       <path d="M2 10h16M3.5 5.5h13M3.5 14.5h13" />
@@ -107,7 +146,11 @@ function Beads({ n }: { n: number }) {
   if (!color) return null;
 
   return (
-    <span className="mk-beads" style={{ gridTemplateColumns: `repeat(${Math.min(n, 5)}, 4px)` }} aria-hidden="true">
+    <span
+      className="mk-beads"
+      style={{ gridTemplateColumns: `repeat(${Math.min(n, 5)}, 4px)` }}
+      aria-hidden="true"
+    >
       {Array.from({ length: n }, (_, i) => (
         <i key={i} style={{ background: color }} data-pale={n === 7 || undefined} />
       ))}
@@ -169,7 +212,10 @@ function popupLayout(anchor: { x: number; y: number; w: number }, count: number,
   const cw = Math.min(chip.w, room);
   const w = count * cw + (count - 1) * gap + 2 * inset;
   const h = chip.h + 2 * inset + 2;
-  const x = Math.min(Math.max(anchor.x + anchor.w / 2 - inset - cw / 2, margin), width - margin - w);
+  const x = Math.min(
+    Math.max(anchor.x + anchor.w / 2 - inset - cw / 2, margin),
+    width - margin - w,
+  );
   const y = Math.max(anchor.y - 4 - h, 0);
 
   return { x, y, w, h, cw, chipH: chip.h, inset, gap };
@@ -200,7 +246,11 @@ export function Tray({
     grid.forEach((r, ri) =>
       r.forEach((k) => {
         if (k.id === popup.letter) {
-          pop = popupLayout({ x: k.x, y: top + ROW_GAP + ri * (ROW_H + ROW_GAP), w: k.w }, popup.choices.length, width);
+          pop = popupLayout(
+            { x: k.x, y: top + ROW_GAP + ri * (ROW_H + ROW_GAP), w: k.w },
+            popup.choices.length,
+            width,
+          );
         }
       }),
     );
@@ -220,7 +270,12 @@ export function Tray({
             <>
               <span className="mk-fam">-{strip.family}</span>
               {strip.words.map((w) => (
-                <span key={w} className="mk-chip" data-target={`chip-${w}`} data-on={w === strip.current || undefined}>
+                <span
+                  key={w}
+                  className="mk-chip"
+                  data-target={`chip-${w}`}
+                  data-on={w === strip.current || undefined}
+                >
                   <Colored word={w} />
                 </span>
               ))}
@@ -253,7 +308,12 @@ export function Tray({
               className="mk-pchip"
               data-target={`pop-${i}`}
               data-on={popup.chosen === i || undefined}
-              style={{ left: p.inset + i * (p.cw + p.gap), top: p.inset, width: p.cw, height: p.chipH }}
+              style={{
+                left: p.inset + i * (p.cw + p.gap),
+                top: p.inset,
+                width: p.cw,
+                height: p.chipH,
+              }}
             >
               <Colored word={c} />
             </span>
@@ -266,6 +326,9 @@ export function Tray({
 }
 
 /** The tray's height in points, for laying out the screen above it. */
-export function trayHeight({ noStrip = false, home = true }: { noStrip?: boolean; home?: boolean } = {}) {
+export function trayHeight({
+  noStrip = false,
+  home = true,
+}: { noStrip?: boolean; home?: boolean } = {}) {
   return (noStrip ? 0 : STRIP_H) + 4 * ROW_H + 5 * ROW_GAP + (home ? 34 : 0);
 }

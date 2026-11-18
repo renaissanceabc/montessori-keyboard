@@ -17,7 +17,7 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       <Link className="wordmark" href="/">
-        <img className="wordmark-logo" src="/logo.png" width={32} height={32} alt="" />
+        <span className="wordmark-logo" aria-hidden="true" />
         Montessori Keyboard
       </Link>
       <nav className="toc" aria-label="Site">

@@ -47,7 +47,17 @@ const phoneHeight = (w: number) => (w * (SCREEN_H + 26)) / (SCREEN_W + 26);
 type Pinned = "bottom" | "top";
 
 /** The phone in the stage: centered, its bottom (or top) a gutter in, running off the other edge. */
-function Placed({ layout, kind, pin, children }: { layout: Layout; kind: keyof typeof FRAMES; pin: Pinned; children: ReactNode }) {
+function Placed({
+  layout,
+  kind,
+  pin,
+  children,
+}: {
+  layout: Layout;
+  kind: keyof typeof FRAMES;
+  pin: Pinned;
+  children: ReactNode;
+}) {
   const f = FRAMES[kind][layout];
   const dark = useDark();
   const top = pin === "bottom" ? f.h - f.gutter - phoneHeight(f.phone) : f.gutter;
@@ -262,7 +272,12 @@ export function PhonogramScene({ onDone }: { onDone?: () => void }) {
 
 // Rhymes ----------------------------------------------------------------------------------------------------
 
-const RHYME_START: KeyboardState = { ...base, before: "we went to the farm", text: "the cat", strip: stripFor("the cat") };
+const RHYME_START: KeyboardState = {
+  ...base,
+  before: "we went to the farm",
+  text: "the cat",
+  strip: stripFor("the cat"),
+};
 
 /** The strip: tap a rhyme and it takes the word's place, so only the first sound changes. */
 export function RhymeScene({ onDone }: { onDone?: () => void }) {
@@ -373,7 +388,14 @@ export function SettingsScene() {
             <div className="mk-app">
               <div className="mk-app-title">Settings</div>
               <div className="mk-preview">
-                <Tray width={SCREEN_W - 24 - 28} order={s.order} cursive={s.cursive} noStrip globe={false} home={false} />
+                <Tray
+                  width={SCREEN_W - 24 - 28}
+                  order={s.order}
+                  cursive={s.cursive}
+                  noStrip
+                  globe={false}
+                  home={false}
+                />
               </div>
               <div className="mk-group">Keyboard</div>
               <div className="mk-card">

@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { NumberScene, PhonogramScene, RhymeScene, SettingsScene, TypeScene } from "@/components/demos/scenes";
+import {
+  NumberScene,
+  PhonogramScene,
+  RhymeScene,
+  SettingsScene,
+  TypeScene,
+} from "@/components/demos/scenes";
 import { PageHead } from "@/components/page-head";
 import { pageMeta } from "@/lib/meta";
 
@@ -22,8 +28,8 @@ export default function Features() {
         <TypeScene />
         <ul>
           <li>
-            <strong>ABC or QWERTY.</strong> The tiles start in alphabet order. Switch to QWERTY,
-            the layout grown-ups use, when a child is ready.
+            <strong>ABC or QWERTY.</strong> The tiles start in alphabet order. Switch to QWERTY, the
+            layout grown-ups use, when a child is ready.
           </li>
           <li>
             <strong>Print or cursive.</strong> Many Montessori classrooms teach cursive alongside
@@ -60,8 +66,8 @@ export default function Features() {
         </p>
         <RhymeScene />
         <p>
-          The strip can show the letters of the word instead, to change one at a time, or nothing
-          at all.
+          The strip can show the letters of the word instead, to change one at a time, or nothing at
+          all.
         </p>
       </section>
 
@@ -97,12 +103,11 @@ export default function Features() {
             <strong>Setup</strong> walks you through adding the keyboard in Settings.
           </li>
           <li>
-            <strong>Settings</strong> for the order, letter shapes, capitals, the strip, numbers
-            and sounds.
+            <strong>Settings</strong> for the order, letter shapes, capitals, the strip, numbers and
+            sounds.
           </li>
           <li>
-            <strong>Pad</strong>, a blank page for trying the keyboard without opening another
-            app.
+            <strong>Pad</strong>, a blank page for trying the keyboard without opening another app.
           </li>
           <li>
             <strong>About</strong>, on who makes it and why.

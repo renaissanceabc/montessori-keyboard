@@ -10,16 +10,8 @@ export const isVowel = (letter: string) => VOWELS.has(letter);
 
 /** The letter rows, top to bottom, in each order. */
 export const ROWS: Record<Order, string[][]> = {
-  qwerty: [
-    [..."qwertyuiop"],
-    [..."asdfghjkl"],
-    [..."zxcvbnm"],
-  ],
-  abc: [
-    [..."abcdefghij"],
-    [..."klmnopqrs"],
-    [..."tuvwxyz"],
-  ],
+  qwerty: [[..."qwertyuiop"], [..."asdfghjkl"], [..."zxcvbnm"]],
+  abc: [[..."abcdefghij"], [..."klmnopqrs"], [..."tuvwxyz"]],
 };
 
 /** The letter teams a long press offers, by the tile that holds them (Phonograms.swift). */

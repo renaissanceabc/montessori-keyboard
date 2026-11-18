@@ -20,7 +20,9 @@ struct MontessoriKeyboardApp: App {
         let dark = UIColor(Palette.walnut.ink)
         let ink = UIColor { $0.userInterfaceStyle == .dark ? dark : light }
         let bar = UINavigationBar.appearance()
-        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle), .foregroundColor: ink]
+        bar.largeTitleTextAttributes = [
+            .font: allo(TileFont.bold, size: 34, style: .largeTitle), .foregroundColor: ink,
+        ]
         bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline), .foregroundColor: ink]
     }
 

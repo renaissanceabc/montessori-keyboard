@@ -20,11 +20,7 @@ export default function Overview() {
       </div>
 
       <h1 className="sr-only">{HOME_TITLE}</h1>
-      <p className="lede">
-        A keyboard for young children, made like the moveable alphabet in a Montessori classroom:
-        wooden tiles, lowercase print, blue vowels and red consonants. Once it’s on, it’s there in
-        every app with somewhere to type.
-      </p>
+      <p className="lede">The Montessori moveable alphabet, as a keyboard for every app.</p>
 
       <StageFigure />
 
@@ -44,8 +40,8 @@ export default function Overview() {
             colors on the numbers. Nothing grades, quizzes or holds letters back.
           </li>
           <li>
-            <strong>Says the sounds.</strong> Each tile can say its letter sound as it’s tapped, once
-            you allow Full Access.
+            <strong>Says the sounds.</strong> Each tile can say its letter sound as it’s tapped,
+            once you allow Full Access.
           </li>
           <li>
             <strong>Keeps the settings for grown-ups.</strong> They sit behind a gate: a number

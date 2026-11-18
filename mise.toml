@@ -3,15 +3,4 @@ bun = "1.4.4"
 tuist = "4.205.0"
 # fastlane (apps/ios). Keep in step with ruby-version in .github/workflows/testflight.yml.
 ruby = "3.3"
-
-# One-time signing setup (apps/ios/README.md, TestFlight). The five Apple secrets come from the
-# `_Global` Infisical project's /apple folder under your own `infisical login`, so nothing is
-# exported by hand. Set INFISICAL_PROJECT_ID to that project's id first (it's in Infisical's
-# project settings), so the repo doesn't name it.
-[tasks."ios:setup"]
-description = "Make the App Store profiles in the match repo"
-dir = "apps/ios"
-run = [
-  "bundle install",
-  "infisical run --projectId=\"${INFISICAL_PROJECT_ID:?Set INFISICAL_PROJECT_ID to the _Global Infisical project id}\" --env=prod --path=/apple -- bundle exec fastlane setup",
-]
+swiftlint = "0.65.1"

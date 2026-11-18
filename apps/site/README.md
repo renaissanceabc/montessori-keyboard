@@ -9,22 +9,22 @@ bun run --cwd apps/site typecheck  # next typegen, then tsc
 bun run --cwd apps/site test       # vitest: the sitemap and the keyboard's data
 ```
 
-| Path                            | What it is                                                                                    |
-| ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `site.config.ts`                | The domain, the App Store link and whether it's live, GitHub, Renaissance, the support email  |
-| `lib/nav.ts`                    | Every page with its title, description and sections, in sidebar order; the footer's pages   |
-| `lib/meta.ts`                   | Each page's metadata, from the nav                                                            |
-| `lib/keyboard.ts`               | The rows (QWERTY and ABC), vowels, phonograms, word families and bead-stair colors, as the app has them |
-| `lib/fonts.ts`                  | Allo (the `allo-font` package) and Playwrite US Trad (`@fontsource`), through `next/font/local` |
-| `components/sidebar.tsx`        | The wordmark and the pages; the page you're on lists its sections and marks the one you're reading |
-| `components/demos/`             | The phones: `tray.tsx` draws the keyboard at true iOS points (the app's Keys.swift geometry), `scenes.tsx` the scenes, `demos.css` the app's palette |
-| `components/stageshow/`         | The parts of Stageshow (MIT, Benji Taylor) the scenes use: the stage, its script and cursor, the phone |
-| `components/stage-figure.tsx`   | Overview's figure: the scenes one after another, with tabs                                    |
-| `app/`                          | One folder per page: Overview (`page.tsx`), `install`, `features`, `privacy`, `faq`, `credits` |
-| `app/globals.css`               | Every style, with the palette as tokens on `:root` (maple) and in the dark-mode block (walnut) |
-| `app/robots.ts`, `app/sitemap.ts` | robots.txt and sitemap.xml, built from the nav                                              |
-| `vercel.json`                   | Security headers (a CSP that allows only this site), caching for the icons, the old `/guide` redirect, and the ignore step |
-| `scripts/ignore-build.sh`       | Vercel's Ignored Build Step: deploys only when the site changed (see below)                   |
+| Path                              | What it is                                                                                                                                           |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.config.ts`                  | The domain, the App Store link and whether it's live, GitHub, Renaissance, the support email                                                         |
+| `lib/nav.ts`                      | Every page with its title, description and sections, in sidebar order; the footer's pages                                                            |
+| `lib/meta.ts`                     | Each page's metadata, from the nav                                                                                                                   |
+| `lib/keyboard.ts`                 | The rows (QWERTY and ABC), vowels, phonograms, word families and bead-stair colors, as the app has them                                              |
+| `lib/fonts.ts`                    | Allo (the `allo-font` package) and Playwrite US Trad (`@fontsource`), through `next/font/local`                                                      |
+| `components/sidebar.tsx`          | The wordmark and the pages; the page you're on lists its sections and marks the one you're reading                                                   |
+| `components/demos/`               | The phones: `tray.tsx` draws the keyboard at true iOS points (the app's Keys.swift geometry), `scenes.tsx` the scenes, `demos.css` the app's palette |
+| `components/stageshow/`           | The parts of Stageshow (MIT, Benji Taylor) the scenes use: the stage, its script and cursor, the phone                                               |
+| `components/stage-figure.tsx`     | Overview's figure: the scenes one after another, with tabs                                                                                           |
+| `app/`                            | One folder per page: Overview (`page.tsx`), `install`, `features`, `privacy`, `faq`, `credits`                                                       |
+| `app/globals.css`                 | Every style, with the palette as tokens on `:root` (maple) and in the dark-mode block (walnut)                                                       |
+| `app/robots.ts`, `app/sitemap.ts` | robots.txt and sitemap.xml, built from the nav                                                                                                       |
+| `vercel.json`                     | Security headers (a CSP that allows only this site), caching for the icons, the old `/guide` redirect, and the ignore step                           |
+| `scripts/ignore-build.sh`         | Vercel's Ignored Build Step: deploys only when the site changed (see below)                                                                          |
 
 The icons (`app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`) come from `scripts/icons.py` (`bun run icons`); Next picks the files up by name.
 

@@ -196,6 +196,7 @@ body {
   flex: none;
   width: 32px;
   height: 32px;
+  background: url("/logo.png") center / contain no-repeat;
 }
 .toc ul {
   list-style: none;

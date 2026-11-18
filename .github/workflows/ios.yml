@@ -1,6 +1,6 @@
 name: iOS
 
-# Builds the app and the keyboard for the simulator and runs the core unit tests.
+# Lints the Swift, builds the app and the keyboard for the simulator and runs the core unit tests.
 # Unsigned: nothing here archives or uploads.
 # macOS minutes cost 10x Linux ones on a private repo, so this only runs when the iOS app or
 # this file changes, skips drafts, and a new push to a pull request cancels the run before it.
@@ -41,11 +41,17 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
           xcodebuild -version
 
-      # Installs the Tuist pinned in mise.toml and caches it between runs.
+      # Installs the Tuist and SwiftLint pinned in mise.toml and caches them between runs.
       - uses: jdx/mise-action@v2
         with:
-          install_args: tuist
+          install_args: tuist swiftlint
           cache: true
+
+      # The same checks as the pre-commit hook (lefthook.yml). swift-format comes with Xcode.
+      - name: Lint Swift
+        run: |
+          xcrun swift-format lint --strict --recursive --configuration .swift-format Sources Tests Project.swift Tuist.swift
+          swiftlint lint --strict --quiet
 
       # The precompiled SDK and framework modules: the slow part of a cold build that
       # doesn't depend on our sources. Keyed on Xcode, so a new Xcode starts fresh.

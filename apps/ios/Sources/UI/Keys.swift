@@ -59,7 +59,11 @@ struct KeyButton<Label: View>: View {
     var body: some View {
         label(pressed)
             .contentShape(Rectangle())
-            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(KeyboardView.space)) } action: { frame = $0 }
+            .onGeometryChange(for: CGRect.self) {
+                $0.frame(in: .named(KeyboardView.space))
+            } action: {
+                frame = $0
+            }
             .gesture(
                 DragGesture(minimumDistance: 0, coordinateSpace: .named(KeyboardView.space))
                     .updating($pressed) { _, pressed, _ in pressed = true }
@@ -132,7 +136,8 @@ struct TileFace<Content: View>: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-        let colors = lit
+        let colors =
+            lit
             ? [palette.tilePressed, palette.tilePressed]
             : function ? [palette.keyTop, palette.keyBottom] : [palette.tileTop, palette.tileBottom]
         content
@@ -176,7 +181,8 @@ struct LetterKey: View {
     var onLift: (() -> Void)?
 
     var body: some View {
-        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold, onSlide: onSlide, onLift: onLift) { pressed in
+        KeyButton(accessibilityLabel: label, onTap: onTap, onHold: onHold, onSlide: onSlide, onLift: onLift) {
+            pressed in
             TileFace(pressed: pressed) {
                 letter(size: fontSize)
             }
@@ -211,7 +217,9 @@ struct LiftedTile<Content: View>: View {
             content
                 .frame(width: size.width, height: size.height)
                 .background {
-                    shape.fill(LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
+                    shape.fill(
+                        LinearGradient(
+                            colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom))
                 }
                 .background {
                     shape.fill(palette.tileEdge)
@@ -255,7 +263,9 @@ public enum KeyIcon {
         switch self {
         case .shift: KeyGlyph(path: Self.shiftPath).frame(width: 22, height: 22)
         case .delete: KeyGlyph(path: Self.deletePath, box: CGSize(width: 26, height: 22)).frame(width: 25, height: 21)
-        case .returnKey: KeyGlyph(path: Self.returnPath, box: CGSize(width: 24, height: 22), lineWidth: 1.9).frame(width: 22, height: 20)
+        case .returnKey:
+            KeyGlyph(path: Self.returnPath, box: CGSize(width: 24, height: 22), lineWidth: 1.9).frame(
+                width: 22, height: 20)
         }
     }
 
@@ -289,7 +299,8 @@ public enum KeyIcon {
     nonisolated static func returnPath(_ p: inout Path) {
         p.move(to: CGPoint(x: 20, y: 4))
         p.addLine(to: CGPoint(x: 20, y: 11))
-        p.addArc(center: CGPoint(x: 17, y: 11), radius: 3, startAngle: .degrees(0), endAngle: .degrees(90), clockwise: false)
+        p.addArc(
+            center: CGPoint(x: 17, y: 11), radius: 3, startAngle: .degrees(0), endAngle: .degrees(90), clockwise: false)
         p.addLine(to: CGPoint(x: 5, y: 14))
         p.move(to: CGPoint(x: 9, y: 10))
         p.addLine(to: CGPoint(x: 5, y: 14))
@@ -318,7 +329,8 @@ struct GlyphShape: Shape {
         var p = Path()
         build(&p)
         let scale = min(rect.width / box.width, rect.height / box.height)
-        return p.applying(CGAffineTransform(scaleX: scale, y: scale)
-            .concatenating(CGAffineTransform(translationX: rect.minX, y: rect.minY)))
+        return p.applying(
+            CGAffineTransform(scaleX: scale, y: scale)
+                .concatenating(CGAffineTransform(translationX: rect.minX, y: rect.minY)))
     }
 }

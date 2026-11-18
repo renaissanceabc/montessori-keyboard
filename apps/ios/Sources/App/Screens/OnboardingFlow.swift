@@ -15,10 +15,11 @@ struct OnboardingFlow: View {
                     switch step {
                     case .setup: SetupView { path.append(.choose) }
                     case .choose: ChooseView { path.append(.tryIt) }
-                    case .tryIt: TryItView {
-                        model.unlocked = true
-                        model.onboarded = true
-                    }
+                    case .tryIt:
+                        TryItView {
+                            model.unlocked = true
+                            model.onboarded = true
+                        }
                     }
                 }
         }
@@ -32,12 +33,22 @@ struct WelcomeView: View {
     var body: some View {
         VStack(spacing: 30) {
             TileTrio().padding(.top, 40)
-            ScreenHeading(title: "A keyboard for\nyoung learners", subtitle: "A moveable alphabet in the palm of your hands", centered: true)
+            ScreenHeading(
+                title: "A keyboard for\nyoung learners", subtitle: "A moveable alphabet in the palm of your hands",
+                centered: true)
             VStack(alignment: .leading, spacing: 18) {
-                point(icon: AnyView(abIcon), title: "Blue vowels, red consonants", detail: "The same colors as the classroom box.")
-                point(icon: AnyView(DecorTile(letter: "m", size: 18)), title: "Big, clear tiles", detail: "Lowercase print, like the moveable alphabet.")
-                point(icon: AnyView(Image(systemName: "lock")), title: "Private by design", detail: "No ads, no accounts. Nothing leaves this iPhone.")
-                point(icon: AnyView(Image(systemName: "heart")), title: "Free and open source", detail: "Made by Renaissance. The code is public.")
+                point(
+                    icon: AnyView(abIcon), title: "Blue vowels, red consonants",
+                    detail: "The same colors as the classroom box.")
+                point(
+                    icon: AnyView(DecorTile(letter: "m", size: 18)), title: "Big, clear tiles",
+                    detail: "Lowercase print, like the moveable alphabet.")
+                point(
+                    icon: AnyView(Image(systemName: "lock")), title: "Private by design",
+                    detail: "No ads, no accounts. Nothing leaves this iPhone.")
+                point(
+                    icon: AnyView(Image(systemName: "heart")), title: "Free and open source",
+                    detail: "Made by Renaissance. The code is public.")
             }
             Spacer(minLength: 0)
             VStack(spacing: 10) {

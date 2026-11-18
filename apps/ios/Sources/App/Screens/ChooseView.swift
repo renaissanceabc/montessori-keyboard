@@ -13,20 +13,30 @@ struct ChooseView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    ScreenHeading(title: "Make it yours", subtitle: "Pick how the tiles look. You can change these later in Settings.")
+                    ScreenHeading(
+                        title: "Make it yours",
+                        subtitle: "Pick how the tiles look. You can change these later in Settings.")
                     question("Letter order") {
-                        ChoiceTile(title: "ABC", selected: model.settings.order == .abc) { model.settings.order = .abc } preview: {
+                        ChoiceTile(title: "ABC", selected: model.settings.order == .abc) {
+                            model.settings.order = .abc
+                        } preview: {
                             MiniTiles(letters: "abcde", cursive: model.settings.cursive)
                         }
-                        ChoiceTile(title: "QWERTY", selected: model.settings.order == .qwerty) { model.settings.order = .qwerty } preview: {
+                        ChoiceTile(title: "QWERTY", selected: model.settings.order == .qwerty) {
+                            model.settings.order = .qwerty
+                        } preview: {
                             MiniTiles(letters: "qwert", cursive: model.settings.cursive)
                         }
                     }
                     question("Letter shapes") {
-                        ChoiceTile(title: "Print", selected: !model.settings.cursive) { model.settings.cursive = false } preview: {
+                        ChoiceTile(title: "Print", selected: !model.settings.cursive) {
+                            model.settings.cursive = false
+                        } preview: {
                             MiniTiles(letters: "abc", cursive: false)
                         }
-                        ChoiceTile(title: "Cursive", selected: model.settings.cursive) { model.settings.cursive = true } preview: {
+                        ChoiceTile(title: "Cursive", selected: model.settings.cursive) {
+                            model.settings.cursive = true
+                        } preview: {
                             MiniTiles(letters: "abc", cursive: true)
                         }
                     }
@@ -125,7 +135,8 @@ struct MiniTiles: View {
                     .padding(.bottom, 2)
                     .frame(width: 22, height: 28)
                     .background(
-                        LinearGradient(colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom),
+                        LinearGradient(
+                            colors: [palette.tileTop, palette.tileBottom], startPoint: .top, endPoint: .bottom),
                         in: RoundedRectangle(cornerRadius: 5)
                     )
                     .background(RoundedRectangle(cornerRadius: 5).fill(palette.tileEdge).offset(y: 1.5))

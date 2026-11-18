@@ -29,8 +29,8 @@ export default function Privacy() {
       <section id="app">
         <h2>In the app</h2>
         <p>
-          What your child types stays on the device. The rhymes and phonograms come from word
-          lists built into the app, and your settings are saved on the device until you delete it.
+          What your child types stays on the device. The rhymes and phonograms come from word lists
+          built into the app, and your settings are saved on the device until you delete it.
         </p>
         <p>
           iOS needs Full Access before a keyboard can play sounds, and warns that such a keyboard
