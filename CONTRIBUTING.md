@@ -2,6 +2,10 @@
 
 Thanks for helping. Montessori Keyboard is small on purpose, so start with the rules in [AGENTS.md](AGENTS.md#rules). They apply to people too. The short version: the keyboard only types, nothing leaves the device, and every color and size comes from [DESIGN.md](DESIGN.md).
 
+## Running it
+
+[README.md](README.md#getting-started) has the setup. To run on your own iPhone, see [apps/ios/README.md](apps/ios/README.md#on-your-own-device).
+
 ## Branches and pull requests
 
 - Branch from `develop` and open your pull request into `develop`. `main` is the release branch, and releases are tagged automatically.
@@ -34,3 +38,11 @@ Run these before you push:
 | iOS (macOS) | `bun run ios:test` |
 
 CI runs the site checks on every pull request, and builds and tests the iOS app on pull requests that touch `apps/ios`.
+
+## Security and privacy
+
+The app and the keyboard make no network requests and collect nothing, and contributions have to keep it that way. To report a security problem, email [support@montessorikeyboard.com](mailto:support@montessorikeyboard.com) instead of opening a public issue.
+
+## License
+
+Contributions are under the [MIT License](LICENSE), like the rest of the project.
