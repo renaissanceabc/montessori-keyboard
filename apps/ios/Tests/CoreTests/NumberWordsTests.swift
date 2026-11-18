@@ -1,10 +1,12 @@
 import Testing
+
 @testable import MontessoriCore
 
 struct NumberWordsTests {
     @Test(arguments: [
         (0, "zero"), (7, "seven"), (13, "thirteen"), (40, "forty"), (63, "sixty-three"),
-        (100, "one hundred"), (863, "eight hundred sixty-three"), (910, "nine hundred ten"), (999, "nine hundred ninety-nine"),
+        (100, "one hundred"), (863, "eight hundred sixty-three"), (910, "nine hundred ten"),
+        (999, "nine hundred ninety-nine"),
     ])
     func `spells numbers the American way`(number: Int, words: String) {
         #expect(NumberWords.spell(number) == words)

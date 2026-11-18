@@ -71,16 +71,24 @@ public struct KeyboardView: View {
                 .transition(
                     reduceMotion
                         ? .opacity
-                        : .opacity.combined(with: .scale(scale: 0.96, anchor: UnitPoint(
-                            x: (model.trayAnchor.midX - popupLayout.frame.minX) / max(popupLayout.frame.width, 1),
-                            y: 1
-                        )))
+                        : .opacity.combined(
+                            with: .scale(
+                                scale: 0.96,
+                                anchor: UnitPoint(
+                                    x: (model.trayAnchor.midX - popupLayout.frame.minX)
+                                        / max(popupLayout.frame.width, 1),
+                                    y: 1
+                                )))
                 )
             }
         }
         .background(palette.tray)
         .coordinateSpace(.named(Self.space))
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+        .onGeometryChange(for: CGFloat.self) {
+            $0.size.width
+        } action: {
+            width = $0
+        }
         .animation(.easeOut(duration: 0.15), value: model.trayLetter)
     }
 

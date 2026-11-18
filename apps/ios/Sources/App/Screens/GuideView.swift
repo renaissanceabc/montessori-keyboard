@@ -16,10 +16,14 @@ struct GuideView: View {
                 }
                 section("Turn it on") { SetupSteps(compact: true).padding(.vertical, 6).padding(.horizontal, 2) }
                 section("Switching keyboards") {
-                    card("Tap the globe under the keyboard to swap between this and Apple's. Hold it to pick from a list.")
+                    card(
+                        "Tap the globe under the keyboard to swap between this and Apple's. Hold it to pick from a list."
+                    )
                 }
                 section("Full Access") {
-                    card("Optional. It adds letter sounds and key clicks in other apps. Nothing is sent anywhere either way.")
+                    card(
+                        "Optional. It adds letter sounds and key clicks in other apps. Nothing is sent anywhere either way."
+                    )
                 }
             }
             .padding(.horizontal, 20)

@@ -20,7 +20,7 @@ public struct SettingsStore: Sendable {
 
     public func load() -> KeyboardSettings {
         guard let data = defaults.data(forKey: Self.settingsKey),
-              let settings = try? JSONDecoder().decode(KeyboardSettings.self, from: data)
+            let settings = try? JSONDecoder().decode(KeyboardSettings.self, from: data)
         else { return KeyboardSettings() }
         return settings
     }
