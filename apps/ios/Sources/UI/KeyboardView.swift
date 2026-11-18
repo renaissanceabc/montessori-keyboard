@@ -98,7 +98,13 @@ public struct KeyboardView: View {
         ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
             KeyRow(height: tile) {
                 if index == rows.count - 1 {
-                    shiftKey.keyWeight(functionWeight)
+                    // Without capitals there's no shift tile at all, just bare tray where it sat, so delete and the
+                    // letters keep their places.
+                    if model.settings.capitalsWithShift {
+                        shiftKey.keyWeight(functionWeight)
+                    } else {
+                        Color.clear.accessibilityHidden(true).keyWeight(functionWeight)
+                    }
                 }
                 ForEach(row, id: \.self) { letter in
                     letterKey(letter)
@@ -134,7 +140,6 @@ public struct KeyboardView: View {
     private var shiftKey: some View {
         FunctionKey(
             accessibilityLabel: "Shift",
-            dimmed: !model.settings.capitalsWithShift,
             highlighted: model.shifted,
             onTap: { model.tapShift() }
         ) {

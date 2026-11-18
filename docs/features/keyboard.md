@@ -4,7 +4,7 @@ The extension (`apps/ios/Sources/Keyboard`) hosts `KeyboardView` from Montessori
 
 - **Settings** come from the App Group (`SettingsStore`). The keyboard reloads them every time it appears, so a change in the app shows the next time the keyboard opens.
 - **Layers:** letters, and 123 (digits with beads, rods or plain marks, then punctuation). Tapping a digit says its number word when sounds are on.
-- **Shift** only works when Capitals with shift is on; otherwise it's dimmed. It turns off after one letter.
+- **Shift** is there only when Capitals with shift is on; otherwise its tile is gone and the tray shows through, so the other keys keep their places. It turns off after one letter.
 - **Delete** repeats when held: first after 450ms, then every 90ms.
 - **Lift:** while a letter tile is down, a larger copy lifts above it so small hands can see what they hit.
 - **Phonograms:** holding a tile for 400ms opens a popup over it with the letter and its teams (sh, ch, th, ai, igh…), like Apple's accent picker. Slide to one and lift to type it. Lifting far from the popup leaves it open so a team can be tapped; any other key closes it. Over the top row the popup stops at the keyboard's top edge, because a keyboard can't draw above its frame. VoiceOver offers the teams as actions on each tile.
