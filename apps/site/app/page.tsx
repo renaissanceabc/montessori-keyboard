@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { SettingsScene } from "@/components/demos/scenes";
+import { PadScene, SettingsScene } from "@/components/demos/scenes";
 import { DownloadButton } from "@/components/download-button";
 import { ExternalLink } from "@/components/external-link";
 import { StageFigure } from "@/components/stage-figure";
@@ -56,6 +56,15 @@ export default function Overview() {
           See <Link href="/features">Features</Link> for how each part works, or{" "}
           <Link href="/install">Install</Link> to set it up.
         </p>
+      </section>
+
+      <section>
+        <h2>On iPad</h2>
+        <p>
+          The same tiles on the bigger screen. They stretch to its width and keep their height, so a
+          child’s finger finds them just as easily.
+        </p>
+        <PadScene />
       </section>
 
       <section>

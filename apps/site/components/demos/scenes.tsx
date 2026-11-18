@@ -1,11 +1,12 @@
 "use client";
 
-import { useSyncExternalStore, type ReactNode } from "react";
+import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
 import { FAMILIES, PHONOGRAMS, type Order } from "@/lib/keyboard";
 import { isDark, subscribeTheme } from "@/lib/theme";
 
 import { Phone } from "../stageshow/phone";
+import { StillContext, useReducedMotion } from "../stageshow/reduced-motion";
 import { Stage } from "../stageshow/stage";
 import type { Act } from "../stageshow/act";
 import type { Layout } from "../stageshow/looks";
@@ -30,10 +31,19 @@ export function useDark() {
 }
 
 /** The phone's size and place in each design: wide (the 600px column) and compact (a 358px phone column). */
+/** An 11-inch iPad's screen in portrait, in points, and its bezel. */
+const PAD_W = 820;
+const PAD_H = 1180;
+const PAD_BEZEL = 24;
+
 const FRAMES = {
   keyboard: {
     wide: { w: 600, h: 470, phone: 440, gutter: 24 },
     compact: { w: 358, h: 368, phone: 326, gutter: 16 },
+  },
+  pad: {
+    wide: { w: 600, h: 420, phone: 560, gutter: 24 },
+    compact: { w: 358, h: 300, phone: 342, gutter: 16 },
   },
   app: {
     wide: { w: 600, h: 560, phone: 440, gutter: 24 },
@@ -43,6 +53,44 @@ const FRAMES = {
 
 /** A phone's outer height for its width (Stageshow's pro frame: the screen plus 13pt of band and glass a side). */
 const phoneHeight = (w: number) => (w * (SCREEN_H + 26)) / (SCREEN_W + 26);
+
+/** An iPad's outer height for its width. */
+const padHeight = (w: number) => (w * (PAD_H + PAD_BEZEL * 2)) / (PAD_W + PAD_BEZEL * 2);
+
+/** An iPad, drawn like Stageshow's phone: the screen laid out at true points and scaled down as a whole. */
+function Pad({
+  width,
+  style,
+  children,
+}: {
+  width: number;
+  style: CSSProperties;
+  children: ReactNode;
+}) {
+  const s = width / (PAD_W + PAD_BEZEL * 2);
+
+  return (
+    <div
+      className="mk-pad"
+      style={{
+        ...style,
+        width,
+        height: padHeight(width),
+        padding: PAD_BEZEL * s,
+        borderRadius: 40 * s,
+      }}
+    >
+      <div className="mk-pad-window" style={{ borderRadius: 18 * s }}>
+        <div
+          className="mk-pad-screen"
+          style={{ width: PAD_W, height: PAD_H, transform: `scale(${s})` }}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type Pinned = "bottom" | "top";
 
@@ -60,7 +108,16 @@ function Placed({
 }) {
   const f = FRAMES[kind][layout];
   const dark = useDark();
-  const top = pin === "bottom" ? f.h - f.gutter - phoneHeight(f.phone) : f.gutter;
+  const height = kind === "pad" ? padHeight(f.phone) : phoneHeight(f.phone);
+  const top = pin === "bottom" ? f.h - f.gutter - height : f.gutter;
+
+  if (kind === "pad") {
+    return (
+      <Pad width={f.phone} style={{ position: "absolute", left: (f.w - f.phone) / 2, top }}>
+        {children}
+      </Pad>
+    );
+  }
 
   return (
     <Phone
@@ -88,23 +145,61 @@ function Note({ before, text, bottom }: { before?: string; text: string; bottom:
   );
 }
 
+/**
+ * A scene with a pause button, since motion that runs on its own for more than five seconds should
+ * be stoppable. Paused, the stage shows its still. With reduced motion it is already still, so
+ * there's no button. The button sits outside the picture, which screen readers read as one image.
+ */
+function Figure({ label, children }: { label: string; children: ReactNode }) {
+  const [paused, setPaused] = useState(false);
+  const reduced = useReducedMotion();
+
+  return (
+    <div className="mk-figure">
+      <div role="img" aria-label={label}>
+        <StillContext.Provider value={paused}>{children}</StillContext.Provider>
+      </div>
+      {!reduced && (
+        <button
+          type="button"
+          className="mk-pause"
+          aria-label="Pause the animation"
+          aria-pressed={paused}
+          onClick={() => setPaused((p) => !p)}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+            {paused ? (
+              <path d="M3 1.5v9l7.5-4.5z" fill="currentColor" />
+            ) : (
+              <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" fill="currentColor" />
+            )}
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+}
+
 /** The shared frame of the keyboard scenes: stage, phone, note and tray. */
 function KeyboardStage<S extends KeyboardState>({
   initial,
   poster,
   script,
   label,
+  device = "phone",
 }: {
   initial: S;
   poster?: S;
   script: (a: Act<S>) => Promise<void>;
   label: string;
+  device?: "phone" | "pad";
 }) {
   const dark = useDark();
-  const f = FRAMES.keyboard;
+  const kind = device === "pad" ? "pad" : "keyboard";
+  const f = FRAMES[kind];
 
   return (
-    <div className="mk-figure" role="img" aria-label={label}>
+    <Figure label={label}>
       <Stage<S>
         width={f.wide.w}
         height={f.wide.h}
@@ -117,10 +212,10 @@ function KeyboardStage<S extends KeyboardState>({
         className="mk-stage"
       >
         {(s, _rect, layout) => (
-          <Placed layout={layout} kind="keyboard" pin="bottom">
+          <Placed layout={layout} kind={kind} pin="bottom">
             <Note before={s.before} text={s.text} bottom={trayHeight() + 18} />
             <Tray
-              width={SCREEN_W}
+              width={device === "pad" ? PAD_W : SCREEN_W}
               className="mk-screen-tray"
               layer={s.layer}
               strip={s.strip}
@@ -131,7 +226,7 @@ function KeyboardStage<S extends KeyboardState>({
           </Placed>
         )}
       </Stage>
-    </div>
+    </Figure>
   );
 }
 
@@ -207,6 +302,42 @@ export function TypeScene({ onDone }: { onDone?: () => void }) {
 
         if (onDone) return onDone();
         await undo(a, TYPE_START.text);
+        await a.wait(400);
+      }}
+    />
+  );
+}
+
+// iPad ------------------------------------------------------------------------------------------------------
+
+const PAD_START: KeyboardState = {
+  ...base,
+  before: "on the farm we saw",
+  text: "a ",
+  order: "qwerty",
+};
+
+/** The same tiles on an iPad, in QWERTY order: the grid stretches to the wider screen and the rows stay as tall. */
+export function PadScene() {
+  return (
+    <KeyboardStage
+      device="pad"
+      label="An iPad with Montessori Keyboard in QWERTY order: a finger types “a pig” on wide wooden tiles, and the strip offers big, dig, fig, pig and wig."
+      initial={PAD_START}
+      poster={{ ...PAD_START, text: "a pig", strip: stripFor("a pig") }}
+      script={async (a) => {
+        await a.wait(500);
+
+        for (const l of "pig") await tap(a, l);
+        await a.wait(1400);
+        await a.click("chip-big");
+        await a.set({ text: "a big", strip: stripFor("a big") });
+        await a.wait(1400);
+        await tap(a, "space", " ");
+
+        for (const l of "pig") await tap(a, l);
+        await a.wait(2000);
+        await undo(a, PAD_START.text);
         await a.wait(400);
       }}
     />
@@ -353,11 +484,7 @@ export function SettingsScene() {
   const f = FRAMES.app;
 
   return (
-    <div
-      className="mk-figure"
-      role="img"
-      aria-label="The Montessori Keyboard app’s settings: choosing cursive letters and QWERTY order changes the live keyboard at the top."
-    >
+    <Figure label="The Montessori Keyboard app’s settings: choosing cursive letters and QWERTY order changes the live keyboard at the top.">
       <Stage<SettingsState>
         width={f.wide.w}
         height={f.wide.h}
@@ -416,7 +543,7 @@ export function SettingsScene() {
           </Placed>
         )}
       </Stage>
-    </div>
+    </Figure>
   );
 }
 

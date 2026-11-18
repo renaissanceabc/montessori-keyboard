@@ -104,7 +104,44 @@
 
 /* The figure: the stage is the shot, on the page's own ground. */
 .mk-figure {
+  position: relative;
   margin: 0 0 6px;
+}
+/* Pause, in the corner the fade at the top of the frame leaves empty (the bottom on settings). */
+.mk-pause {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--wash);
+  color: var(--ink-3);
+  transition:
+    color var(--dur-press) var(--ease-out),
+    transform var(--dur-press) var(--ease-out);
+}
+.mk-figure:has(.mk-stage--top) .mk-pause {
+  top: auto;
+  bottom: 8px;
+}
+.mk-pause:active {
+  transform: scale(0.92);
+}
+@media (hover: hover) and (pointer: fine) {
+  .mk-pause:hover {
+    color: var(--ink);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-pause {
+    transition: none;
+  }
+  .mk-pause:active {
+    transform: none;
+  }
 }
 .mk-stage .ss-stage {
   background: transparent;
@@ -115,6 +152,32 @@
     0 10px 20px -8px var(--mk-shadow),
     0 2px 6px -2px var(--mk-shadow);
 }
+/* The iPad: an even black bezel around the screen, with the phone's short shadow. */
+.mk-pad {
+  box-sizing: border-box;
+  background: #1c1b1a;
+  box-shadow:
+    0 10px 20px -8px var(--mk-shadow),
+    0 2px 6px -2px var(--mk-shadow),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.mk-pad-window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.mk-pad-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  background: var(--mk-page);
+  color: var(--mk-ink);
+  font-family: var(--font);
+  font-feature-settings: "ss01", "cv03", "cv04";
+}
+
 /* The phone runs past the frame on purpose: clip it there, and fade the cut edge into the page */
 .mk-stage {
   overflow: clip;
