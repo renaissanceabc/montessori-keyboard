@@ -7,10 +7,11 @@ Run with `bun run icons` (Pillow required). It writes:
   apps/site/app/icon.png, apps/site/app/apple-icon.png, apps/site/app/favicon.ico
 """
 
-from dataclasses import dataclass
+import random
+from dataclasses import dataclass, replace
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "apps/ios/Sources/Shared/Fonts/AlloLearner-Bold.otf"
@@ -34,6 +35,9 @@ class Look:
     vowel: Rgb
     consonant: Rgb
     shadow: tuple[int, int, int, int]
+    grain: int  # wood grain strength, 0-255
+    highlight: int  # light on the bevel and under cut edges, 0-255
+    cut_shadow: int  # shade inside a cut letter, 0-255
 
 
 MAPLE = Look(
@@ -45,6 +49,9 @@ MAPLE = Look(
     vowel=(0x16, 0x50, 0xB0),
     consonant=(0xB3, 0x14, 0x1A),
     shadow=(84, 52, 18, 90),
+    grain=26,
+    highlight=200,
+    cut_shadow=110,
 )
 
 WALNUT = Look(
@@ -56,6 +63,9 @@ WALNUT = Look(
     vowel=(0x86, 0xBE, 0xFF),
     consonant=(0xFF, 0x7A, 0x6B),
     shadow=(0, 0, 0, 140),
+    grain=30,
+    highlight=50,
+    cut_shadow=150,
 )
 
 # iOS tints this one from its luminance, so it is gray on black: light tiles, dark letters.
@@ -68,6 +78,9 @@ TINTED = Look(
     vowel=(0x26, 0x26, 0x26),
     consonant=(0x26, 0x26, 0x26),
     shadow=(0, 0, 0, 0),
+    grain=0,
+    highlight=150,
+    cut_shadow=120,
 )
 
 
@@ -98,20 +111,66 @@ def tile(letter, w, h, color, look, shadow=True):
     ImageDraw.Draw(canvas).rounded_rectangle([pad, pad + edge, pad + w, pad + h + edge], r, fill=look.tile_edge)
 
     face = gradient((w, h), look.tile_top, look.tile_bottom).convert("RGBA")
+    face = grain(face, look.grain)
     mask = Image.new("L", (w, h), 0)
     ImageDraw.Draw(mask).rounded_rectangle([0, 0, w - 1, h - 1], r, fill=255)
+    # A bevel: light catches the face's top edge.
+    lip = max(2, int(h * 0.012))
+    glint(face, mask, shift(mask, lip), (255, 255, 255, look.highlight), lip)
     canvas.paste(face, (pad, pad), mask)
 
     font = ImageFont.truetype(str(FONT), int(h * 0.7))
-    draw = ImageDraw.Draw(canvas)
-    box = draw.textbbox((0, 0), letter, font=font, anchor="ls")
+    box = ImageDraw.Draw(canvas).textbbox((0, 0), letter, font=font, anchor="ls")
     x = pad + (w - (box[2] - box[0])) / 2 - box[0]
     # Every tile shares one baseline, like the moveable alphabet. The baseline sits so that an ascender
     # letter (b) and an x-height letter (a, c) both look centered: halfway between centering each.
     xh = font.getbbox("x", anchor="ls")[1]
     asc = font.getbbox("b", anchor="ls")[1]
     y = pad + h / 2 - (xh + asc) / 4
-    draw.text((x, y), letter, font=font, fill=color, anchor="ls")
+    ink = Image.new("L", canvas.size, 0)
+    ImageDraw.Draw(ink).text((x, y), letter, font=font, fill=255, anchor="ls")
+    engrave(canvas, ink, color, look, max(2, int(h * 0.018)))
+    return canvas
+
+
+def shift(mask, dy):
+    """The mask moved down by dy pixels."""
+    out = Image.new("L", mask.size, 0)
+    out.paste(mask, (0, dy))
+    return out
+
+
+def glint(img, inside, cut, rgba, blur):
+    """Paints rgba where `inside` is set and `cut` is not, softened by blur: an edge catching light or shade."""
+    band = ImageChops.subtract(inside, cut).filter(ImageFilter.GaussianBlur(blur / 2))
+    band = ImageChops.multiply(band, inside)
+    layer = Image.new("RGBA", img.size, rgba[:3] + (0,))
+    layer.putalpha(band.point(lambda v: v * rgba[3] // 255))
+    img.alpha_composite(layer)
+
+
+def engrave(canvas, ink, color, look, depth):
+    """The letter cut into the face: shade inside its top edges, light on the face under its bottom edges."""
+    fill = Image.new("RGBA", canvas.size, color + (0,))
+    fill.putalpha(ink)
+    canvas.alpha_composite(fill)
+    glint(canvas, ink, shift(ink, depth), (0, 0, 0, look.cut_shadow), depth)
+    glint(canvas, shift(ink, depth), ink, (255, 255, 255, look.highlight), depth)
+
+
+def grain(face, strength):
+    """Faint wood grain: long horizontal streaks of random tone, wavering a little."""
+    if not strength:
+        return face
+    w, h = face.size
+    rng = random.Random(7)
+    streaks = Image.new("L", (6, max(h // 22, 2)))
+    streaks.putdata([rng.randrange(256) for _ in range(streaks.width * streaks.height)])
+    streaks = streaks.resize((w, h), Image.BICUBIC).rotate(-3, resample=Image.BICUBIC, expand=False, fillcolor=128)
+    dark = Image.new("RGBA", (w, h), (90, 55, 20, 0))
+    dark.putalpha(streaks.point(lambda v: max(0, v - 128) * strength // 128))
+    face.alpha_composite(dark)
+    return face
     return canvas
 
 
@@ -144,7 +203,8 @@ def favicon(size):
     """The tab icon: the same triangle filling a transparent square, so it stays legible at 16-48px."""
     n = size * S
     img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
-    triangle(img, MAPLE, int(n * 0.47), int(n * 0.46), int(n * 0.04), shadow=False)
+    # No grain: at 16-64px it reads as smudges.
+    triangle(img, replace(MAPLE, grain=0), int(n * 0.47), int(n * 0.46), int(n * 0.04), shadow=False)
     return img.resize((size, size), Image.LANCZOS)
 
 
