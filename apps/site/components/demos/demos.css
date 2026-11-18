@@ -109,6 +109,12 @@
 .mk-stage .ss-stage {
   background: transparent;
 }
+/* A short shadow that ends inside the frame; the kit's deep one was cut off at its edges */
+.mk-phone.ss-phone {
+  box-shadow:
+    0 10px 20px -8px var(--mk-shadow),
+    0 2px 6px -2px var(--mk-shadow);
+}
 /* The phone runs past the frame on purpose: clip it there, and fade the cut edge into the page */
 .mk-stage {
   overflow: clip;
