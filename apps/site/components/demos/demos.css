@@ -356,8 +356,10 @@
 }
 .mk-pchip {
   position: absolute;
-  display: grid;
-  place-items: center;
+  /* One span per letter (blue vowels, red consonants), kept on one line */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-bottom: 3px;
   border-radius: 7px;
   font-size: 20px;
