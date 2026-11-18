@@ -40,6 +40,7 @@
   },
   "trustedDependencies": [
     "sharp",
+    "lefthook",
   ],
   "catalog": {
     "@types/node": "^26.6.4",
