@@ -229,7 +229,6 @@ struct LiftedTile<Content: View>: View {
 struct FunctionKey<Icon: View>: View {
     var accessibilityLabel: String
     var repeats = false
-    var dimmed = false
     var highlighted = false
     var onTap: () -> Void
     @ViewBuilder var icon: Icon
@@ -241,7 +240,6 @@ struct FunctionKey<Icon: View>: View {
                 icon
                     .font(.custom(TileFont.medium, fixedSize: 15))
                     .foregroundStyle(palette.keyInk)
-                    .opacity(dimmed ? 0.45 : 1)
             }
         }
     }

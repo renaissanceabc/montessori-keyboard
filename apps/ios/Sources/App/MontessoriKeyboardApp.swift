@@ -14,9 +14,14 @@ struct MontessoriKeyboardApp: App {
 
     /// Native navigation bars with their titles in Allo, so every page title matches the rest of the app.
     private static func styleNavigationBars() {
+        // The proxy's title attributes reach `.large` and `.inline` titles. (`.inlineLarge` draws its own title and
+        // ignores them, so no page uses it.)
+        let light = UIColor(Palette.maple.ink)
+        let dark = UIColor(Palette.walnut.ink)
+        let ink = UIColor { $0.userInterfaceStyle == .dark ? dark : light }
         let bar = UINavigationBar.appearance()
-        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle)]
-        bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline)]
+        bar.largeTitleTextAttributes = [.font: allo(TileFont.bold, size: 34, style: .largeTitle), .foregroundColor: ink]
+        bar.titleTextAttributes = [.font: allo(TileFont.semibold, size: 17, style: .headline), .foregroundColor: ink]
     }
 
     private static func allo(_ name: String, size: CGFloat, style: UIFont.TextStyle) -> UIFont {

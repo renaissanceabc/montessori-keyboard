@@ -11,7 +11,7 @@ bun run --cwd apps/site test       # vitest: the sitemap and the keyboard's data
 
 | Path                            | What it is                                                                                    |
 | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `site.config.ts`                | The domain (a placeholder), the App Store link and whether it's live, GitHub, Renaissance     |
+| `site.config.ts`                | The domain, the App Store link and whether it's live, GitHub, Renaissance, the support email  |
 | `lib/nav.ts`                    | Every page with its title and description, in header order; the footer's pages               |
 | `lib/meta.ts`                   | Each page's metadata, from the nav                                                            |
 | `lib/keyboard.ts`               | The rows (QWERTY and ABC), vowels, phonograms, word families and bead-stair colors           |
@@ -24,7 +24,7 @@ bun run --cwd apps/site test       # vitest: the sitemap and the keyboard's data
 | `vercel.json`                   | Security headers (a CSP that allows only this site), caching for the icons, and the ignore step |
 | `scripts/ignore-build.sh`       | Vercel's Ignored Build Step: deploys only when the site changed (see below)                   |
 
-The app icon (`app/icon.png`, `app/apple-icon.png`, `public/favicon.ico`) comes from the app's icon and is added separately; Next picks the files up by name, and the site builds without them.
+The icons (`app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`) come from `scripts/icons.py` (`bun run icons`); Next picks the files up by name.
 
 ## Deploys
 
@@ -43,4 +43,4 @@ Vercel builds only when the site changed. Before installing, it runs `scripts/ig
 - **Accessible.** Real headings, a skip link, a visible focus ring, tiles that are buttons with names, and `prefers-reduced-motion` turns off the key press and the caret's blink.
 - **Nothing collected.** No cookies, analytics or third-party requests, matching the app's privacy policy.
 
-To publish the App Store link, set `appStoreUrl` and `appStoreLive: true` in `site.config.ts`. When the domain is bought, change `url` there too.
+To publish the App Store link, set `appStoreUrl` and `appStoreLive: true` in `site.config.ts`.
