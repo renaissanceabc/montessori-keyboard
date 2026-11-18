@@ -33,7 +33,7 @@ Allo everywhere: Bold for tiles and headings, Regular for children's writing, an
 
 ## Icon
 
-Three maple tiles, a b c, on the tray, drawn by `scripts/icons.py`. The favicon is a single blue "a" tile.
+Three tiles stacked as a triangle, a on top and b c below, drawn by `scripts/icons.py`. Maple on the tray is the light icon, walnut is the dark one, and a grayscale copy is the tinted one. The favicon is the same triangle filling a transparent square, drawn separately at each size.
 
 ## Settings preview
 
