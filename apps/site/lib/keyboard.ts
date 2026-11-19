@@ -14,30 +14,41 @@ export const ROWS: Record<Order, string[][]> = {
   abc: [[..."abcdefghij"], [..."klmnopqrs"], [..."tuvwxyz"]],
 };
 
-/** A few of the phonograms a long press offers, by the letter that holds them. */
+/** The letter teams a long press offers, by the tile that holds them (Phonograms.swift). */
 export const PHONOGRAMS: Record<string, string[]> = {
-  s: ["sh"],
+  a: ["ai", "ay", "ar", "au", "aw"],
   c: ["ch", "ck"],
-  t: ["th"],
-  a: ["ai", "ay", "ar"],
-  e: ["ee", "ea", "er"],
-  o: ["oa", "oo", "ow"],
+  e: ["ee", "ea", "er", "ew"],
+  g: ["gh"],
+  i: ["igh", "ir", "ie"],
+  k: ["kn"],
+  n: ["ng", "nk"],
+  o: ["oa", "oo", "or", "ou", "ow", "oi", "oy"],
+  p: ["ph"],
+  q: ["qu"],
+  s: ["sh"],
+  t: ["th", "tch"],
+  u: ["ur", "ue"],
+  w: ["wh", "wr"],
 };
 
-/** Word families: a word's ending, and words that share it. */
+/** Word families: a word's ending, and words that share it (a few of WordFamilies.swift's). */
 export const FAMILIES: Record<string, string[]> = {
-  at: ["cat", "hat", "mat", "sat", "bat"],
-  un: ["sun", "run", "fun", "bun"],
-  ig: ["pig", "dig", "big", "wig"],
-  op: ["mop", "top", "hop", "pop"],
-  en: ["hen", "pen", "ten", "den"],
+  at: ["bat", "cat", "hat", "mat", "rat", "sat"],
+  un: ["bun", "fun", "run", "sun"],
+  ig: ["big", "dig", "fig", "pig", "wig"],
+  op: ["hop", "mop", "pop", "top"],
+  en: ["hen", "men", "pen", "ten"],
 };
 
-/** The words in the strip for what's typed so far: its family if it has one, else the at family. */
-export function familyFor(word: string): string[] {
+/**
+ * The strip's words for the word being typed: up to three from its family, leaving out the word
+ * itself, so "cat" offers bat, hat and mat. None when the word has no family: the strip stays blank.
+ */
+export function rhymesFor(word: string): string[] {
   const end = Object.keys(FAMILIES).find((f) => word.length > f.length && word.endsWith(f));
 
-  return FAMILIES[end ?? "at"];
+  return end ? FAMILIES[end].filter((w) => w !== word).slice(0, 3) : [];
 }
 
 /**
@@ -56,3 +67,8 @@ export const BEADS: { n: number; name: string; color: string }[] = [
   { n: 9, name: "dark blue", color: "#1E3A8A" },
   { n: 10, name: "gold", color: "#C9A227" },
 ];
+
+/** Each digit's bead color, 1 to 9, for the beads under the number keys. */
+export const BEADS_BY_DIGIT: Record<number, string> = Object.fromEntries(
+  BEADS.filter((b) => b.n < 10).map((b) => [b.n, b.color]),
+);

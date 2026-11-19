@@ -2,13 +2,14 @@ import localFont from "next/font/local";
 
 /**
  * Allo, Josh Puckett's friendly sans, as the keyboard's tiles and the app use it. One variable
- * file (every weight, roundness fixed at Friendly like the app's static fonts) from the allo-font
- * package, served with the site, so no other host is asked for anything. The learner forms
- * (single-storey a, tailed l, serifed I) are turned on in globals.css.
+ * file (roundness fixed at Friendly like the app's static fonts), trimmed from the allo-font
+ * package to the characters and weights the site uses (`bun run site-font`), and served with the
+ * site, so no other host is asked for anything. The learner forms (single-storey a, tailed l,
+ * serifed I) are turned on in globals.css.
  */
 export const allo = localFont({
-  src: "../node_modules/allo-font/fonts/webfonts/AlloVariableFriendly.woff2",
-  weight: "100 900",
+  src: "../fonts/allo-site.woff2",
+  weight: "400 800",
   style: "normal",
   variable: "--font-allo",
   adjustFontFallback: "Arial",
