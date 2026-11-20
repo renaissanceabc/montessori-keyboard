@@ -17,6 +17,10 @@ extension Color {
 /// The two trays: maple in light mode, walnut in dark. Every color the keyboard and the app use comes from here.
 public struct Palette: Sendable {
     public let tray: Color
+    /// The tray's lip where it meets the system panel.
+    public let trayEdge: Color
+    /// Stands in for the iOS keyboard panel (and the globe strip) where iOS doesn't draw it: the app's preview and Pad.
+    public let systemBand: Color
     public let tileTop: Color
     public let tileBottom: Color
     public let tileEdge: Color
@@ -68,6 +72,8 @@ public struct Palette: Sendable {
 
     public static let maple = Palette(
         tray: Color(hex: 0xEADBC0),
+        trayEdge: Color(hex: 0xC9A97A),
+        systemBand: Color(hex: 0xD2D4DA),
         tileTop: Color(hex: 0xF8E7C9),
         tileBottom: Color(hex: 0xF0D8B0),
         tileEdge: Color(hex: 0xCDAA78),
@@ -111,6 +117,8 @@ public struct Palette: Sendable {
 
     public static let walnut = Palette(
         tray: Color(hex: 0x2A1D15),
+        trayEdge: Color(hex: 0x3B2A1E),
+        systemBand: Color(hex: 0x202020),
         tileTop: Color(hex: 0x6E4C34),
         tileBottom: Color(hex: 0x5C3F2B),
         tileEdge: Color(hex: 0x36241A),

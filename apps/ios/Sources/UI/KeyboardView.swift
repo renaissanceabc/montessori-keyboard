@@ -7,6 +7,10 @@ public struct KeyboardView: View {
     @Bindable public var model: KeyboardModel
     /// The keyboard extension shows the globe key only when the system asks for it.
     public var showsGlobe: Bool
+    /// True in the keyboard extension, where iOS draws its own keyboard panel behind us (the same gray as the globe
+    /// strip below, light or dark with the host app). We leave it showing around the tray. The app has no such panel,
+    /// so it paints `palette.systemBand` in its place.
+    public var systemBackdrop: Bool
     /// 0 is the full keyboard; 1 is the Settings preview's compact size, with shorter tiles and tighter rows.
     /// Anything between eases from one to the other, so the preview can settle as the settings scroll.
     public var compact: CGFloat
@@ -17,6 +21,10 @@ public struct KeyboardView: View {
     public static let topInset: CGFloat = 8
     public static let bottomInset: CGFloat = 4
     public static let stripHeight: CGFloat = 44
+    /// The wooden tray sits inside the system panel: this much panel shows at its sides and below it, and its corners
+    /// are rounded like the panel's, so it reads as a tray set on the panel rather than a square cut into it.
+    public static let trayMargin: CGFloat = 4
+    public static let trayRadius: CGFloat = 14
     /// The coordinate space keys report their frames and touches in, for the phonogram popup.
     static let space = "keyboard"
 
@@ -24,16 +32,17 @@ public struct KeyboardView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var width: CGFloat = 375
 
-    public init(model: KeyboardModel, showsGlobe: Bool = false, compact: CGFloat = 0) {
+    public init(model: KeyboardModel, showsGlobe: Bool = false, systemBackdrop: Bool = false, compact: CGFloat = 0) {
         self.model = model
         self.showsGlobe = showsGlobe
+        self.systemBackdrop = systemBackdrop
         self.compact = min(max(compact, 0), 1)
     }
 
     /// The keyboard's height for its settings, so the extension can size itself before it draws.
     public static func height(for settings: KeyboardSettings, compact: CGFloat = 0) -> CGFloat {
         let c = min(max(compact, 0), 1)
-        let rows = 4 * tile(at: c) + 3 * rowGap(at: c) + topInset + bottomInset
+        let rows = 4 * tile(at: c) + 3 * rowGap(at: c) + topInset + bottomInset + trayMargin
         return rows + (settings.strip == .off ? 0 : stripHeight)
     }
 
@@ -58,6 +67,9 @@ public struct KeyboardView: View {
             .padding(.horizontal, 3)
             .padding(.top, Self.topInset)
             .padding(.bottom, Self.bottomInset)
+            .background(tray)
+            .padding(.horizontal, Self.trayMargin)
+            .padding(.bottom, Self.trayMargin)
         }
         .overlay(alignment: .topLeading) {
             if model.trayLetter != nil {
@@ -82,7 +94,7 @@ public struct KeyboardView: View {
                 )
             }
         }
-        .background(palette.tray)
+        .background(systemBackdrop ? .clear : palette.systemBand)
         .coordinateSpace(.named(Self.space))
         .onGeometryChange(for: CGFloat.self) {
             $0.size.width
@@ -90,6 +102,13 @@ public struct KeyboardView: View {
             width = $0
         }
         .animation(.easeOut(duration: 0.15), value: model.trayLetter)
+    }
+
+    /// The tray under the tiles: wood with a dark lip at its edge, so it ends cleanly against the gray panel.
+    private var tray: some View {
+        let shape = RoundedRectangle(cornerRadius: Self.trayRadius, style: .continuous)
+        return shape.fill(palette.tray)
+            .overlay(shape.strokeBorder(palette.trayEdge, lineWidth: 1))
     }
 
     private var popupLayout: PopupLayout {

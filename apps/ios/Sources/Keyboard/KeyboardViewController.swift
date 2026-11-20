@@ -44,6 +44,12 @@ final class KeyboardViewController: UIInputViewController {
         height.priority = .required - 1
         height.isActive = true
         heightConstraint = height
+
+        // Redraw in walnut or maple as soon as the host switches between dark and light.
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (controller: KeyboardViewController, _) in
+            guard let model = controller.model else { return }
+            controller.host?.rootView = AnyView(controller.root(model))
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -71,18 +77,17 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     private func root(_ model: KeyboardModel) -> some View {
-        KeyboardView(model: model, showsGlobe: needsInputModeSwitchKey)
+        KeyboardView(model: model, showsGlobe: needsInputModeSwitchKey, systemBackdrop: true)
             .environment(\.palette, Palette.for(appearanceScheme))
             .environment(\.colorScheme, appearanceScheme)
     }
 
-    /// Dark apps ask for a dark keyboard through the proxy; otherwise follow the system.
+    /// Match the panel iOS draws behind us: it follows the host's style, which reaches us as our view's trait. A field
+    /// that asks for a dark keyboard gets walnut too. (`keyboardAppearance` can say light for a field in a dark app,
+    /// which put maple on the dark panel, so it no longer decides light.)
     private var appearanceScheme: ColorScheme {
-        switch textDocumentProxy.keyboardAppearance {
-        case .dark: .dark
-        case .light: .light
-        default: traitCollection.userInterfaceStyle == .dark ? .dark : .light
-        }
+        if textDocumentProxy.keyboardAppearance == .dark { return .dark }
+        return view.traitCollection.userInterfaceStyle == .dark ? .dark : .light
     }
 
     private func makeHost() -> KeyboardHost {
