@@ -71,7 +71,7 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     private func root(_ model: KeyboardModel) -> some View {
-        KeyboardView(model: model, showsGlobe: needsInputModeSwitchKey)
+        KeyboardView(model: model, showsGlobe: needsInputModeSwitchKey, systemBackdrop: true)
             .environment(\.palette, Palette.for(appearanceScheme))
             .environment(\.colorScheme, appearanceScheme)
     }
